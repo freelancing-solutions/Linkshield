@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        String   @id @default(cuid())
+  email                     String   @unique
+  name                      String?
+  plan                      String   @default("free") // free, pro, enterprise
+  checks_used_this_month    Int      @default(0)
+  ai_analyses_used_this_month Int    @default(0)
+  plan_expires_at           DateTime?
+  stripe_customer_id        String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  checks                    Check[]
+  aiAnalyses                AIAnalysis[]
+  
+  @@map("users")
+}
+
+model Check {
+  id              String   @id @default(cuid())
+  userId          String?
+  url             String
+  urlHash         String   // SHA-256 for deduplication
+  statusCode      Int?
+  responseTimeMs  Int?
+  sslValid        Boolean?
+  redirectChain   String?  // JSON
+  metaData        String?  // JSON
+  securityScore   Int?
+  isPublic        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  aiAnalyses      AIAnalysis[]
+  reportViews     ReportView[]
+  
+  @@map("checks")
+  @@index([userId])
+  @@index([urlHash])
+  @@index([createdAt])
+  @@index([isPublic])
+}
+
+model AIAnalysis {
+  id                  String   @id @default(cuid())
+  userId              String?
+  checkId             String?
+  url                 String
+  contentHash         String   @unique
+  contentSummary      String?
+  contentEmbedding    String?  // JSON array
+  qualityMetrics      String?  // JSON
+  topicCategories     String?  // JSON
+  keywordDensity      String?  // JSON
+  contentLength       Int?
+  language            String?
+  processingStatus    String   @default("pending") // pending, processing, completed, failed
+  errorMessage        String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user                User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  check               Check?          @relation(fields: [checkId], references: [id], onDelete: SetNull)
+  sourceSimilarPages  SimilarPage[]   @relation("SourceAnalysis")
+  targetSimilarPages  SimilarPage[]   @relation("TargetAnalysis")
+  
+  @@map("ai_analyses")
+  @@index([contentHash])
+  @@index([processingStatus])
+  @@index([createdAt])
+  @@unique([checkId])
+}
+
+model SimilarPage {
+  id                  String   @id @default(cuid())
+  sourceAnalysisId    String
+  targetAnalysisId    String
+  similarityScore     Float    // 0.000 to 1.000
+  similarityType      String   // semantic, structural, topical
+  comparisonMetadata  String?  // JSON
+  createdAt           DateTime @default(now())
+
+  sourceAnalysis      AIAnalysis @relation("SourceAnalysis", fields: [sourceAnalysisId], references: [id], onDelete: Cascade)
+  targetAnalysis      AIAnalysis @relation("TargetAnalysis", fields: [targetAnalysisId], references: [id], onDelete: Cascade)
+  
+  @@map("similar_pages")
+  @@unique([sourceAnalysisId, targetAnalysisId])
+  @@index([sourceAnalysisId])
+  @@index([similarityScore])
+}
+
+model Plan {
+  id                String   @id @default(cuid())
+  name              String
+  checksPerMonth    Int
+  aiAnalysesPerMonth Int
+  priceMonthly      Int?     // in cents
+  features          String?  // JSON
+  stripePriceId     String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  
+  @@map("plans")
+}
+
+model ReportView {
+  id          String   @id @default(cuid())
+  checkId     String
+  viewerIp    String?
+  userAgent   String?
+  referrer    String?
+  country     String?
+  createdAt   DateTime @default(now())
+
+  check       Check    @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  
+  @@map("report_views")
+  @@index([checkId])
+  @@index([createdAt])
+}
