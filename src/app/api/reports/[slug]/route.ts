@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { ShareableReportService } from '@/lib/services/shareable-report-service';
-import { getServerSession }nfrom 'next-auth';
+import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth'; // Import authOptions
 import { rateLimitMiddleware } from '@/lib/middleware/rate-limit-middleware'; // New import
 
