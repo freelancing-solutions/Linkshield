@@ -34,6 +34,14 @@ export function Navbar() {
               <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
             ) : session ? (
               <>
+                {session.user?.role === 'ADMIN' && (
+                  <Link href="/admin/dashboard">
+                    <Button variant="outline" size="sm">
+                      <Shield className="h-4 w-4 mr-2" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/dashboard">
                   <Button variant="outline" size="sm">
                     <BarChart3 className="h-4 w-4 mr-2" />
