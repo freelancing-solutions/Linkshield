@@ -193,7 +193,7 @@ export async function performURLAnalysis(url: string) {
       redirect: 'manual',
       signal: controller.signal,
       headers: {
-        'User-Agent': 'LinkShield/1.0 (+https://linkshield.app)'
+        'User-Agent': 'LinkShield/1.0 (+https://linkshield.site)'
       }
     })
     
