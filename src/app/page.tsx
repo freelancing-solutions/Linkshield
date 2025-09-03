@@ -39,10 +39,7 @@ interface AnalysisResult {
     title?: string
     description?: string
   }
-  redirectChain?: Array<{
-    url: string
-    statusCode: number
-  }>
+  redirectChain?: string
   aiInsights?: {
     qualityScore?: number
     summary?: string
@@ -355,23 +352,23 @@ export default function Home() {
                     )}
 
                     {/* Redirect Chain */}
-                    {result.redirectChain && result.redirectChain.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">Redirect Chain</h3>
-                        <div className="space-y-2">
-                          {result.redirectChain.map((redirect, index) => (
-                            <div key={index} className="flex items-center gap-2 text-sm">
-                              <span className="font-mono text-gray-600 dark:text-gray-400">
-                                {redirect.statusCode}
-                              </span>
-                              <span className="text-gray-700 dark:text-gray-300 truncate">
-                                {redirect.url}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                    {result.redirectChain && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Redirect Chain</h3>
+                      <div className="space-y-2">
+                        {JSON.parse(result.redirectChain).map((redirect: any, index: number) => (
+                          <div key={index} className="flex items-center gap-2 text-sm">
+                            <span className="font-mono text-gray-600 dark:text-gray-400">
+                              {redirect.statusCode}
+                            </span>
+                            <span className="text-gray-700 dark:text-gray-300 truncate">
+                              {redirect.url}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    )}
+                    </div>
+                  )}
                   </TabsContent>
 
                   {result.aiInsights && (
