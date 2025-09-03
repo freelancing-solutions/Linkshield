@@ -10,6 +10,26 @@ export const runtime = 'edge'; // Edge runtime for Vercel OG
 const prisma = new PrismaClient();
 const shareableReportService = new ShareableReportService(prisma);
 
+// Helper functions to replace private method access
+const extractDomain = (url: string): string => {
+  try {
+    const domain = new URL(url).hostname;
+    return domain.replace('www.', '');
+  } catch {
+    return url;
+  }
+};
+
+const getScoreEmoji = (scoreColor: string): string => {
+  switch (scoreColor) {
+    case 'green': return '🟢';
+    case 'yellow': return '🟡';
+    case 'orange': return '🟠';
+    case 'red': return '🔴';
+    default: return '⚪';
+  }
+};
+
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
 
@@ -47,9 +67,9 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       );
     }
 
-    const domain = shareableReportService['extractDomain'](report.url); // Access private method
+    const domain = extractDomain(report.url);
     const scoreColor = getScoreColor(report.securityScore);
-    const scoreEmoji = shareableReportService['getScoreEmoji'](scoreColor); // Access private method
+    const scoreEmoji = getScoreEmoji(scoreColor);
 
     const title = report.customTitle || `${domain} Security Report ${scoreEmoji}`;
     const description = report.customDescription || `Security Score: ${report.securityScore || 'N/A'}/100. Analyze your links with LinkShield.`;
