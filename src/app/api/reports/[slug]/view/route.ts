@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { rateLimitMiddleware } from '@/lib/middleware/rate-limit-middleware'; // New import
@@ -12,33 +11,35 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   }
 
   const { slug } = params;
-  const { shareMethod, success } = await request.json();
-
-  if (!shareMethod || success === undefined) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-  }
 
   try {
     const check = await prisma.check.findUnique({
       where: { slug },
+      select: { id: true },
     });
 
     if (!check) {
       return NextResponse.json({ error: 'Report not found' }, { status: 404 });
     }
 
-    const shareEvent = await prisma.shareEvent.create({
+    // Basic IP address extraction (for demonstration, consider a more robust solution)
+    const ipAddress = request.headers.get('x-forwarded-for') || request.ip;
+    const userAgent = request.headers.get('user-agent');
+    const referrer = request.headers.get('referer');
+
+    await prisma.reportView.create({
       data: {
         checkId: check.id,
-        shareMethod,
-        success,
-        // TODO: Add userAgent, referrer, ipAddress
+        viewerIp: ipAddress,
+        userAgent: userAgent,
+        referrer: referrer,
+        // country: (Optional: integrate with IP geolocation service)
       },
     });
 
-    return NextResponse.json(shareEvent, { status: 201 });
+    return NextResponse.json({ message: 'Report view tracked' }, { status: 200 });
   } catch (error) {
-    console.error('Error creating share event:', error);
+    console.error('Error tracking report view:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

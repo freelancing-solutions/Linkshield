@@ -19,9 +19,27 @@ import {
   Users,
   Zap,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Trash2
 } from 'lucide-react'
 import Link from 'next/link'
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+
+// Simple toast implementation to replace the missing useToast
+const useToast = () => {
+  return {
+    toast: (options: { title: string; description: string; variant?: 'destructive' }) => {
+      console.log('Toast:', options.title, options.description);
+      // You can replace this with a proper toast library later
+      if (options.variant === 'destructive') {
+        alert(`ERROR: ${options.title} - ${options.description}`);
+      } else {
+        alert(`SUCCESS: ${options.title} - ${options.description}`);
+      }
+    }
+  };
+};
 
 interface CheckHistory {
   id: string
@@ -34,7 +52,20 @@ interface CheckHistory {
   hasAIAnalysis: boolean
 }
 
+interface DashboardShareableReport extends CheckHistory {
+  slug: string | null;
+  isPublic: boolean;
+  shareCount: number;
+  customTitle: string | null;
+  customDescription: string | null;
+  ogImageUrl: string | null;
+}
+
+// Update your UserStats interface to match the new API response
 interface UserStats {
+  user: {
+    plan: string
+  }
   totalChecks: number
   totalAIAnalyses: number
   avgSecurityScore: number
@@ -50,7 +81,10 @@ export default function Dashboard() {
   const { data: session } = useSession()
   const [stats, setStats] = useState<UserStats | null>(null)
   const [history, setHistory] = useState<CheckHistory[]>([])
+  const [shareableReports, setShareableReports] = useState<DashboardShareableReport[]>([]);
   const [loading, setLoading] = useState(true)
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (session) {
@@ -58,28 +92,111 @@ export default function Dashboard() {
     }
   }, [session])
 
-  const fetchDashboardData = async () => {
-    try {
-      const [statsResponse, historyResponse] = await Promise.all([
-        fetch('/api/dashboard/stats'),
-        fetch('/api/dashboard/history')
-      ])
-
-      if (statsResponse.ok) {
-        const statsData = await statsResponse.json()
-        setStats(statsData.data)
+// Update the fetchDashboardData function
+const fetchDashboardData = async () => {
+  try {
+    setLoading(true);
+    
+    // Fetch user stats
+    const statsResponse = await fetch('/api/dashboard/stats');
+    if (statsResponse.ok) {
+      const response = await statsResponse.json();
+      if (response.success) {
+        setStats(response.data); // Note: using response.data now
       }
+    } else {
+      console.error('Failed to fetch stats');
+    }
 
-      if (historyResponse.ok) {
-        const historyData = await historyResponse.json()
-        setHistory(historyData.data)
+    // ... rest of your fetch logic remains the same
+    
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    toast({
+      title: 'Error',
+      description: 'Failed to load dashboard data',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+  const handlePrivacyToggle = async (slug: string, isPublic: boolean) => {
+    try {
+      const response = await fetch(`/api/reports/${slug}/privacy`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isPublic }),
+      });
+
+      if (response.ok) {
+        setShareableReports((prevReports) =>
+          prevReports.map((report) =>
+            report.slug === slug ? { ...report, isPublic } : report
+          )
+        );
+        toast({
+          title: 'Success',
+          description: `Report privacy updated to ${isPublic ? 'public' : 'private'}.`,
+        });
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: 'Error',
+          description: errorData.error || 'Failed to update privacy.',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error)
-    } finally {
-      setLoading(false)
+      console.error('Error updating privacy:', error);
+      toast({
+        title: 'Error',
+        description: 'Network error or server is unreachable.',
+        variant: 'destructive',
+      });
     }
-  }
+  };
+
+  const handleDeleteReport = async (id: string, slug: string | null) => {
+    if (!confirm('Are you sure you want to delete this shareable report? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/dashboard/reports/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setShareableReports((prevReports) =>
+          prevReports.filter((report) => report.id !== id)
+        );
+        toast({
+          title: 'Success',
+          description: 'Shareable report deleted successfully.',
+        });
+        fetchDashboardData();
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: 'Error',
+          description: errorData.error || 'Failed to delete report.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting report:', error);
+      toast({
+        title: 'Error',
+        description: 'Network error or server is unreachable.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const getUsagePercentage = (used: number, limit: number) => {
     return Math.min((used / limit) * 100, 100)
@@ -143,16 +260,18 @@ export default function Dashboard() {
             Welcome back, {session.user?.name}! Here's your activity overview.
           </p>
           <div className="flex items-center gap-2 mt-2">
-            <Badge variant="outline" className="capitalize">
-              {session.user?.plan} Plan
-            </Badge>
-            {session.user?.plan === 'free' && (
-              <Link href="/pricing">
-                <Button size="sm" variant="outline">
-                  Upgrade Plan
-                </Button>
-              </Link>
-            )}
+          <Badge variant="outline" className="capitalize">
+            {stats?.user?.plan || 'free'} Plan
+          </Badge>
+
+
+          {(stats?.user?.plan === 'free' || !stats?.user?.plan) && (
+    <Link href="/pricing">
+      <Button size="sm" variant="outline">
+        Upgrade Plan
+      </Button>
+    </Link>
+  )}
           </div>
         </div>
 
@@ -218,20 +337,20 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Usage Tracking */}
-        {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5" />
-                  URL Checks Usage
-                </CardTitle>
-                <CardDescription>
-                  {stats.checksThisMonth} of {stats.planLimits.checksPerMonth} used this month
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+        {/* Usage Tracking - Show even if stats are null with placeholders */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5" />
+                URL Checks Usage
+              </CardTitle>
+              <CardDescription>
+                {stats ? `${stats.checksThisMonth} of ${stats.planLimits.checksPerMonth} used this month` : 'Loading usage data...'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {stats ? (
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Usage</span>
@@ -247,20 +366,27 @@ export default function Dashboard() {
                     {stats.planLimits.checksPerMonth - stats.checksThisMonth} remaining
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+              ) : (
+                <div className="animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-2 bg-gray-200 rounded"></div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  AI Analyses Usage
-                </CardTitle>
-                <CardDescription>
-                  {stats.aiAnalysesThisMonth} of {stats.planLimits.aiAnalysesPerMonth} used this month
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                AI Analyses Usage
+              </CardTitle>
+              <CardDescription>
+                {stats ? `${stats.aiAnalysesThisMonth} of ${stats.planLimits.aiAnalysesPerMonth} used this month` : 'Loading usage data...'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {stats ? (
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Usage</span>
@@ -276,15 +402,21 @@ export default function Dashboard() {
                     {stats.planLimits.aiAnalysesPerMonth - stats.aiAnalysesThisMonth} remaining
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+              ) : (
+                <div className="animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-2 bg-gray-200 rounded"></div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="history" className="space-y-4">
           <TabsList>
             <TabsTrigger value="history">Recent Analysis</TabsTrigger>
+            <TabsTrigger value="shareable-reports">Shareable Reports</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
@@ -381,51 +513,141 @@ export default function Dashboard() {
             </Card>
           </TabsContent>
 
+          {/* Other tabs remain the same... */}
           <TabsContent value="analytics">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Security Score Trends
-                  </CardTitle>
-                  <CardDescription>
-                    Your average security scores over time
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center text-gray-500">
-                    <div className="text-center">
-                      <BarChart3 className="h-12 w-12 mx-auto mb-2" />
-                      <p>Analytics charts coming soon</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <TrendingUp className="h-5 w-5" />
+        Security Score Trends
+      </CardTitle>
+      <CardDescription>
+        Your average security scores over time
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="text-center">
+          <BarChart3 className="h-12 w-12 mx-auto mb-2" />
+          <p>Analytics charts coming soon</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5" />
-                    Usage Patterns
-                  </CardTitle>
-                  <CardDescription>
-                    When you use LinkShield most frequently
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center text-gray-500">
-                    <div className="text-center">
-                      <Clock className="h-12 w-12 mx-auto mb-2" />
-                      <p>Usage patterns coming soon</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <Clock className="h-5 w-5" />
+        Usage Patterns
+      </CardTitle>
+      <CardDescription>
+        When you use LinkShield most frequently
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="text-center">
+          <Clock className="h-12 w-12 mx-auto mb-2" />
+          <p>Usage patterns coming soon</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+</div>
+</TabsContent>
+
+
+{/* Shareable Reports Tab */}
+<TabsContent value="shareable-reports">
+<Card>
+  <CardHeader>
+    <CardTitle>Your Shareable Reports</CardTitle>
+    <CardDescription>
+      Manage your public and private shareable reports.
+    </CardDescription>
+  </CardHeader>
+  <CardContent>
+    {shareableReports.length > 0 ? (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>URL / Title</TableHead>
+            <TableHead>Slug</TableHead>
+            <TableHead>Score</TableHead>
+            <TableHead>Shares</TableHead>
+            <TableHead>Public</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {shareableReports.map((report) => (
+            <TableRow key={report.id}>
+              <TableCell className="font-medium max-w-xs truncate">
+                {report.customTitle || report.url}
+              </TableCell>
+              <TableCell>{report.slug}</TableCell>
+              <TableCell>
+                <Badge className={getSecurityBadgeColor(report.securityScore)}>
+                  {report.securityScore}/100
+                </Badge>
+              </TableCell>
+              <TableCell>{report.shareCount}</TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id={`public-toggle-${report.id}`}
+                    checked={report.isPublic}
+                    onCheckedChange={(checked) => handlePrivacyToggle(report.slug!, checked)}
+                  />
+                  <Label htmlFor={`public-toggle-${report.id}`}>
+                    {report.isPublic ? 'Yes' : 'No'}
+                  </Label>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Link href={`/reports/${report.slug}`} passHref>
+                    <Button size="sm" variant="outline" asChild>
+                      <a>View</a>
+                    </Button>
+                  </Link>
+                  <Button 
+                    size="sm" 
+                    variant="destructive" 
+                    onClick={() => handleDeleteReport(report.id, report.slug)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    ) : (
+      <div className="text-center py-8">
+        <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          No shareable reports yet
+        </h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Create a shareable report from your analysis results.
+        </p>
+        <Link href="/">
+          <Button>Analyze a URL</Button>
+        </Link>
+      </div>
+    )}
+  </CardContent>
+</Card>
+</TabsContent>
         </Tabs>
       </div>
     </div>
   )
 }
+
+
+

@@ -3,6 +3,15 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
+// Plan limits configuration
+const PLAN_LIMITS = {
+  free: { checksPerMonth: 5, aiAnalysesPerMonth: 2 },
+  pro: { checksPerMonth: 500, aiAnalysesPerMonth: 50 },
+  enterprise: { checksPerMonth: 2500, aiAnalysesPerMonth: 500 }
+} as const
+
+type PlanType = keyof typeof PLAN_LIMITS
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,62 +23,26 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get user's current month usage
+    const userId = session.user.id
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
 
-    const [totalChecks, totalAIAnalyses, checksThisMonth, aiAnalysesThisMonth, user] = await Promise.all([
-      // Total checks ever
-      db.check.count({
-        where: { userId: session.user.id }
-      }),
-      
-      // Total AI analyses ever
-      db.aIAnalysis.count({
-        where: { userId: session.user.id }
-      }),
-      
-      // Checks this month
-      db.check.count({
-        where: {
-          userId: session.user.id,
-          createdAt: {
-            gte: startOfMonth,
-            lte: endOfMonth
+    // Fetch user data with current month usage
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        plan: true,
+        checks_used_this_month: true,
+        ai_analyses_used_this_month: true,
+        _count: {
+          select: {
+            checks: true,
+            aiAnalyses: true
           }
         }
-      }),
-      
-      // AI analyses this month
-      db.aIAnalysis.count({
-        where: {
-          userId: session.user.id,
-          createdAt: {
-            gte: startOfMonth,
-            lte: endOfMonth
-          }
-        }
-      }),
-      
-      // User data with plan info
-      db.user.findUnique({
-        where: { id: session.user.id },
-        include: {
-          checks: {
-            where: {
-              createdAt: {
-                gte: startOfMonth,
-                lte: endOfMonth
-              }
-            },
-            select: {
-              securityScore: true
-            }
-          }
-        }
-      })
-    ])
+      }
+    })
 
     if (!user) {
       return NextResponse.json(
@@ -78,28 +51,44 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Get current month's checks for security score calculation
+    const monthlyChecks = await db.check.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+        securityScore: {
+          not: null
+        }
+      },
+      select: {
+        securityScore: true
+      }
+    })
+
     // Calculate average security score
-    const securityScores = user.checks.map(check => check.securityScore).filter(score => score !== null)
-    const avgSecurityScore = securityScores.length > 0 
-      ? Math.round(securityScores.reduce((sum, score) => sum + score, 0) / securityScores.length)
+    const avgSecurityScore = monthlyChecks.length > 0 
+      ? Math.round(
+          monthlyChecks.reduce((sum, check) => sum + (check.securityScore || 0), 0) / monthlyChecks.length
+        )
       : 0
 
     // Get plan limits
-    const planLimits = {
-      free: { checksPerMonth: 5, aiAnalysesPerMonth: 2 },
-      pro: { checksPerMonth: 500, aiAnalysesPerMonth: 50 },
-      enterprise: { checksPerMonth: 2500, aiAnalysesPerMonth: 500 }
-    }
-
-    const limits = planLimits[user.plan as keyof typeof planLimits] || planLimits.free
+    const planType = (user.plan as PlanType) || 'free'
+    const planLimits = PLAN_LIMITS[planType]
 
     const stats = {
-      totalChecks,
-      totalAIAnalyses,
+      user: {
+        plan: user.plan
+      },
+      totalChecks: user._count.checks,
+      totalAIAnalyses: user._count.aiAnalyses,
       avgSecurityScore,
-      checksThisMonth,
-      aiAnalysesThisMonth,
-      planLimits: limits
+      checksThisMonth: user.checks_used_this_month,
+      aiAnalysesThisMonth: user.ai_analyses_used_this_month,
+      planLimits
     }
 
     return NextResponse.json({

@@ -69,6 +69,14 @@ export class AnalyticsService {
   }
 
   /**
+   * TODO: Implement conversion tracking for specific user actions (e.g., signup,
+   * new scan, premium feature usage) by adding new tracking methods here or
+   * extending existing ones. This would involve defining specific "conversion"
+   * events and logging them to the database, then analyzing them in
+   * getConversionFunnel or a new dedicated conversion analytics method.
+   */
+
+  /**
    * Track a report view with privacy compliance
    */
   async trackView(data: ViewTrackingData, doNotTrack?: boolean): Promise<void> {

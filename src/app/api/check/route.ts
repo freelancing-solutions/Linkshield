@@ -8,9 +8,10 @@ import {
   createUrlHash, 
   performURLAnalysis, 
   analyzeContentWithAI,
-  generateShareableReport
-} from '@/lib/url-analysis'
+} from '@/lib/url-analysis' // Removed generateShareableReport
 import crypto from 'crypto'
+import { ShareableReportService } from '@/lib/services/shareable-report-service'; // New import
+import { rateLimitMiddleware } from '@/lib/middleware/rate-limit-middleware'; // New import
 
 // Plan limits
 const PLAN_LIMITS = {
@@ -18,6 +19,8 @@ const PLAN_LIMITS = {
   pro: { checksPerMonth: 500, aiAnalysesPerMonth: 50 },
   enterprise: { checksPerMonth: 2500, aiAnalysesPerMonth: 500 }
 }
+
+const shareableReportService = new ShareableReportService(db); // Instantiate service
 
 async function checkUsageLimits(userId: string, plan: string, includeAI: boolean) {
   const now = new Date()
@@ -63,6 +66,11 @@ async function checkUsageLimits(userId: string, plan: string, includeAI: boolean
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = await rateLimitMiddleware(request);
+  if (rateLimitResponse.status === 429) {
+    return rateLimitResponse;
+  }
+
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
@@ -128,21 +136,33 @@ export async function POST(request: NextRequest) {
     if (existingCheck) {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
       if (existingCheck.createdAt > oneHourAgo) {
-        const report = generateShareableReport(existingCheck, existingCheck.aiAnalyses[0])
+        // If an existing check is found, and it has a slug, return it as a shareable report
+        // Otherwise, return the raw check and let the frontend handle shareable creation
+        if (existingCheck.slug) {
+          const shareableReport = await shareableReportService.getReportBySlug(existingCheck.slug, session?.user?.id);
+          if (shareableReport) {
+            return NextResponse.json({
+              success: true,
+              data: shareableReport,
+              cached: true
+            });
+          }
+        }
+        // If no slug or getReportBySlug failed, return the raw existingCheck
         return NextResponse.json({
           success: true,
-          data: report,
+          data: existingCheck, // Return the raw check data
           cached: true
-        })
+        });
       }
     }
     
     // Perform new analysis
     const analysisResult = await performURLAnalysis(url)
     
-    // Store the result in database
+    // Store the initial check result in database
     const checkId = uuidv4()
-    const check = await db.check.create({
+    let check = await db.check.create({ // Changed to let
       data: {
         id: checkId,
         userId: session?.user?.id || null,
@@ -154,7 +174,7 @@ export async function POST(request: NextRequest) {
         securityScore: analysisResult.securityScore,
         metaData: analysisResult.meta ? JSON.stringify(analysisResult.meta) : null,
         redirectChain: analysisResult.redirectChain ? JSON.stringify(analysisResult.redirectChain) : null,
-        isPublic: false
+        isPublic: false // Default to false, will be updated by createShareableReport
       }
     })
     
@@ -205,13 +225,19 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Generate and return the report
-    const report = generateShareableReport(check, aiAnalysis)
-    
+    // Create shareable report and generate slug
+    const shareableReport = await shareableReportService.createShareableReport({
+      checkId: check.id,
+      isPublic: body.isPublic || false, // Get isPublic from request body, default to false
+      customTitle: body.customTitle,
+      customDescription: body.customDescription,
+      includeAIInsights: includeAI // Pass includeAI to service if needed
+    });
+
     return NextResponse.json({
       success: true,
-      data: report
-    })
+      data: shareableReport // Return the full shareable report
+    });
     
   } catch (error) {
     console.error('URL analysis error:', error)

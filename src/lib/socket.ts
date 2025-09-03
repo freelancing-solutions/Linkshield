@@ -1,6 +1,9 @@
 import { Server } from 'socket.io';
 
+let ioInstance: Server;
+
 export const setupSocket = (io: Server) => {
+  ioInstance = io; // Store the io instance
   io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
     
@@ -26,4 +29,11 @@ export const setupSocket = (io: Server) => {
       timestamp: new Date().toISOString(),
     });
   });
+};
+
+export const getIoInstance = (): Server => {
+  if (!ioInstance) {
+    throw new Error('Socket.IO instance not initialized. Call setupSocket first.');
+  }
+  return ioInstance;
 };

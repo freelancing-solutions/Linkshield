@@ -10,6 +10,8 @@ import {
   RecentReport,
   getScoreColor
 } from '../types/shareable-reports';
+import { getIoInstance } from '../socket'; // Import getIoInstance
+import { formatRecentReportForDisplay } from '../utils'; // Import formatRecentReportForDisplay
 
 export interface ShareableReportServiceOptions {
   baseUrl?: string;
@@ -59,6 +61,24 @@ export class ShareableReportService {
       slug
     });
 
+    if (shareableReport.isPublic) {
+      try {
+        const io = getIoInstance();
+        const recentReport: RecentReport = {
+          id: shareableReport.id,
+          slug: shareableReport.slug!,
+          url: shareableReport.url,
+          securityScore: shareableReport.securityScore,
+          createdAt: shareableReport.createdAt,
+          domain: this.extractDomain(shareableReport.url),
+          hasAIAnalysis: shareableReport.aiAnalyses ? shareableReport.aiAnalyses.length > 0 : false,
+        };
+        const displayReport = formatRecentReportForDisplay(recentReport);
+        io.emit('newRecentReport', displayReport);
+      } catch (error) {
+        console.error('Failed to emit newRecentReport event:', error);
+      }
+    }
     return shareableReport;
   }
 
@@ -103,6 +123,31 @@ export class ShareableReportService {
     }
 
     await this.repository.updatePrivacy(checkId, isPublic);
+
+    if (isPublic) {
+      try {
+        const io = getIoInstance();
+        const updatedCheck = await this.prisma.check.findUnique({ // Fetch the updated report by ID
+          where: { id: checkId },
+          include: { aiAnalyses: true } // Include aiAnalyses for hasAIAnalysis
+        });
+        if (updatedCheck && updatedCheck.slug) { // Ensure slug exists for RecentReport
+          const recentReport: RecentReport = {
+            id: updatedCheck.id,
+            slug: updatedCheck.slug,
+            url: updatedCheck.url,
+            securityScore: updatedCheck.securityScore,
+            createdAt: updatedCheck.createdAt,
+            domain: this.extractDomain(updatedCheck.url),
+            hasAIAnalysis: updatedCheck.aiAnalyses ? updatedCheck.aiAnalyses.length > 0 : false,
+          };
+          const displayReport = formatRecentReportForDisplay(recentReport);
+          io.emit('updatedRecentReport', displayReport); // Emit a different event for updates
+        }
+      } catch (error) {
+        console.error('Failed to emit updatedRecentReport event:', error);
+      }
+    }
   }
 
   /**

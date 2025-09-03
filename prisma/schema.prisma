@@ -171,3 +171,13 @@ model ShareEvent {
 // WHERE is_public = true 
 //   AND slug IS NOT NULL
 // ORDER BY created_at DESC;
+
+model SidebarImpression {
+  id          String   @id @default(cuid())
+  viewerIp    String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("sidebar_impressions")
+  @@index([createdAt])
+}
