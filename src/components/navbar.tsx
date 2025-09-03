@@ -77,6 +77,17 @@ export function Navbar() {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
+                    {session.user?.role === 'ADMIN' && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin/dashboard">
+                            <Shield className="mr-2 h-4 w-4" />
+                            <span>Admin</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut className="mr-2 h-4 w-4" />
