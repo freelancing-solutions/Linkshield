@@ -29,28 +29,36 @@ model User {
 }
 
 model Check {
-  id              String   @id @default(cuid())
-  userId          String?
-  url             String
-  urlHash         String   // SHA-256 for deduplication
-  statusCode      Int?
-  responseTimeMs  Int?
-  sslValid        Boolean?
-  redirectChain   String?  // JSON
-  metaData        String?  // JSON
-  securityScore   Int?
-  isPublic        Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  id                  String   @id @default(cuid())
+  userId              String?
+  url                 String
+  urlHash             String   // SHA-256 for deduplication
+  statusCode          Int?
+  responseTimeMs      Int?
+  sslValid            Boolean?
+  redirectChain       String?  // JSON
+  metaData            String?  // JSON
+  securityScore       Int?
+  isPublic            Boolean  @default(false)
+  slug                String?  @unique // URL-friendly identifier for sharing
+  shareCount          Int      @default(0) // Track number of times shared
+  ogImageUrl          String?  // Open Graph image URL
+  customTitle         String?  // Custom title for sharing
+  customDescription   String?  // Custom description for sharing
+  createdAt           DateTime @default(now())
 
-  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  aiAnalyses      AIAnalysis[]
-  reportViews     ReportView[]
+  user                User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  aiAnalyses          AIAnalysis[]
+  reportViews         ReportView[]
+  shareEvents         ShareEvent[]
   
   @@map("checks")
   @@index([userId])
   @@index([urlHash])
   @@index([createdAt])
   @@index([isPublic])
+  @@index([slug])
+  @@index([isPublic, createdAt(sort: Desc)])
 }
 
 model AIAnalysis {
@@ -130,3 +138,36 @@ model ReportView {
   @@index([checkId])
   @@index([createdAt])
 }
+
+model ShareEvent {
+  id            String   @id @default(cuid())
+  checkId       String
+  shareMethod   String   // native, copy, twitter, linkedin, facebook, email, qr
+  success       Boolean
+  userAgent     String?
+  referrer      String?
+  ipAddress     String?
+  createdAt     DateTime @default(now())
+
+  check         Check    @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  
+  @@map("share_events")
+  @@index([checkId])
+  @@index([createdAt])
+  @@index([shareMethod])
+}
+
+// Note: The recent_public_reports view should be created manually in the database:
+// CREATE VIEW recent_public_reports AS
+// SELECT 
+//   id,
+//   slug,
+//   url,
+//   security_score,
+//   created_at,
+//   ai_analyses.id IS NOT NULL as has_ai_analysis
+// FROM checks 
+// LEFT JOIN ai_analyses ON checks.id = ai_analyses.check_id
+// WHERE is_public = true 
+//   AND slug IS NOT NULL
+// ORDER BY created_at DESC;
