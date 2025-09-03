@@ -4,13 +4,13 @@ import { NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { ShareableReportService } from '@/lib/services/shareable-report-service';
 import { getScoreColor } from '@/lib/types/shareable-reports';
+import React from 'react'; // Add this import
 
-export const runtime = 'edge'; // Edge runtime for Vercel OG
+export const runtime = 'edge';
 
 const prisma = new PrismaClient();
 const shareableReportService = new ShareableReportService(prisma);
 
-// Helper functions to replace private method access
 const extractDomain = (url: string): string => {
   try {
     const domain = new URL(url).hostname;
@@ -36,103 +36,10 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   try {
     const report = await shareableReportService.getPublicReportBySlug(slug);
 
-    // Fallback if report not found or not public
     if (!report) {
       return new ImageResponse(
-        (
-          <div
-            style={{
-              fontSize: 60,
-              color: 'white',
-              background: '#1a202c',
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '40px',
-              textAlign: 'center',
-            }}
-          >
-            <p>LinkShield</p>
-            <p style={{ fontSize: 30 }}>URL Security & Content Intelligence</p>
-            <p style={{ fontSize: 24, marginTop: 20 }}>Report Not Found or Private</p>
-          </div>
-        ),
-        {
-          width: 1200,
-          height: 630,
-        },
-      );
-    }
-
-    const domain = extractDomain(report.url);
-    const scoreColor = getScoreColor(report.securityScore);
-    const scoreEmoji = getScoreEmoji(scoreColor);
-
-    const title = report.customTitle || `${domain} Security Report ${scoreEmoji}`;
-    const description = report.customDescription || `Security Score: ${report.securityScore || 'N/A'}/100. Analyze your links with LinkShield.`;
-
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            fontSize: 60,
-            color: 'white',
-            background: '#1a202c', // Dark background
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '40px',
-            textAlign: 'center',
-            fontFamily: 'sans-serif',
-          }}
-        >
-          <p style={{ fontSize: 36, marginBottom: 10 }}>{title}</p>
-          <p style={{ fontSize: 24, color: '#a0aec0', marginBottom: 20 }}>{description}</p>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              backgroundColor:
-                scoreColor === 'green'
-                  ? '#38a169'
-                  : scoreColor === 'yellow'
-                  ? '#ecc94b'
-                  : scoreColor === 'orange'
-                  ? '#ed8936'
-                  : '#e53e3e',
-              color: 'white',
-              fontSize: 36,
-              fontWeight: 'bold',
-            }}
-          >
-            Score: {report.securityScore || 'N/A'}/100
-          </div>
-          <p style={{ fontSize: 20, marginTop: 30, color: '#cbd5e0' }}>
-            Powered by LinkShield
-          </p>
-        </div>
-      ),
-      {
-        width: 1200,
-        height: 630,
-      },
-    );
-  } catch (error) {
-    console.error('Error generating OG image:', error);
-    // Fallback for internal errors
-    return new ImageResponse(
-      (
-        <div
-          style={{
+        React.createElement('div', {
+          style: {
             fontSize: 60,
             color: 'white',
             background: '#1a202c',
@@ -144,17 +51,86 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
             alignItems: 'center',
             padding: '40px',
             textAlign: 'center',
-          }}
-        >
-          <p>LinkShield</p>
-          <p style={{ fontSize: 30 }}>URL Security & Content Intelligence</p>
-          <p style={{ fontSize: 24, marginTop: 20 }}>Error Generating Image</p>
-        </div>
-      ),
-      {
-        width: 1200,
-        height: 630,
-      },
+          }
+        }, [
+          React.createElement('p', { key: 1 }, 'LinkShield'),
+          React.createElement('p', { key: 2, style: { fontSize: 30 } }, 'URL Security & Content Intelligence'),
+          React.createElement('p', { key: 3, style: { fontSize: 24, marginTop: 20 } }, 'Report Not Found or Private')
+        ]),
+        { width: 1200, height: 630 }
+      );
+    }
+
+    const domain = extractDomain(report.url);
+    const scoreColor = getScoreColor(report.securityScore);
+    const scoreEmoji = getScoreEmoji(scoreColor);
+
+    const title = report.customTitle || `${domain} Security Report ${scoreEmoji}`;
+    const description = report.customDescription || `Security Score: ${report.securityScore || 'N/A'}/100. Analyze your links with LinkShield.`;
+
+    return new ImageResponse(
+      React.createElement('div', {
+        style: {
+          fontSize: 60,
+          color: 'white',
+          background: '#1a202c',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '40px',
+          textAlign: 'center',
+          fontFamily: 'sans-serif',
+        }
+      }, [
+        React.createElement('p', { key: 1, style: { fontSize: 36, marginBottom: 10 } }, title),
+        React.createElement('p', { key: 2, style: { fontSize: 24, color: '#a0aec0', marginBottom: 20 } }, description),
+        React.createElement('div', {
+          key: 3,
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            backgroundColor:
+              scoreColor === 'green' ? '#38a169' :
+              scoreColor === 'yellow' ? '#ecc94b' :
+              scoreColor === 'orange' ? '#ed8936' : '#e53e3e',
+            color: 'white',
+            fontSize: 36,
+            fontWeight: 'bold',
+          }
+        }, `Score: ${report.securityScore || 'N/A'}/100`),
+        React.createElement('p', { key: 4, style: { fontSize: 20, marginTop: 30, color: '#cbd5e0' } }, 'Powered by LinkShield')
+      ]),
+      { width: 1200, height: 630 }
+    );
+  } catch (error) {
+    console.error('Error generating OG image:', error);
+    return new ImageResponse(
+      React.createElement('div', {
+        style: {
+          fontSize: 60,
+          color: 'white',
+          background: '#1a202c',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '40px',
+          textAlign: 'center',
+        }
+      }, [
+        React.createElement('p', { key: 1 }, 'LinkShield'),
+        React.createElement('p', { key: 2, style: { fontSize: 30 } }, 'URL Security & Content Intelligence'),
+        React.createElement('p', { key: 3, style: { fontSize: 24, marginTop: 20 } }, 'Error Generating Image')
+      ]),
+      { width: 1200, height: 630 }
     );
   }
 }
