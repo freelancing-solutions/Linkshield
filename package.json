@@ -54,6 +54,7 @@
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-table": "^8.21.3",
     "@types/redis": "^4.0.10",
+    "@upstash/redis": "^1.35.3",
     "@vercel/og": "^0.8.5",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
