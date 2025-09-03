@@ -7,12 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import ShareButton from '@/components/ShareButton';
-import ShareModal from '@/components/ShareModal';
+import { ShareButton } from '@/components/ShareButton';
+import { ShareModal } from '@/components/ShareModal';
 import { 
   Shield, 
   Share2, 
@@ -404,3 +404,6 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
     </div>
   );
 };
+
+
+export default ReportDetails;

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ShareModal } from './ShareModal';
 
 interface ShareButtonProps {
-  report: ShareableCheck;
+  report?: ShareableCheck | null;
 }
 
 export function ShareButton({ report }: ShareButtonProps) {
@@ -17,18 +16,34 @@ export function ShareButton({ report }: ShareButtonProps) {
   const [isSharing, setIsSharing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Safe defaults for missing data
+  const safeSlug = report?.slug || '';
+  const safeUrl = report?.url || '';
+  const safeSecurityScore = report?.securityScore || 0;
+  const safeCustomTitle = report?.customTitle || `Security Report for ${safeUrl}`;
+  const safeCustomDescription = report?.customDescription || `Instant security analysis of ${safeUrl}. Score: ${safeSecurityScore}`;
+
   const handleShare = async () => {
+    if (!report) {
+      toast({
+        title: 'Error',
+        description: 'Report data is not available for sharing',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSharing(true);
 
     const shareData = {
-      title: report.customTitle || `Security Report for ${report.url}`,
-      text: report.customDescription || `Instant security analysis of ${report.url}. Score: ${report.securityScore}`,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/reports/${report.slug}`,
+      title: safeCustomTitle,
+      text: safeCustomDescription,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/reports/${safeSlug}`,
     };
 
     if (nativeSharingService.isNativeSharingSupported()) {
       try {
-        await nativeSharingService.shareNatively(shareData as any, report.slug || '');
+        await nativeSharingService.shareNatively(shareData as any, safeSlug);
       } catch (error) {
         // Error is logged in the service
       }
@@ -39,6 +54,11 @@ export function ShareButton({ report }: ShareButtonProps) {
     setIsSharing(false);
   };
 
+  // Don't render if no report or no slug
+  if (!report || !report.slug) {
+    return null;
+  }
+
   return (
     <>
       <Button onClick={handleShare} disabled={isSharing}>
@@ -47,10 +67,10 @@ export function ShareButton({ report }: ShareButtonProps) {
       <ShareModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        url={`${process.env.NEXT_PUBLIC_APP_URL}/reports/${report.slug}`}
-        title={report.customTitle || `Security Report for ${report.url}`}
+        url={`${process.env.NEXT_PUBLIC_APP_URL}/reports/${safeSlug}`}
+        title={safeCustomTitle}
         hashtags={['LinkShield', 'Security', 'URLScanner']}
-        slug={report.slug || ''}
+        slug={safeSlug}
       />
     </>
   );

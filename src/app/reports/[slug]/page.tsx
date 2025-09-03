@@ -1,4 +1,3 @@
-
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { openGraphService } from '@/lib/services/open-graph-service';
@@ -6,42 +5,40 @@ import { ShareableCheck } from '@/lib/types/shareable-reports';
 import { getScoreColorClass } from '@/lib/utils';
 import { ShareButton } from '@/components/ShareButton';
 
-// Mock data fetching
+// Real data fetching from your API
 async function getReport(slug: string): Promise<ShareableCheck | null> {
-  if (slug === 'example-slug') {
-    return {
-      id: 'clx9q4z0x0000a8zof3f7c3f7',
-      userId: null,
-      url: 'https://example.com',
-      statusCode: 200,
-      responseTimeMs: 500,
-      sslValid: true,
-      redirectChain: [],
-      metaData: { title: 'Example Domain', description: 'Example Domain' },
-      securityScore: 85,
-      aiAnalysisId: 'clx9q4z1a0001a8zoh7g2g0v2',
-      aiAnalysis: {
-        summary: 'This is an AI-generated summary of the page content.',
-        keywords: ['example', 'test', 'mock'],
-      },
-      createdAt: new Date(),
-      slug: 'example-slug',
-      shareCount: 0,
-      ogImageUrl: null,
-      customTitle: 'Custom Title for Example',
-      customDescription: 'Custom description for example.',
-      isPublic: true,
-      updatedAt: new Date(),
-    } as unknown as ShareableCheck;
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/reports/${slug}`, {
+      next: { 
+        revalidate: 60, // Revalidate every 60 seconds
+        tags: [`report-${slug}`] 
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(`Failed to fetch report: ${response.statusText}`);
+    }
+
+    const report = await response.json();
+    return report;
+  } catch (error) {
+    console.error('Error fetching report:', error);
+    return null;
   }
-  return null;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const report = await getReport(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const report = await getReport(slug);
+  
   if (!report) {
     return {
       title: 'Report Not Found',
+      description: 'The requested security report could not be found.',
     };
   }
 
@@ -75,8 +72,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ReportPage({ params }: { params: { slug: string } }) {
-  const report = await getReport(params.slug);
+export default async function ReportPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const report = await getReport(slug);
 
   if (!report) {
     notFound();
@@ -105,13 +103,19 @@ export default async function ReportPage({ params }: { params: { slug: string } 
           </div>
         </div>
 
-        {report.aiAnalysis && (
+        {report.aiAnalyses && report.aiAnalyses.length > 0 && (
           <div className="mt-6 bg-gray-50 p-4 rounded-lg">
             <h2 className="text-lg font-semibold">AI Insights</h2>
-            <p className="mt-2">{report.aiAnalysis.summary}</p>
-            <div className="mt-2">
-              <strong>Keywords:</strong> {report.aiAnalysis.keywords.join(', ')}
-            </div>
+            {report.aiAnalyses.map((analysis: any) => (
+              <div key={analysis.id} className="mt-4">
+                <p className="mt-2">{analysis.analysis?.summary || analysis.summary}</p>
+                {analysis.analysis?.keywords && (
+                  <div className="mt-2">
+                    <strong>Keywords:</strong> {analysis.analysis.keywords.join(', ')}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 

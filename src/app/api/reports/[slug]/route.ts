@@ -29,6 +29,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
 
     // If the report is private and the user is not authorized (not owner)
     if (!report.isPublic && report.userId !== userId) {
+      console.log("DEBUG this is just access violation");
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 

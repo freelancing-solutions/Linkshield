@@ -1,7 +1,7 @@
 
 'use client';
 
-import { QRCode } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -51,7 +51,7 @@ export function ShareModal({ isOpen, onClose, url, title, hashtags = [], slug }:
           <DialogTitle>Share Report</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center space-y-4">
-          <QRCode value={url} size={128} />
+          <QRCodeSVG value={url} size={128} />
           <p className="text-sm text-gray-500">Scan QR code to share</p>
           <div className="flex space-x-2">
             <Button onClick={shareOnTwitter}>Twitter</Button>
