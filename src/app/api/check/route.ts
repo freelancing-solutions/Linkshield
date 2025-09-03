@@ -3,10 +3,10 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { v4 as uuidv4 } from 'uuid'
-import { 
-  isValidUrl, 
-  createUrlHash, 
-  performURLAnalysis, 
+import {
+  isValidUrl,
+  createUrlHash,
+  performURLAnalysis,
   analyzeContentWithAI,
 } from '@/lib/url-analysis' // Removed generateShareableReport
 import crypto from 'crypto'
@@ -37,7 +37,7 @@ async function checkUsageLimits(userId: string, plan: string, includeAI: boolean
         }
       }
     }),
-    
+
     db.aIAnalysis.count({
       where: {
         userId,
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
     const body = await request.json()
     const { url, includeAI = false } = body
-    
+
     if (!url || !isValidUrl(url)) {
       return NextResponse.json(
         { success: false, error: 'Invalid URL provided' },
@@ -86,11 +86,11 @@ export async function POST(request: NextRequest) {
     // For authenticated users, check usage limits
     if (session?.user?.id) {
       const usage = await checkUsageLimits(session.user.id, session.user.plan, includeAI)
-      
+
       if (!usage.canPerformCheck) {
         return NextResponse.json(
-          { 
-            success: false, 
+          {
+            success: false,
             error: 'Monthly check limit reached',
             code: 'LIMIT_EXCEEDED',
             usage: {
@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
 
       if (includeAI && !usage.canPerformAIAnalysis) {
         return NextResponse.json(
-          { 
-            success: false, 
+          {
+            success: false,
             error: 'Monthly AI analysis limit reached',
             code: 'AI_LIMIT_EXCEEDED',
             usage: {
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
       },
       orderBy: { createdAt: 'desc' }
     })
-    
+
     // If we have a recent analysis (less than 1 hour old), return it
     if (existingCheck) {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
@@ -156,10 +156,10 @@ export async function POST(request: NextRequest) {
         });
       }
     }
-    
+
     // Perform new analysis
     const analysisResult = await performURLAnalysis(url)
-    
+
     // Store the initial check result in database
     const checkId = uuidv4()
     let check = await db.check.create({ // Changed to let
@@ -177,24 +177,24 @@ export async function POST(request: NextRequest) {
         isPublic: false // Default to false, will be updated by createShareableReport
       }
     })
-    
+
     // Perform AI analysis if requested and content is available
-    let aiAnalysis = null
+    let aiAnalysis: any = null
     if (includeAI && analysisResult.content && session?.user?.id) {
       try {
         const contentHash = crypto.createHash('sha256').update(analysisResult.content).digest('hex')
-        
+
         // Check if AI analysis already exists for this content
         const existingAIAnalysis = await db.aIAnalysis.findUnique({
           where: { contentHash }
         })
-        
+
         if (existingAIAnalysis) {
           aiAnalysis = existingAIAnalysis
         } else {
           // Perform AI analysis
           const aiResult = await analyzeContentWithAI(analysisResult.content, url)
-          
+
           // Create AI analysis record
           aiAnalysis = await db.aIAnalysis.create({
             data: {
@@ -224,7 +224,7 @@ export async function POST(request: NextRequest) {
         // Continue without AI analysis if it fails
       }
     }
-    
+
     // Create shareable report and generate slug
     const shareableReport = await shareableReportService.createShareableReport({
       checkId: check.id,
@@ -238,12 +238,12 @@ export async function POST(request: NextRequest) {
       success: true,
       data: shareableReport // Return the full shareable report
     });
-    
+
   } catch (error) {
     console.error('URL analysis error:', error)
-    
+
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to analyze URL' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to analyze URL' },
       { status: 500 }
     )
   }

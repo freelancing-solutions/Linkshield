@@ -1,5 +1,5 @@
 // src/app/api/reports/[slug]/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { ShareableReportService } from '@/lib/services/shareable-report-service';
 import { getServerSession } from 'next-auth';
@@ -9,7 +9,7 @@ import { rateLimitMiddleware } from '@/lib/middleware/rate-limit-middleware'; //
 const prisma = new PrismaClient();
 const shareableReportService = new ShareableReportService(prisma);
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
 
   const rateLimitResponse = await rateLimitMiddleware(request);

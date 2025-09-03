@@ -425,7 +425,7 @@ export default function Home() {
                       {/* Reading Time */}
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Clock className="h-4 w-4" />
-                        <span>Estimated reading time: {Math.ceil(result.aiInsights.summary?.split(' ').length / 200 || 1)} min</span>
+                        <span>Estimated reading time: {Math.ceil((result.aiInsights.summary?.split(' ').length || 0) / 200 || 1)} min</span>
                       </div>
                     </TabsContent>
                   )}

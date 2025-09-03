@@ -1,4 +1,4 @@
-/* eslint-disable import/no-default-export */
+ 
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import { db } from '@/lib/db';
@@ -25,7 +25,9 @@ async function getReport(id: string) {
     where: { id },
     select: {
       id: true,
+      userId: true,
       url: true,
+      urlHash: true,
       createdAt: true,
       securityScore: true,
       statusCode: true,
@@ -57,6 +59,9 @@ async function getReport(id: string) {
   const ai = record.aiAnalyses[0];
   return {
     ...record,
+    // Add the missing properties expected by ReportData
+    analyzedAt: record.createdAt,
+    responseTime: record.responseTimeMs || 0,
     meta: record.metaData ? JSON.parse(record.metaData) : undefined,
     redirectChain: record.redirectChain ? JSON.parse(record.redirectChain) : undefined,
     aiInsights: ai

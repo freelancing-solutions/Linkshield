@@ -13,11 +13,11 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
-import { 
-  Shield, 
-  Share2, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Shield,
+  Share2,
+  CheckCircle,
+  XCircle,
   AlertTriangle,
   Brain,
   Target,
@@ -30,23 +30,29 @@ import {
 
 interface ReportData {
   id: string;
+  userId: string | null;
   url: string;
+  urlHash: string;
+  statusCode: number | null;
+  responseTimeMs: number | null;
+  sslValid: boolean | null;
+  redirectChain: string | null; // JSON string
+  metaData: string | null; // JSON string
+  securityScore: number | null;
+  isPublic: boolean;
+  slug: string | null;
+  shareCount: number;
+  ogImageUrl: string | null;
+  customTitle: string | null;
+  customDescription: string | null;
+  createdAt: Date;
+  // Computed/display properties
   analyzedAt: Date;
-  securityScore: number;
-  statusCode: number;
   responseTime: number;
-  sslValid: boolean;
   meta?: {
     title?: string;
     description?: string;
   };
-  redirectChain?: Array<{ statusCode: number; url: string }>;
-  isPublic: boolean;
-  slug: string | null;
-  shareCount: number;
-  customTitle: string | null;
-  customDescription: string | null;
-  ogImageUrl: string | null;
   aiInsights?: {
     qualityScore?: number;
     summary?: string;
@@ -76,7 +82,7 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
     return { level: 'Needs Improvement', color: 'text-red-600' };
   };
 
-  const securityLevel = getSecurityLevel(report.securityScore);
+  const securityLevel = getSecurityLevel(report.securityScore || 0);
   const qualityLevel = report.aiInsights?.qualityScore ? getQualityLevel(report.aiInsights.qualityScore) : null;
 
   const shareUrl = report.slug ? `${window.location.origin}/reports/${report.slug}` : window.location.href;
@@ -150,9 +156,9 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                 <div>
                   <CardTitle className="text-2xl">Security Analysis Report</CardTitle>
                   <CardDescription className="text-lg">
-                    <a 
-                      href={report.url} 
-                      target="_blank" 
+                    <a
+                      href={report.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 hover:text-blue-600 transition-colors"
                     >
@@ -188,22 +194,22 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                     <TabsTrigger value="ai">AI Insights</TabsTrigger>
                   )}
                 </TabsList>
-                
+
                 <TabsContent value="security" className="space-y-6">
                   {/* Security Score */}
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium">Security Score</span>
-                      <span className="text-2xl font-bold">{report.securityScore}/100</span>
+                      <span className="text-2xl font-bold">{report.securityScore || 0}/100</span>
                     </div>
-                    <Progress value={report.securityScore} className="h-3" />
+                    <Progress value={report.securityScore || 0} className="h-3" />
                   </div>
 
                   {/* Key Metrics */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="text-3xl font-bold text-blue-600 mb-1">
-                        {report.statusCode}
+                        {report.statusCode || 'N/A'}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         HTTP Status
@@ -211,15 +217,15 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                     </div>
                     <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="text-3xl font-bold text-green-600 mb-1">
-                        {report.responseTime}ms
+                        {report.responseTimeMs || report.responseTime || 'N/A'}ms
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         Response Time
                       </div>
                     </div>
                     <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <div className="text-3xl font-bold mb-1 ${report.sslValid ? 'text-green-600' : 'text-red-600'}">
-                        {report.sslValid ? 'Valid' : 'Invalid'}
+                      <div className={`text-3xl font-bold mb-1 ${report.sslValid ? 'text-green-600' : 'text-red-600'}`}>
+                        {report.sslValid === null ? 'N/A' : report.sslValid ? 'Valid' : 'Invalid'}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         SSL Certificate
@@ -247,23 +253,30 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                   )}
 
                   {/* Redirect Chain */}
-                  {report.redirectChain && report.redirectChain.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">Redirect Chain</h3>
-                      <div className="space-y-2">
-                        {report.redirectChain.map((redirect: any, index: number) => (
-                          <div key={index} className="flex items-center gap-2 text-sm">
-                            <span className="font-mono text-gray-600 dark:text-gray-400">
-                              {redirect.statusCode}
-                            </span>
-                            <span className="text-gray-700 dark:text-gray-300 truncate">
-                              {redirect.url}
-                            </span>
+                  {(() => {
+                    try {
+                      const redirectChain = report.redirectChain ? JSON.parse(report.redirectChain) : [];
+                      return redirectChain && redirectChain.length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-semibold mb-3">Redirect Chain</h3>
+                          <div className="space-y-2">
+                            {redirectChain.map((redirect: any, index: number) => (
+                              <div key={index} className="flex items-center gap-2 text-sm">
+                                <span className="font-mono text-gray-600 dark:text-gray-400">
+                                  {redirect.statusCode}
+                                </span>
+                                <span className="text-gray-700 dark:text-gray-300 truncate">
+                                  {redirect.url}
+                                </span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        </div>
+                      );
+                    } catch {
+                      return null;
+                    }
+                  })()}
                 </TabsContent>
 
                 {report.aiInsights && (
@@ -321,11 +334,11 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <FileText className="h-4 w-4" />
-                        <span>Content length: {Math.round(report.aiInsights.contentLength / 1024)}KB</span>
+                        <span>Content length: {Math.round((report.aiInsights.contentLength || 0) / 1024)}KB</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Clock className="h-4 w-4" />
-                        <span>Estimated reading time: {Math.ceil(report.aiInsights.summary?.split(' ').length / 200 || 1)} min</span>
+                        <span>Estimated reading time: {Math.ceil((report.aiInsights.summary?.split(' ').length || 0) / 200 || 1)} min</span>
                       </div>
                     </div>
                   </TabsContent>
@@ -342,26 +355,7 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ShareButton
-                      shareData={{
-                        url: shareUrl,
-                        title: report.customTitle || `LinkShield Security Report for ${report.url}`,
-                        text: report.customDescription || `Check out this security report for ${report.url} from LinkShield.`,
-                        hashtags: ['LinkShield', 'Security', 'URLAnalysis'],
-                        via: 'LinkShieldApp',
-                      }}
-                      ogImageUrl={report.ogImageUrl || undefined}
-                    />
-                    <ShareModal
-                      shareData={{
-                        url: shareUrl,
-                        title: report.customTitle || `LinkShield Security Report for ${report.url}`,
-                        text: report.customDescription || `Check out this security report for ${report.url} from LinkShield.`,
-                        hashtags: ['LinkShield', 'Security', 'URLAnalysis'],
-                        via: 'LinkShieldApp',
-                      }}
-                      ogImageUrl={report.ogImageUrl || undefined}
-                    />
+                    <ShareButton report={report} />
                   </div>
                 </div>
                 {report.slug && (
@@ -388,8 +382,8 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ report: initialReport }) 
                   <span>Protected by LinkShield - Instant link safety verification</span>
                 </div>
                 <div className="mt-2">
-                  <a 
-                    href="/" 
+                  <a
+                    href="/"
                     className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                   >
                     <Globe className="h-4 w-4 inline mr-1" />

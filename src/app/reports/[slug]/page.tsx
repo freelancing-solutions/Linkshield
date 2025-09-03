@@ -10,9 +10,9 @@ async function getReport(slug: string): Promise<ShareableCheck | null> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/reports/${slug}`, {
-      next: { 
+      next: {
         revalidate: 60, // Revalidate every 60 seconds
-        tags: [`report-${slug}`] 
+        tags: [`report-${slug}`]
       }
     });
 
@@ -34,7 +34,7 @@ async function getReport(slug: string): Promise<ShareableCheck | null> {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const report = await getReport(slug);
-  
+
   if (!report) {
     return {
       title: 'Report Not Found',
@@ -47,7 +47,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: meta.title,
     description: meta.description,
-    canonical: meta.canonical,
+    alternates: {
+      canonical: meta.canonical,
+    },
     openGraph: {
       title: meta.ogTitle,
       description: meta.ogDescription,
@@ -87,7 +89,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
       <div className="bg-white shadow-md rounded-lg p-6 print:shadow-none">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">{report.customTitle || `Security Report for ${report.url}`}</h1>
         <p className="text-gray-600 mb-4">{report.customDescription}</p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-lg font-semibold">Security Score</h2>
