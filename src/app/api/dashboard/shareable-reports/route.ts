@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const userId = session?.user?.id;
 
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
     const userShareableReports = await shareableReportService.getUserShareableReports(userId);
@@ -21,6 +21,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: true, data: userShareableReports });
   } catch (error) {
     console.error('Error fetching user shareable reports:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }

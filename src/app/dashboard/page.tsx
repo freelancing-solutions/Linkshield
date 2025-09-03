@@ -93,6 +93,8 @@ export default function Dashboard() {
   }, [session])
 
 // Update the fetchDashboardData function
+// Update your fetchDashboardData function in the dashboard component
+
 const fetchDashboardData = async () => {
   try {
     setLoading(true);
@@ -102,14 +104,39 @@ const fetchDashboardData = async () => {
     if (statsResponse.ok) {
       const response = await statsResponse.json();
       if (response.success) {
-        setStats(response.data); // Note: using response.data now
+        setStats(response.data);
       }
     } else {
       console.error('Failed to fetch stats');
     }
 
-    // ... rest of your fetch logic remains the same
-    
+    // Fetch check history - Updated to handle the new response structure
+    const historyResponse = await fetch('/api/dashboard/history');
+    if (historyResponse.ok) {
+      const response = await historyResponse.json();
+      console.log('History API Response:', response); // Debugging
+      if (response.success) {
+        setHistory(response.data); // Extract data from response
+        console.log('History State after set:', response.data); // Debugging
+      }
+    } else {
+      console.error('Failed to fetch history');
+    }
+
+    // Fetch shareable reports
+    const reportsResponse = await fetch('/api/dashboard/shareable-reports');
+    if (reportsResponse.ok) {
+      const response = await reportsResponse.json();
+      if (response.success) {
+        setShareableReports(response.data); // Assuming this also follows the same pattern
+      } else {
+        // Fallback for older API that might return data directly
+        setShareableReports(response);
+      }
+    } else {
+      console.error('Failed to fetch shareable reports');
+    }
+
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
     toast({
@@ -121,7 +148,6 @@ const fetchDashboardData = async () => {
     setLoading(false);
   }
 }
-
 
   const handlePrivacyToggle = async (slug: string, isPublic: boolean) => {
     try {

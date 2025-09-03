@@ -41,19 +41,27 @@ const RecentReportsSidebar: React.FC = () => {
       try {
         const response = await fetch('/api/dashboard/recent-reports');
         if (response.ok) {
-          const data: DisplayReport[] = await response.json();
-          setRecentReports(data);
+          const result = await response.json();
+          
+          // Extract the data from the nested structure
+          if (result.success && Array.isArray(result.data)) {
+            setRecentReports(result.data);
+          } else {
+            console.warn('Unexpected API response structure:', result);
+            setRecentReports([]);
+          }
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
       } catch (err) {
         console.error('Error fetching recent reports:', err);
         setError('Failed to load recent reports. Please try again later.');
+        setRecentReports([]);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     fetchRecentReports();
   }, []);
 

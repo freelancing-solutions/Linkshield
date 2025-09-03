@@ -16,7 +16,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     const userId = session?.user?.id;
 
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized', success: false }, { status: 401 });
     }
 
     // Verify ownership before deleting
@@ -26,16 +26,16 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     });
 
     if (!check) {
-      return NextResponse.json({ error: 'Report not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Report not found', success: false }, { status: 404 });
     }
 
     if (check.userId !== userId) {
-      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+      return NextResponse.json({ error: 'Access denied', success: false }, { status: 403 });
     }
 
     await shareableReportService.deleteShareableReport(id, userId);
 
-    return NextResponse.json({ message: 'Report deleted successfully' }, { status: 200 });
+    return NextResponse.json({ message: 'Report deleted successfully', success: true }, { status: 200 });
   } catch (error) {
     console.error('Error deleting report:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

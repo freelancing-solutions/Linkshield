@@ -10,9 +10,9 @@ export async function GET() {
   try {
     const recentReports = await shareableReportService.getRecentReports();
     const displayReports = recentReports.map(report => formatRecentReportForDisplay(report));
-    return NextResponse.json(displayReports);
+    return NextResponse.json({ success: true, data: displayReports });
   } catch (error) {
     console.error('Error fetching recent reports:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }
