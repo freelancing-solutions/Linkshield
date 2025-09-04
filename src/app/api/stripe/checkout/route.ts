@@ -57,14 +57,7 @@ export async function POST(request: NextRequest) {
       payment_status: 'unpaid'
     }
 
-    // Store the pending plan upgrade
-    await db.user.update({
-      where: { id: session.user.id },
-      data: {
-        plan: planId,
-        plan_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
-      }
-    })
+  // Do NOT assign the plan here; only update user after payment confirmation via webhook.
 
     return NextResponse.json({
       success: true,

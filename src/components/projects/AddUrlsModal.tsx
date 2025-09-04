@@ -59,6 +59,7 @@ interface AddUrlsModalProps {
 }
 
 export function AddUrlsModal({ open, onOpenChange, project, onUrlsAdded }: AddUrlsModalProps) {
+  if (!project) return null
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<any>(null)

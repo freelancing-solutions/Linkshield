@@ -479,12 +479,14 @@ export function ProjectDashboard() {
         onProjectCreated={handleProjectCreated}
       />
 
-      <AddUrlsModal
-        open={!!showAddUrlsModal}
-        onOpenChange={(open) => setShowAddUrlsModal(open ? showAddUrlsModal : null)}
-        project={showAddUrlsModal!}
-        onUrlsAdded={handleUrlsAdded}
-      />
+      {showAddUrlsModal && (
+        <AddUrlsModal
+          open={!!showAddUrlsModal}
+          onOpenChange={(open) => setShowAddUrlsModal(open ? showAddUrlsModal : null)}
+          project={showAddUrlsModal}
+          onUrlsAdded={handleUrlsAdded}
+        />
+      )}
     </div>
   )
 }

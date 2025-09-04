@@ -103,8 +103,8 @@ export default function PricingPage() {
     setLoading(true)
     setSelectedPlan(planId)
 
-    try {
-      const response = await fetch('/api/stripe/checkout', {
+      try {
+      const response = await fetch('/api/paypal/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,10 +113,10 @@ export default function PricingPage() {
       })
 
       const data = await response.json()
-
-      if (response.ok && data.checkoutUrl) {
-        // Redirect to Stripe checkout
-        window.location.href = data.checkoutUrl
+      if (response.ok && (data.approvalUrl || data.checkoutUrl)) {
+        // Redirect to PayPal approval URL (or fallback to checkoutUrl)
+        const redirectUrl = data.approvalUrl || data.checkoutUrl
+        window.location.href = redirectUrl
       } else {
         console.error('Checkout error:', data.error)
         alert('Failed to initiate checkout. Please try again.')
