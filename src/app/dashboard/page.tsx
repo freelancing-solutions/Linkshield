@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Navbar } from '@/components/navbar'
+// Navbar removed: using AppNavbar from root layout
 import { ProjectDashboard } from '@/components/projects/ProjectDashboard'
 import { 
   BarChart3, 
@@ -245,7 +245,6 @@ const fetchDashboardData = async () => {
   if (!session) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <Navbar />
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <AlertCircle className="h-16 w-16 text-yellow-600 mx-auto mb-4" />
@@ -263,7 +262,6 @@ const fetchDashboardData = async () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <Navbar />
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -276,8 +274,6 @@ const fetchDashboardData = async () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Navbar />
-      
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">

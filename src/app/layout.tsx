@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { Providers } from "@/components/providers";
+import Providers from "@/app/providers";
+import AppNavbar from '@/components/layout/app-navbar'
 import RecentReportsSidebar from "@/components/RecentReportsSidebar"; // Import the sidebar component
 
 const geistSans = Geist({
@@ -41,11 +42,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <Providers>
-          {children}
+          <AppNavbar />
+          <main>{children}</main>
           <Toaster />
           <RecentReportsSidebar />
         </Providers>

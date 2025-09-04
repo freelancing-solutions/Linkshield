@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Navbar } from '@/components/navbar'
+// Navbar removed to avoid duplicate; AppNavbar in root layout is used instead
 import { 
   Shield, 
   Zap, 
@@ -112,7 +112,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Navbar />
       
       <div className="container mx-auto px-4 pt-16 pb-8">
         {/* Hero Section */}

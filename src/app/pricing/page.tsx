@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Navbar } from '@/components/navbar'
+// Navbar removed: root AppNavbar will provide the top navigation
 import { 
   Shield, 
   Brain, 
@@ -188,7 +188,6 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Navbar />
       
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
