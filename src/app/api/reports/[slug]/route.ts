@@ -38,7 +38,13 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       ? shareableReportService.formatReportForPublicDisplay(report)
       : report; // If private, return full report (assuming user is authorized)
 
-    return NextResponse.json(formattedReport);
+    // Ensure responseTimeMs exists on the returned object for UI compatibility
+    const finalReport = {
+      ...formattedReport,
+      responseTimeMs: (formattedReport as any).responseTimeMs ?? (formattedReport as any).responseTime ?? null
+    } as any;
+
+    return NextResponse.json(finalReport);
   } catch (error) {
     console.error('Error fetching report:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -268,8 +268,12 @@ export class ShareableReportService {
       ...publicData
     } = report;
 
+    // Ensure responseTimeMs is present (fallback to responseTime if older records)
+    const responseTimeMs = (publicData as any).responseTimeMs ?? (publicData as any).responseTime ?? null;
+
     return {
       ...publicData,
+      responseTimeMs,
       // Ensure AI insights are only included if the report allows it
       aiAnalyses: report.isPublic ? report.aiAnalyses : undefined
     };
