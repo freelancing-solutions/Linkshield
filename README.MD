@@ -1,141 +1,334 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🛡️ LinkShield
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+**One-Click Link Safety Reports. Protect your visitors and your reputation.**
 
-## ✨ Technology Stack
+LinkShield is a comprehensive URL safety analysis platform that provides instant security assessments, AI-powered content analysis, and shareable safety reports for any web link. Built with Next.js 15 and modern web technologies.
 
-This scaffold provides a robust foundation built with:
+## ✨ Key Features
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 🔍 **Instant URL Analysis**
+- **Security Scoring** - Comprehensive security assessment with SSL validation
+- **Performance Metrics** - Response time and status code analysis
+- **Redirect Chain Detection** - Track and analyze URL redirections
+- **Metadata Extraction** - Automatic title, description, and Open Graph data
+- **Content Hash Analysis** - Detect content changes and duplicates
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 🤖 **AI-Powered Content Analysis**
+- **Content Quality Scoring** - Readability, depth, and engagement metrics
+- **Topic Categorization** - Automatic content classification
+- **Content Summarization** - AI-generated content summaries
+- **Similarity Detection** - Find related pages and content duplicates
+- **Reading Time Estimation** - Automatic content length analysis
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 📊 **Shareable Safety Reports**
+- **Public Report Links** - Generate shareable URLs for analysis results
+- **Custom Branding** - Add custom titles and descriptions
+- **Social Media Integration** - Share reports across platforms
+- **Analytics Tracking** - Monitor report views and engagement
+- **Open Graph Integration** - Rich social media previews
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### 👥 **Multi-Tier Access**
+- **Free Tier** - 5 checks/month, 2 AI analyses
+- **Pro Tier** - 500 checks/month, 50 AI analyses
+- **Premium Tier** - 2,500 checks/month, 500 AI analyses
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### 🏢 **Enterprise Features**
+- **Admin Dashboard** - User management and system analytics
+- **Project Management** - Organize URLs by projects
+- **Bulk Analysis** - Process multiple URLs simultaneously
+- **API Access** - RESTful API for integrations
+- **Advanced Analytics** - Detailed usage and performance metrics
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+## 🚀 Technology Stack
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### **Frontend & Framework**
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Modern component library
+- **Radix UI** - Accessible component primitives
 
-## 🎯 Why This Scaffold?
+### **Backend & Database**
+- **PostgreSQL** - Primary database with Prisma ORM
+- **NextAuth.js** - Authentication and session management
+- **Custom Server** - Express.js with Socket.io integration
+- **Rate Limiting** - API protection and usage enforcement
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### **AI & Analysis**
+- **Custom AI Integration** - Content analysis and quality scoring
+- **Crypto Hashing** - Content deduplication and change detection
+- **URL Analysis Engine** - Security and performance assessment
+- **Content Processing** - Metadata extraction and analysis
 
-## 🚀 Quick Start
+### **Payments & Subscriptions**
+- **Stripe** - Primary payment processor
+- **PayPal** - Alternative payment method
+- **Subscription Management** - Automated billing and plan enforcement
+- **Webhook Processing** - Real-time payment status updates
 
-```bash
-# Install dependencies
-npm install
+### **Development & Testing**
+- **Vitest** - Unit and integration testing
+- **ESLint** - Code quality and consistency
+- **Prisma** - Database schema management
+- **TypeScript** - Static type checking
 
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
-
-## 🤖 Powered by Z.ai
-
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
-
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
-
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
-
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   ├── check/         # URL analysis endpoint
+│   │   ├── reports/       # Report management
+│   │   ├── auth/          # Authentication (NextAuth)
+│   │   ├── dashboard/     # User dashboard APIs
+│   │   ├── admin/         # Admin panel APIs
+│   │   ├── paypal/        # PayPal payment processing
+│   │   ├── stripe/        # Stripe payment processing
+│   │   ├── projects/      # Project management
+│   │   ├── analytics/     # Usage analytics
+│   │   ├── health/        # System health checks
+│   │   ├── og/           # Open Graph image generation
+│   │   └── v1/           # API versioning
+│   ├── dashboard/         # User dashboard pages
+│   ├── admin/            # Admin panel interface
+│   ├── report/           # Public report pages
+│   ├── reports/          # Report listing pages
+│   ├── pricing/          # Subscription plans
+│   ├── auth/             # Authentication pages
+│   ├── docs/             # Documentation pages
+│   └── linkshield/       # Brand/marketing pages
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   ├── layout/           # Layout components
+│   ├── brand/            # Brand-specific components
+│   ├── demos/            # Demo components
+│   ├── projects/         # Project-specific components
+│   ├── ReportDetails.tsx # Report display component
+│   ├── ShareButton.tsx   # Social sharing component
+│   └── navbar.tsx        # Navigation component
+├── lib/                  # Utilities and services
+│   ├── services/         # Business logic services
+│   ├── repositories/     # Data access layer
+│   ├── middleware/       # Custom middleware
+│   ├── types/           # TypeScript definitions
+│   ├── __tests__/       # Library tests
+│   ├── auth.ts          # Authentication utilities
+│   ├── db.ts            # Database connection
+│   ├── paypal.ts        # PayPal integration
+│   ├── socket.ts        # WebSocket configuration
+│   ├── url-analysis.ts  # URL analysis engine
+│   └── utils.ts         # General utilities
+├── hooks/               # Custom React hooks
+│   ├── use-mobile.ts    # Mobile detection
+│   └── use-toast.ts     # Toast notifications
+└── types/               # Global TypeScript definitions
+    └── next-auth.d.ts   # NextAuth type extensions
 ```
 
-## 🎨 Available Features & Components
+## 🚀 Quick Start
 
-This scaffold includes a comprehensive set of modern web development tools:
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL database
+- npm or yarn package manager
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Installation
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd linkshield
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+# Install dependencies
+npm install
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+# Set up the database
+npx prisma migrate dev
+npx prisma generate
 
-## 🤝 Get Started with Z.ai
+# Start development server
+npm run dev
+```
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+### Environment Setup
+
+Required environment variables:
+
+```bash
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/linkshield"
+
+# Authentication
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Payment Processing
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+PAYPAL_CLIENT_ID="your_paypal_client_id"
+PAYPAL_CLIENT_SECRET="your_paypal_client_secret"
+PAYPAL_WEBHOOK_ID="your_webhook_id"
+
+# AI Services (optional)
+OPENAI_API_KEY="sk-..."
+
+# Application Settings
+NODE_ENV="development"
+PORT="3000"
+```
+
+## 📖 Documentation
+
+Comprehensive documentation is available in the `/docs` directory:
+
+- **[API Reference](./docs/api_reference.md)** - Complete REST API documentation
+- **[AI Features](./docs/ai_features.md)** - Content analysis capabilities
+- **[Payment Integration](./docs/payments_integration.md)** - Stripe and PayPal setup
+- **[Environment Variables](./docs/env_variables.md)** - Configuration reference
+- **[Subscriptions & Plans](./docs/subscriptions_plans.md)** - Billing and plan management
+- **[Compliance & Security](./docs/compliance_security.md)** - Security implementations
+- **[Architecture Overview](./docs/architecture.md)** - System design and components
+- **[User Workflows](./docs/user_workflows.md)** - User journey and features
+- **[Authentication](./docs/auth_flow.md)** - Auth implementation details
+
+## 🔧 Development
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server with nodemon
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run test         # Run Vitest tests
+npm run test:run     # Run tests once
+npm run test:ui      # Run tests with UI
+npm run db:push      # Push schema changes
+npm run db:generate  # Generate Prisma client
+npm run db:migrate   # Run database migrations
+npm run db:reset     # Reset database
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests once
+npm run test:run
+```
+
+### API Endpoints
+
+**Core Analysis:**
+- `POST /api/check` - Analyze URL safety and content
+- `GET /api/reports/[slug]` - Retrieve report data
+- `GET /api/health` - System health check
+
+**Dashboard:**
+- `GET /api/dashboard/stats` - User statistics
+- `GET /api/dashboard/history` - Analysis history
+- `GET /api/dashboard/recent-reports` - Recent reports
+
+**Admin:**
+- `GET /api/admin/stats` - System statistics
+- `GET /api/admin/users` - User management
+- `GET /api/admin/reports` - Report management
+
+**Payments:**
+- `POST /api/stripe/checkout` - Create Stripe session
+- `POST /api/stripe/webhook` - Handle Stripe events
+- `POST /api/paypal/checkout` - Create PayPal order
+- `POST /api/paypal/webhook` - Handle PayPal events
+
+## 🛡️ Security Features
+
+- **Rate Limiting** - API endpoint protection with configurable limits
+- **Input Validation** - Comprehensive request validation with Zod
+- **SQL Injection Protection** - Prisma ORM with parameterized queries
+- **XSS Prevention** - Content sanitization and React's built-in protection
+- **CSRF Protection** - Built-in Next.js security features
+- **SSL/TLS Analysis** - Certificate validation and security scoring
+- **Webhook Verification** - Cryptographic signature validation
+- **Authentication** - Secure session management with NextAuth.js
+
+## 📊 Analytics & Monitoring
+
+- **Report View Tracking** - Monitor public report engagement
+- **Share Analytics** - Track sharing methods and success rates
+- **Usage Metrics** - Plan limits and consumption tracking
+- **Performance Monitoring** - Response time and error tracking
+- **Sidebar Impressions** - UI interaction analytics
+- **Admin Dashboard** - System-wide analytics and insights
+
+## 🔌 API Integration
+
+### REST API
+LinkShield provides a comprehensive REST API for integrating URL analysis into your applications:
+
+```bash
+# Analyze a URL
+curl -X POST https://your-domain.com/api/check \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'
+
+# Get report data
+curl https://your-domain.com/api/reports/report-slug
+```
+
+### Webhooks
+Receive real-time notifications for payment events and system updates.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Write tests for new features
+- Update documentation for API changes
+- Follow the existing code style
+- Ensure all tests pass before submitting
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+- 📧 Email: support@linkshield.com
+- 📖 Documentation: [docs/](./docs/)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-org/linkshield/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/your-org/linkshield/discussions)
+
+## 🚀 Deployment
+
+LinkShield can be deployed on various platforms:
+
+- **Vercel** - Recommended for Next.js applications
+- **Railway** - Full-stack deployment with PostgreSQL
+- **Docker** - Containerized deployment
+- **Self-hosted** - Custom server deployment
+
+See the deployment documentation for detailed instructions.
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+**LinkShield** - Protecting the web, one link at a time. 🛡️
+
+*Built with ❤️ using Next.js, TypeScript, and modern web technologies.*

@@ -1,81 +1,285 @@
 # User Workflows
 
-This document details the primary user workflows within the LinkShield application, from creating a report to sharing it publicly.
+This document describes the key user workflows in LinkShield, covering URL analysis, report generation, sharing, and user management processes.
 
-## Main Workflow: URL Analysis and Sharing
+## Overview
 
-This workflow is the core function of LinkShield. It allows users to submit a URL, receive a detailed security and health analysis, and then share that report with others.
+LinkShield provides several core workflows:
+- **URL Analysis**: Submit URLs for security and quality analysis
+- **Report Management**: View, manage, and share analysis reports
+- **User Authentication**: Account creation and session management
+- **Subscription Management**: Plan upgrades and usage tracking
+- **Project Organization**: Group and organize URL analyses
 
-### Workflow Diagram
+## 1. URL Analysis Workflow
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Frontend as LinkShield UI (Next.js)
-    participant Backend as LinkShield API (Next.js API Routes)
-    participant Database
+### Basic Analysis Flow
 
-    User->>+Frontend: 1. Submits URL in form
-    Frontend->>+Backend: 2. POST /api/check with URL
-    Backend->>Backend: 3. Analyzes URL (calls urlAnalysisService)
-    Backend->>+Database: 4. Saves new report, generates slug
-    Database-->>-Backend: Returns report slug
-    Backend-->>-Frontend: 5. Returns { reportId: "[slug]" }
-    Frontend->>-User: 6. Redirects to /reports/[slug]
+1. **URL Submission**
+   - User enters URL in the main analysis form
+   - Optional: Enable AI-powered content analysis
+   - System validates URL format and accessibility
 
-    Note over User, Database: The user now views the private report.
+2. **Security Analysis**
+   - Check URL against security databases
+   - Analyze domain reputation and SSL certificates
+   - Detect potential phishing or malware indicators
+   - Generate security score (0-100)
 
-    User->>+Frontend: 7. Clicks "Share" button on report page
-    Frontend->>Frontend: 8. Opens Share Modal
-    User->>+Frontend: 9. Confirms sharing action
-    Frontend->>+Backend: 10. POST /api/dashboard/shareable-reports with reportId
-    Backend->>+Database: 11. Creates public link/slug for the report
-    Database-->>-Backend: Returns public link
-    Backend-->>-Frontend: 12. Returns { publicUrl: "..." }
-    Frontend-->>-User: 13. Displays shareable link
-```
+3. **Content Analysis** (Optional - AI-powered)
+   - Extract and analyze page content
+   - Evaluate content quality metrics
+   - Categorize content topics
+   - Generate quality score and insights
 
-### Step-by-Step Description
+4. **Result Generation**
+   - Combine security and content analysis results
+   - Create comprehensive report with actionable insights
+   - Store results for future reference
 
-1.  **URL Submission:**
-    - A user, either a guest or logged-in, navigates to the homepage (`/`) or their dashboard (`/dashboard`).
-    - They enter a URL into the analysis form and submit it.
-    - **Files:** `src/app/page.tsx`, `src/app/dashboard/page.tsx`
+### Analysis Types
 
-2.  **API Request to `/api/check`:**
-    - The frontend sends a `POST` request to the `/api/check` endpoint containing the URL to be analyzed.
-    - **File:** `src/app/api/check/route.ts`
+**Quick Analysis (Free)**
+- Basic security checks
+- Domain reputation analysis
+- SSL certificate validation
+- Limited to 10 checks per month
 
-3.  **Backend Analysis:**
-    - The backend receives the request.
-    - It invokes the `urlAnalysisService` to perform the security and health checks.
-    - If the user is authenticated, the resulting report is associated with their user ID.
+**Enhanced Analysis (Pro/Enterprise)**
+- All quick analysis features
+- AI-powered content analysis
+- Detailed quality metrics
+- Historical trend analysis
+- Higher monthly limits
 
-4.  **Database Interaction:**
-    - The analysis result is stored as a new report in the database.
-    - A unique `slug` (or ID) is generated for this report.
-    - **File:** `lib/services/url-analysis.ts` (assumed), `prisma/schema.prisma`
+## 2. Report Management Workflow
 
-5.  **API Response and Redirection:**
-    - The API responds to the frontend with the unique `reportId` (slug).
-    - The frontend uses this ID to redirect the user to the report page, e.g., `/reports/some-unique-slug`.
+### Report Creation
 
-6.  **Viewing the Report:**
-    - The report page component fetches the report data from the backend using its slug.
-    - The analysis details are rendered for the user.
-    - If the report belongs to the currently authenticated user, a **Share** button is displayed.
-    - **Files:** `src/app/reports/[slug]/page.tsx`, `src/components/ReportDetails.tsx`
+1. **Automatic Generation**
+   - Reports created automatically after each analysis
+   - Include timestamp, URL, and analysis results
+   - Assigned unique shareable ID
 
-7.  **Initiating Sharing:**
-    - The user clicks the **Share** button.
-    - A confirmation modal (`ShareModal`) appears, explaining that the report will be made public.
-    - **Files:** `src/components/ShareButton.tsx`, `src/components/ShareModal.tsx`
+2. **Report Customization**
+   - Add custom titles and descriptions
+   - Configure sharing permissions
+   - Set expiration dates for shared reports
 
-8.  **Creating the Shareable Link:**
-    - Upon confirmation, the frontend sends a `POST` request to the `/api/dashboard/shareable-reports` endpoint, including the `reportId`.
-    - The backend handles this request by creating a new public-facing identifier or marking the report as public in the database.
-    - **File:** `src/app/api/dashboard/shareable-reports/route.ts`
+### Report Access
 
-9.  **Receiving and Using the Public Link:**
-    - The API returns the newly created public URL.
-    - The frontend displays this URL in the modal, allowing the user to easily copy and share it.
+1. **Dashboard View**
+   - Access all reports from user dashboard
+   - Filter by date, security score, or analysis type
+   - Search reports by URL or custom title
+
+2. **Report Details**
+   - View comprehensive analysis results
+   - Download reports in multiple formats
+   - Access historical analysis data
+
+## 3. Sharing Workflow
+
+### Public Sharing
+
+1. **Share Configuration**
+   - Toggle public/private sharing
+   - Set custom share titles and descriptions
+   - Configure access permissions
+
+2. **Share Distribution**
+   - Generate unique shareable URLs
+   - Share via social media, email, or direct links
+   - Track share views and engagement
+
+### Team Sharing (Enterprise)
+
+1. **Project Organization**
+   - Create projects for team collaboration
+   - Assign team members to projects
+   - Manage project-level permissions
+
+2. **Collaborative Analysis**
+   - Share reports within team projects
+   - Add comments and annotations
+   - Track team analysis history
+
+## 4. Authentication Workflow
+
+### User Registration
+
+1. **Account Creation**
+   - Sign up with email/password or OAuth providers
+   - Email verification process
+   - Initial plan assignment (Free tier)
+
+2. **Profile Setup**
+   - Complete user profile information
+   - Configure notification preferences
+   - Set up two-factor authentication (optional)
+
+### Session Management
+
+1. **Login Process**
+   - Authenticate via NextAuth.js
+   - Support for multiple OAuth providers
+   - Remember device preferences
+
+2. **Session Handling**
+   - Secure session tokens
+   - Automatic session refresh
+   - Logout and session cleanup
+
+## 5. Subscription Management Workflow
+
+### Plan Selection
+
+1. **Plan Comparison**
+   - View available plans (Free, Pro, Enterprise)
+   - Compare features and usage limits
+   - Select appropriate plan for needs
+
+2. **Upgrade Process**
+   - Choose payment method (Stripe/PayPal)
+   - Complete secure payment processing
+   - Immediate plan activation
+
+### Usage Tracking
+
+1. **Limit Monitoring**
+   - Track monthly analysis usage
+   - Monitor AI analysis consumption
+   - Display usage warnings near limits
+
+2. **Billing Management**
+   - View billing history and invoices
+   - Update payment methods
+   - Manage subscription renewals
+
+## 6. Project Organization Workflow
+
+### Project Creation
+
+1. **Project Setup**
+   - Create named projects for organization
+   - Define project scope and objectives
+   - Invite team members (Enterprise)
+
+2. **URL Management**
+   - Add URLs to specific projects
+   - Bulk import URL lists
+   - Organize by categories or tags
+
+### Project Analytics
+
+1. **Aggregate Reporting**
+   - View project-level security trends
+   - Generate summary reports
+   - Export project data
+
+2. **Team Collaboration**
+   - Share project insights with team
+   - Assign analysis tasks
+   - Track project progress
+
+## 7. Admin Workflows (Enterprise)
+
+### User Management
+
+1. **Team Administration**
+   - Manage team member accounts
+   - Assign roles and permissions
+   - Monitor team usage and activity
+
+2. **Organization Settings**
+   - Configure organization-wide policies
+   - Set up custom branding
+   - Manage API access and integrations
+
+### Analytics and Reporting
+
+1. **Usage Analytics**
+   - Track organization-wide usage patterns
+   - Monitor security trends across teams
+   - Generate executive summary reports
+
+2. **Compliance Reporting**
+   - Export audit logs and compliance data
+   - Generate security assessment reports
+   - Track policy compliance metrics
+
+## Error Handling and Edge Cases
+
+### Common Error Scenarios
+
+1. **URL Analysis Failures**
+   - Invalid or inaccessible URLs
+   - Rate limiting and quota exceeded
+   - Network connectivity issues
+
+2. **Authentication Issues**
+   - Failed login attempts
+   - Expired sessions
+   - OAuth provider failures
+
+3. **Payment Processing**
+   - Failed payment transactions
+   - Subscription renewal issues
+   - Plan downgrade scenarios
+
+### Recovery Procedures
+
+1. **Automatic Retry Logic**
+   - Retry failed analyses with exponential backoff
+   - Queue analyses during high load periods
+   - Graceful degradation for partial failures
+
+2. **User Notification**
+   - Clear error messages and resolution steps
+   - Email notifications for critical issues
+   - Status page for system-wide problems
+
+## Performance Considerations
+
+### Optimization Strategies
+
+1. **Caching**
+   - Cache analysis results for duplicate URLs
+   - Implement Redis caching for frequent queries
+   - CDN caching for static report content
+
+2. **Rate Limiting**
+   - Implement per-user rate limits
+   - Queue management for high-volume requests
+   - Priority processing for premium users
+
+3. **Scalability**
+   - Horizontal scaling for analysis workers
+   - Database optimization for large datasets
+   - Load balancing for high availability
+
+## Security Considerations
+
+### Data Protection
+
+1. **Privacy Controls**
+   - User data encryption at rest and in transit
+   - Secure handling of analyzed URLs
+   - GDPR compliance for data processing
+
+2. **Access Control**
+   - Role-based access control (RBAC)
+   - API authentication and authorization
+   - Audit logging for sensitive operations
+
+### Threat Mitigation
+
+1. **Input Validation**
+   - Sanitize all user inputs
+   - Validate URL formats and accessibility
+   - Prevent injection attacks
+
+2. **Rate Limiting**
+   - Prevent abuse and DoS attacks
+   - Implement CAPTCHA for suspicious activity
+   - Monitor and block malicious IPs

@@ -1,201 +1,326 @@
-# Refactored Payment Integration Plan: PayPal
+# Payment Integration Documentation
+
+LinkShield supports dual payment processing through both Stripe and PayPal, providing users with flexible payment options for subscription management.
 
 ## Overview
 
-LinkShield will integrate PayPal as an additional payment processor alongside Stripe. This integration will handle the entire subscription lifecycle, from creating checkout sessions to managing subscription updates and cancellations via webhooks.
+The payment system handles the complete subscription lifecycle including:
+- Checkout session creation
+- Payment processing
+- Subscription activation via webhooks
+- Plan upgrades and cancellations
+- Billing cycle management
 
-**Key Files to Create/Modify:**
-- `src/app/pricing/page.tsx`: Update to support PayPal checkout initiation
-- `src/app/api/paypal/checkout/route.ts`: Backend endpoint for creating PayPal orders
-- `src/app/api/paypal/webhook/route.ts`: Backend endpoint for processing PayPal events
-- `prisma/schema.prisma`: Add `paypal_subscription_id` and `paypal_order_id` fields to User model
-- `src/lib/paypal.ts`: New PayPal API client utility
+**Supported Payment Providers:**
+- **Stripe**: Primary payment processor with full subscription management
+- **PayPal**: Alternative payment option with order-based processing
 
-## PayPal Subscription Creation Flow
+## Architecture
+
+### Key Components
+
+**Frontend:**
+- `src/app/pricing/page.tsx`: Pricing page with payment provider selection
+- Payment provider selection and checkout initiation
+
+**Backend API Endpoints:**
+- `src/app/api/stripe/checkout/route.ts`: Stripe checkout session creation
+- `src/app/api/stripe/webhook/route.ts`: Stripe webhook event processing
+- `src/app/api/paypal/checkout/route.ts`: PayPal order creation
+- `src/app/api/paypal/webhook/route.ts`: PayPal webhook event processing
+
+**Utilities:**
+- `src/lib/paypal.ts`: PayPal API client and utilities
+- `src/lib/db.ts`: Database connection and operations
+
+### Database Schema
+
+```prisma
+model User {
+  id                     String   @id @default(cuid())
+  email                  String   @unique
+  name                   String?
+  plan                   String   @default("free")
+  plan_expires_at        DateTime?
+  stripe_customer_id     String?  @unique
+  paypal_subscription_id String?  @unique
+  paypal_order_id        String?  @unique
+  // ... other fields
+}
+```
+
+## Stripe Integration
+
+### Checkout Flow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant PricingPage as UI (pricing/page.tsx)
-    participant CheckoutAPI as API (/api/paypal/checkout)
-    participant PayPal
-    participant WebhookAPI as API (/api/paypal/webhook)
+    participant Frontend
+    participant StripeAPI as /api/stripe/checkout
+    participant Stripe
+    participant Webhook as /api/stripe/webhook
     participant Database
 
-    User->>+PricingPage: 1. Clicks "Upgrade" with PayPal
-    PricingPage->>+CheckoutAPI: 2. POST request with planId
-    CheckoutAPI->>+PayPal: 3. Create Subscription Plan (if needed)
-    PayPal-->>-CheckoutAPI: Returns planId
-    CheckoutAPI->>+PayPal: 4. Create Subscription with custom_id (userId)
-    PayPal-->>-CheckoutAPI: Returns approval_url and subscriptionId
-    CheckoutAPI-->>-PricingPage: 5. Returns { approval_url }
-    PricingPage->>+PayPal: 6. Redirect user to approval_url
-    User->>+PayPal: 7. Approves subscription on PayPal
-    PayPal-->>User: 8. Redirects back to LinkShield
-    
-    Note over PayPal, Database: In the background...
-
-    PayPal->>+WebhookAPI: 9. POST event: BILLING.SUBSCRIPTION.ACTIVATED
-    WebhookAPI->>WebhookAPI: 10. Verifies PayPal signature
-    WebhookAPI->>+Database: 11. Updates User record:
-    Note right of Database: - Sets user.plan = 'pro'
-    - Sets user.paypal_subscription_id
-    - Sets plan_expires_at
-    Database-->>-WebhookAPI: Confirms update
-    WebhookAPI-->>-PayPal: 12. Returns 200 OK
+    User->>Frontend: Click "Upgrade with Stripe"
+    Frontend->>StripeAPI: POST {planId}
+    StripeAPI->>Stripe: Create checkout session
+    Stripe-->>StripeAPI: Return session ID
+    StripeAPI-->>Frontend: Return {sessionId}
+    Frontend->>Stripe: Redirect to checkout
+    User->>Stripe: Complete payment
+    Stripe->>Webhook: checkout.session.completed
+    Webhook->>Database: Update user plan
+    Webhook-->>Stripe: 200 OK
 ```
 
-### Step-by-Step Description
+### Implementation Details
 
-1.  **Initiate Upgrade:** A logged-in user on the `/pricing` page clicks the "Upgrade with PayPal" button for a paid plan.
-2.  **Create Subscription:** The frontend calls the `/api/paypal/checkout` endpoint, passing the `planId` for the selected plan.
-3.  **Backend Logic:**
-    - The API authenticates the user.
-    - It checks if a corresponding PayPal billing plan exists. If not, it creates one.
-    - It creates a PayPal subscription, embedding the user's internal `userId` in the `custom_id` field.
-    - The `approval_url` and `subscriptionId` are returned to the client.
-4.  **Redirect to PayPal:** The frontend redirects the user to the PayPal approval URL.
-5.  **Payment Approval:** The user approves the subscription on PayPal's platform.
-6.  **Webhook Notification:** After approval, PayPal sends a `BILLING.SUBSCRIPTION.ACTIVATED` event to the `/api/paypal/webhook` endpoint.
-7.  **Webhook Processing:**
-    - The webhook handler verifies the request signature to ensure it came from PayPal.
-    - It extracts the `userId` from the subscription's `custom_id` field.
-    - It updates the corresponding `User` in the database to reflect the new plan, expiration date, and `paypal_subscription_id`.
-    - It returns a `200` status to PayPal to acknowledge receipt.
+**Checkout Session Creation:**
+```typescript
+// Mock implementation in /api/stripe/checkout
+const mockPrices = {
+  'pro': 'price_pro_monthly',
+  'premium': 'price_premium_monthly'
+}
 
-## Implementation Details
-
-### Database Schema Updates
-```prisma
-model User {
-  id                     String   @id @default(cuid())
-  // ... existing fields
-  stripe_customer_id     String?  @unique
-  paypal_subscription_id String?  @unique
-  paypal_order_id        String?  @unique
-  // ... existing fields
+// Creates checkout session with user reference
+const session = {
+  id: 'mock_session_id',
+  url: 'https://checkout.stripe.com/mock',
+  client_reference_id: user.id,
+  metadata: { plan: planId }
 }
 ```
 
-### PayPal API Client
-```typescript
-// src/lib/paypal.ts
-import { PayPalEnvironment, PayPalHttpClient, core } from '@paypal/checkout-server-sdk';
+**Webhook Event Handling:**
+- `checkout.session.completed`: Activates subscription and updates user plan
+- `invoice.payment_succeeded`: Extends subscription period
+- `customer.subscription.deleted`: Downgrades user to free plan
 
-function environment(): PayPalEnvironment {
-  const clientId = process.env.PAYPAL_CLIENT_ID!;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
+### Stripe Webhook Events
+
+```typescript
+// Key webhook handlers
+async function handleCheckoutSessionCompleted(data: any) {
+  const { client_reference_id, metadata } = data
+  const planId = metadata?.plan || 'pro'
   
-  return process.env.NODE_ENV === 'production'
-    ? new core.LiveEnvironment(clientId, clientSecret)
-    : new core.SandboxEnvironment(clientId, clientSecret);
+  await db.user.update({
+    where: { id: client_reference_id },
+    data: {
+      plan: planId,
+      plan_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    }
+  })
 }
 
-export const paypalClient = new PayPalHttpClient(environment());
+async function handleSubscriptionDeleted(data: any) {
+  await db.user.updateMany({
+    where: { email: data.customer_email },
+    data: {
+      plan: 'free',
+      plan_expires_at: null
+    }
+  })
+}
 ```
 
-### Checkout Endpoint
-```typescript
-// src/app/api/paypal/checkout/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { paypalClient } from '@/lib/paypal';
-import { subscriptions } from '@paypal/checkout-server-sdk';
+## PayPal Integration
 
-export async function POST(req: NextRequest) {
-  try {
-    const { priceId } = await req.json();
-    const user = await getCurrentUser(); // Your auth implementation
-    
-    // Create or get PayPal billing plan
-    const planId = await createOrGetBillingPlan(priceId);
-    
-    // Create subscription
-    const request = new subscriptions.SubscriptionsCreateRequest();
-    request.requestBody({
-      plan_id: planId,
-      custom_id: user.id,
-      application_context: {
-        return_url: `${process.env.NEXTAUTH_URL}/payment/success`,
-        cancel_url: `${process.env.NEXTAUTH_URL}/pricing`
-      }
-    });
-    
-    const response = await paypalClient.execute(request);
-    const subscription = response.result;
-    
-    return NextResponse.json({ approval_url: subscription.links.find(link => link.rel === 'approve')?.href });
-  } catch (error) {
-    console.error('PayPal checkout error:', error);
-    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
+### Checkout Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant PayPalAPI as /api/paypal/checkout
+    participant PayPal
+    participant Webhook as /api/paypal/webhook
+    participant Database
+
+    User->>Frontend: Click "Upgrade with PayPal"
+    Frontend->>PayPalAPI: POST {planId}
+    PayPalAPI->>PayPal: Get access token
+    PayPalAPI->>PayPal: Create order
+    PayPal-->>PayPalAPI: Return approval URL
+    PayPalAPI-->>Frontend: Return {approvalUrl}
+    Frontend->>PayPal: Redirect to approval
+    User->>PayPal: Approve payment
+    PayPal->>Webhook: PAYMENT.CAPTURE.COMPLETED
+    Webhook->>Database: Update user plan
+    Webhook-->>PayPal: 200 OK
+```
+
+### Implementation Details
+
+**Order Creation:**
+```typescript
+// PayPal order structure
+const orderData = {
+  intent: 'CAPTURE',
+  purchase_units: [{
+    amount: {
+      currency_code: 'USD',
+      value: planPrices[planId]
+    },
+    custom_id: JSON.stringify({ userId: user.id, planId })
+  }],
+  application_context: {
+    return_url: `${process.env.NEXTAUTH_URL}/payment/success`,
+    cancel_url: `${process.env.NEXTAUTH_URL}/pricing`
   }
 }
 ```
 
-### Webhook Endpoint
-```typescript
-// src/app/api/paypal/webhook/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyWebhookSignature } from '@paypal/checkout-server-sdk';
+**Webhook Event Handling:**
+- `CHECKOUT.ORDER.APPROVED`: Order approved by user
+- `PAYMENT.CAPTURE.COMPLETED`: Payment successfully captured
+- `CHECKOUT.ORDER.COMPLETED`: Order processing completed
+- `PAYMENT.CAPTURE.DENIED`: Payment failed or denied
 
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.text();
-    const signature = req.headers.get('paypal-transmission-id');
-    const timestamp = req.headers.get('paypal-transmission-time');
-    const certUrl = req.headers.get('paypal-cert-url');
-    const authAlgo = req.headers.get('paypal-auth-algo');
-    const transmissionSig = req.headers.get('paypal-transmission-sig');
+### PayPal Webhook Events
+
+```typescript
+// Webhook verification and processing
+export async function POST(request: NextRequest) {
+  const webhookEvent = await request.json()
+  
+  // Verify webhook signature
+  const verifyResponse = await fetch(`${PAYPAL_BASE}/v1/notifications/verify-webhook-signature`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      transmission_id: request.headers.get('paypal-transmission-id'),
+      cert_id: request.headers.get('paypal-cert-id'),
+      auth_algo: request.headers.get('paypal-auth-algo'),
+      transmission_sig: request.headers.get('paypal-transmission-sig'),
+      transmission_time: request.headers.get('paypal-transmission-time'),
+      webhook_id: process.env.PAYPAL_WEBHOOK_ID,
+      webhook_event: webhookEvent
+    })
+  })
+  
+  // Process successful payments
+  if (eventType === 'PAYMENT.CAPTURE.COMPLETED') {
+    const expiration = new Date()
+    expiration.setMonth(expiration.getMonth() + 1)
     
-    // Verify webhook signature
-    const verified = await verifyWebhookSignature({
-      webhookId: process.env.PAYPAL_WEBHOOK_ID!,
-      eventBody: body,
-      transmissionId: signature!,
-      transmissionTime: timestamp!,
-      transmissionSig: transmissionSig!,
-      certUrl: certUrl!,
-      authAlgo: authAlgo!
-    });
-    
-    if (!verified) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-    }
-    
-    const event = JSON.parse(body);
-    
-    switch (event.event_type) {
-      case 'BILLING.SUBSCRIPTION.ACTIVATED':
-        await handleSubscriptionActivated(event);
-        break;
-      case 'BILLING.SUBSCRIPTION.CANCELLED':
-        await handleSubscriptionCancelled(event);
-        break;
-      case 'BILLING.SUBSCRIPTION.EXPIRED':
-        await handleSubscriptionExpired(event);
-        break;
-    }
-    
-    return NextResponse.json({ received: true });
-  } catch (error) {
-    console.error('PayPal webhook error:', error);
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
+    await db.user.updateMany({
+      where: { id: parsed.userId },
+      data: {
+        plan: parsed.planId,
+        plan_expires_at: expiration,
+        paypal_order_id: webhookEvent.resource?.id
+      }
+    })
   }
 }
 ```
 
 ## Environment Variables
-Add the following to your environment configuration:
-```
+
+### Required Configuration
+
+```env
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# PayPal Configuration
 PAYPAL_CLIENT_ID=your_paypal_client_id
 PAYPAL_CLIENT_SECRET=your_paypal_client_secret
 PAYPAL_WEBHOOK_ID=your_webhook_id
+
+# Application URLs
+NEXTAUTH_URL=http://localhost:3000
 ```
 
-## Subscription Management
+## Plan Configuration
 
-PayPal subscription changes are handled via webhooks:
+### Available Plans
 
-- **Event:** `BILLING.SUBSCRIPTION.CANCELLED` or `BILLING.SUBSCRIPTION.EXPIRED`
-- **Action:** When PayPal sends these events, the webhook handler updates the user's record in the database, downgrading their `plan` to `"free"` and clearing the subscription-related fields.
+```typescript
+// Stripe price mapping
+const stripePrices = {
+  'pro': 'price_pro_monthly',
+  'premium': 'price_premium_monthly'
+}
 
-This integration ensures that user access rights within LinkShield remain synchronized with their subscription status in both Stripe and PayPal payment systems.
+// PayPal price mapping
+const paypalPrices = {
+  'pro': '9.99',
+  'premium': '19.99'
+}
+```
+
+### Plan Features
+- **Free**: Basic URL checking, limited requests
+- **Pro**: Enhanced features, higher limits, AI analysis
+- **Premium**: Full feature access, unlimited requests, priority support
+
+## Security Considerations
+
+### Webhook Security
+- **Stripe**: Webhook signatures verified using `STRIPE_WEBHOOK_SECRET`
+- **PayPal**: Webhook signatures verified through PayPal's verification API
+- All webhook endpoints validate request authenticity before processing
+
+### Data Protection
+- User payment data handled exclusively by payment providers
+- Only subscription status and customer IDs stored locally
+- PCI compliance maintained through provider integration
+
+### Error Handling
+- Comprehensive error logging for payment failures
+- Graceful degradation for webhook processing errors
+- User notification system for payment issues
+
+## Testing
+
+### Development Setup
+1. Configure test API keys for both providers
+2. Set up webhook endpoints using ngrok or similar tunneling
+3. Test both successful and failed payment scenarios
+4. Verify webhook event processing
+
+### Test Scenarios
+- Successful subscription creation
+- Payment failure handling
+- Webhook event processing
+- Plan upgrades and downgrades
+- Subscription cancellations
+
+## Monitoring and Analytics
+
+### Key Metrics
+- Conversion rates by payment provider
+- Payment failure rates
+- Subscription churn analysis
+- Revenue tracking by plan type
+
+### Logging
+- All payment events logged with user context
+- Webhook processing status tracking
+- Error monitoring and alerting
+
+## Future Enhancements
+
+### Planned Features
+- Subscription plan changes without cancellation
+- Proration handling for mid-cycle upgrades
+- Multi-currency support
+- Enterprise billing options
+- Usage-based billing integration
+
+### Integration Improvements
+- Real-time subscription status synchronization
+- Enhanced webhook retry mechanisms
+- Advanced fraud detection
+- Customer billing portal integration
+
+This dual-provider payment system ensures maximum user convenience while maintaining robust subscription management and security standards.
