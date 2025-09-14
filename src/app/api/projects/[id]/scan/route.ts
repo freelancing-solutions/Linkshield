@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { ZAI } from 'z-ai-web-dev-sdk'
+import ZAI from 'z-ai-web-dev-sdk'
 
 export async function POST(
   request: NextRequest,
@@ -136,6 +136,7 @@ async function performScan(project: any, scanJobId: string) {
           `
 
           const aiResponse = await zai.chat.completions.create({
+            model: 'gpt-4o-mini',
             messages: [
               {
                 role: 'system',

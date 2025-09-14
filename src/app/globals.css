@@ -120,3 +120,6 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Import documentation styles */
+@import "../styles/documentation.css";

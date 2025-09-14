@@ -1,0 +1,701 @@
+/**
+ * LinkShield Documentation Styles
+ * Dedicated CSS for documentation section with enhanced typography,
+ * code highlighting, callout boxes, responsive design, and accessibility
+ */
+
+/* ==========================================================================
+   Documentation Root Variables
+   ========================================================================== */
+
+.docs-container {
+  /* Typography Scale */
+  --docs-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --docs-mono-font: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  
+  /* Color Palette - WCAG 2.1 AA Compliant */
+  --docs-text-primary: oklch(0.21 0.02 264.376);
+  --docs-text-secondary: oklch(0.46 0.03 264.376);
+  --docs-text-muted: oklch(0.56 0.02 264.376);
+  --docs-text-link: oklch(0.59 0.15 264.376);
+  --docs-text-link-hover: oklch(0.49 0.19 264.376);
+  
+  /* Background Colors */
+  --docs-bg-primary: oklch(0.99 0.01 264.376);
+  --docs-bg-secondary: oklch(0.97 0.01 264.376);
+  --docs-bg-tertiary: oklch(0.94 0.01 264.376);
+  --docs-bg-code: oklch(0.95 0.01 264.376);
+  
+  /* Border Colors */
+  --docs-border-light: oklch(0.92 0.01 264.376);
+  --docs-border-medium: oklch(0.85 0.02 264.376);
+  --docs-border-strong: oklch(0.75 0.03 264.376);
+  
+  /* Callout Box Colors */
+  --docs-info-bg: oklch(0.92 0.05 220.0);
+  --docs-info-border: oklch(0.75 0.12 220.0);
+  --docs-info-text: oklch(0.35 0.08 220.0);
+  
+  --docs-warning-bg: oklch(0.95 0.08 75.0);
+  --docs-warning-border: oklch(0.82 0.15 75.0);
+  --docs-warning-text: oklch(0.45 0.12 75.0);
+  
+  --docs-error-bg: oklch(0.94 0.08 25.0);
+  --docs-error-border: oklch(0.75 0.18 25.0);
+  --docs-error-text: oklch(0.45 0.15 25.0);
+  
+  --docs-success-bg: oklch(0.92 0.08 145.0);
+  --docs-success-border: oklch(0.75 0.15 145.0);
+  --docs-success-text: oklch(0.35 0.12 145.0);
+  
+  /* Spacing Scale */
+  --docs-space-xs: 0.25rem;
+  --docs-space-sm: 0.5rem;
+  --docs-space-md: 1rem;
+  --docs-space-lg: 1.5rem;
+  --docs-space-xl: 2rem;
+  --docs-space-2xl: 3rem;
+  --docs-space-3xl: 4rem;
+  
+  /* Typography Scale */
+  --docs-text-xs: 0.75rem;
+  --docs-text-sm: 0.875rem;
+  --docs-text-base: 1rem;
+  --docs-text-lg: 1.125rem;
+  --docs-text-xl: 1.25rem;
+  --docs-text-2xl: 1.5rem;
+  --docs-text-3xl: 1.875rem;
+  --docs-text-4xl: 2.25rem;
+  
+  /* Line Heights */
+  --docs-leading-tight: 1.25;
+  --docs-leading-normal: 1.5;
+  --docs-leading-relaxed: 1.625;
+  --docs-leading-loose: 2;
+  
+  /* Shadows */
+  --docs-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --docs-shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.1), 0 2px 4px -2px oklch(0 0 0 / 0.1);
+  --docs-shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1);
+  
+  /* Transitions */
+  --docs-transition-fast: 150ms ease-in-out;
+  --docs-transition-normal: 250ms ease-in-out;
+  --docs-transition-slow: 350ms ease-in-out;
+}
+
+/* Dark mode variables */
+.dark .docs-container {
+  --docs-text-primary: oklch(0.95 0.01 264.376);
+  --docs-text-secondary: oklch(0.75 0.02 264.376);
+  --docs-text-muted: oklch(0.65 0.02 264.376);
+  --docs-text-link: oklch(0.75 0.15 264.376);
+  --docs-text-link-hover: oklch(0.85 0.15 264.376);
+  
+  --docs-bg-primary: oklch(0.15 0.02 264.376);
+  --docs-bg-secondary: oklch(0.21 0.02 264.376);
+  --docs-bg-tertiary: oklch(0.25 0.02 264.376);
+  --docs-bg-code: oklch(0.25 0.02 264.376);
+  
+  --docs-border-light: oklch(0.35 0.02 264.376);
+  --docs-border-medium: oklch(0.45 0.02 264.376);
+  --docs-border-strong: oklch(0.55 0.02 264.376);
+}
+
+/* ==========================================================================
+   Base Documentation Layout
+   ========================================================================== */
+
+.docs-container {
+  font-family: var(--docs-font-family);
+  line-height: var(--docs-leading-normal);
+  color: var(--docs-text-primary);
+  background-color: var(--docs-bg-primary);
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.docs-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--docs-space-xl) var(--docs-space-lg);
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+.docs-container h1,
+.docs-container h2,
+.docs-container h3,
+.docs-container h4,
+.docs-container h5,
+.docs-container h6 {
+  font-weight: 700;
+  line-height: var(--docs-leading-tight);
+  margin: var(--docs-space-xl) 0 var(--docs-space-md) 0;
+  color: var(--docs-text-primary);
+}
+
+.docs-container h1 {
+  font-size: var(--docs-text-4xl);
+  margin-top: 0;
+}
+
+.docs-container h2 {
+  font-size: var(--docs-text-3xl);
+  border-bottom: 1px solid var(--docs-border-light);
+  padding-bottom: var(--docs-space-sm);
+}
+
+.docs-container h3 {
+  font-size: var(--docs-text-2xl);
+}
+
+.docs-container h4 {
+  font-size: var(--docs-text-xl);
+}
+
+.docs-container h5 {
+  font-size: var(--docs-text-lg);
+}
+
+.docs-container h6 {
+  font-size: var(--docs-text-base);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.docs-container p {
+  margin: var(--docs-space-md) 0;
+  color: var(--docs-text-primary);
+  line-height: var(--docs-leading-relaxed);
+}
+
+.docs-container ul,
+.docs-container ol {
+  margin: var(--docs-space-md) 0;
+  padding-left: var(--docs-space-xl);
+}
+
+.docs-container li {
+  margin: var(--docs-space-sm) 0;
+  line-height: var(--docs-leading-relaxed);
+}
+
+.docs-container a {
+  color: var(--docs-text-link);
+  text-decoration: underline;
+  text-decoration-color: oklch(0.75 0.05 264.376 / 0.4);
+  text-underline-offset: 0.2em;
+  transition: all var(--docs-transition-fast);
+}
+
+.docs-container a:hover,
+.docs-container a:focus {
+  color: var(--docs-text-link-hover);
+  text-decoration-color: currentColor;
+  outline: none;
+}
+
+.docs-container a:focus-visible {
+  outline: 2px solid var(--docs-text-link);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Code Styling & Syntax Highlighting
+   ========================================================================== */
+
+.docs-container code {
+  font-family: var(--docs-mono-font);
+  font-size: 0.875em;
+  background-color: var(--docs-bg-code);
+  color: var(--docs-text-primary);
+  padding: 0.125em 0.375em;
+  border-radius: 0.25rem;
+  border: 1px solid var(--docs-border-light);
+}
+
+.docs-container pre {
+  font-family: var(--docs-mono-font);
+  font-size: var(--docs-text-sm);
+  line-height: var(--docs-leading-normal);
+  background-color: var(--docs-bg-code);
+  color: var(--docs-text-primary);
+  padding: var(--docs-space-lg);
+  margin: var(--docs-space-lg) 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--docs-border-light);
+  overflow-x: auto;
+  position: relative;
+}
+
+.docs-container pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Syntax highlighting colors */
+.docs-container .token.comment,
+.docs-container .token.prolog,
+.docs-container .token.doctype,
+.docs-container .token.cdata {
+  color: var(--docs-text-muted);
+  font-style: italic;
+}
+
+.docs-container .token.punctuation {
+  color: var(--docs-text-secondary);
+}
+
+.docs-container .token.property,
+.docs-container .token.tag,
+.docs-container .token.constant,
+.docs-container .token.symbol,
+.docs-container .token.deleted {
+  color: oklch(0.65 0.2 350.0);
+}
+
+.docs-container .token.boolean,
+.docs-container .token.number {
+  color: oklch(0.65 0.2 35.0);
+}
+
+.docs-container .token.selector,
+.docs-container .token.attr-name,
+.docs-container .token.string,
+.docs-container .token.char,
+.docs-container .token.builtin,
+.docs-container .token.inserted {
+  color: oklch(0.65 0.2 145.0);
+}
+
+.docs-container .token.operator,
+.docs-container .token.entity,
+.docs-container .token.url,
+.docs-container .language-css .token.string,
+.docs-container .style .token.string {
+  color: oklch(0.65 0.2 220.0);
+}
+
+.docs-container .token.atrule,
+.docs-container .token.attr-value,
+.docs-container .token.keyword {
+  color: oklch(0.65 0.2 270.0);
+}
+
+.docs-container .token.function,
+.docs-container .token.class-name {
+  color: oklch(0.65 0.2 40.0);
+}
+
+.docs-container .token.regex,
+.docs-container .token.important,
+.docs-container .token.variable {
+  color: oklch(0.65 0.2 320.0);
+}
+
+/* ==========================================================================
+   Callout Boxes & Alerts
+   ========================================================================== */
+
+.docs-callout {
+  margin: var(--docs-space-lg) 0;
+  padding: var(--docs-space-lg);
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+  position: relative;
+  transition: all var(--docs-transition-normal);
+}
+
+.docs-callout:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--docs-shadow-md);
+}
+
+.docs-callout::before {
+  content: '';
+  position: absolute;
+  top: var(--docs-space-md);
+  left: -12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.docs-callout-title {
+  font-weight: 700;
+  font-size: var(--docs-text-base);
+  margin-bottom: var(--docs-space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--docs-space-sm);
+}
+
+.docs-callout-content {
+  font-size: var(--docs-text-sm);
+  line-height: var(--docs-leading-relaxed);
+}
+
+/* Info callout */
+.docs-callout-info {
+  background-color: var(--docs-info-bg);
+  border-color: var(--docs-info-border);
+  color: var(--docs-info-text);
+}
+
+.docs-callout-info .docs-callout-title::before {
+  content: 'ℹ';
+  font-size: var(--docs-text-lg);
+}
+
+/* Warning callout */
+.docs-callout-warning {
+  background-color: var(--docs-warning-bg);
+  border-color: var(--docs-warning-border);
+  color: var(--docs-warning-text);
+}
+
+.docs-callout-warning .docs-callout-title::before {
+  content: '⚠';
+  font-size: var(--docs-text-lg);
+}
+
+/* Error callout */
+.docs-callout-error {
+  background-color: var(--docs-error-bg);
+  border-color: var(--docs-error-border);
+  color: var(--docs-error-text);
+}
+
+.docs-callout-error .docs-callout-title::before {
+  content: '❌';
+  font-size: var(--docs-text-lg);
+}
+
+/* Success callout */
+.docs-callout-success {
+  background-color: var(--docs-success-bg);
+  border-color: var(--docs-success-border);
+  color: var(--docs-success-text);
+}
+
+.docs-callout-success .docs-callout-title::before {
+  content: '✅';
+  font-size: var(--docs-text-lg);
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.docs-container table {
+  width: 100%;
+  margin: var(--docs-space-lg) 0;
+  border-collapse: collapse;
+  border: 1px solid var(--docs-border-light);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.docs-container th,
+.docs-container td {
+  padding: var(--docs-space-md);
+  text-align: left;
+  border-bottom: 1px solid var(--docs-border-light);
+}
+
+.docs-container th {
+  background-color: var(--docs-bg-secondary);
+  font-weight: 600;
+  color: var(--docs-text-primary);
+}
+
+.docs-container tr:hover {
+  background-color: var(--docs-bg-secondary);
+  transition: background-color var(--docs-transition-fast);
+}
+
+/* ==========================================================================
+   Blockquotes
+   ========================================================================== */
+
+.docs-container blockquote {
+  margin: var(--docs-space-lg) 0;
+  padding: var(--docs-space-md) var(--docs-space-lg);
+  border-left: 4px solid var(--docs-border-strong);
+  background-color: var(--docs-bg-secondary);
+  font-style: italic;
+  color: var(--docs-text-secondary);
+}
+
+.docs-container blockquote p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .docs-content {
+    padding: var(--docs-space-md) var(--docs-space-md);
+  }
+  
+  .docs-container h1 {
+    font-size: var(--docs-text-3xl);
+  }
+  
+  .docs-container h2 {
+    font-size: var(--docs-text-2xl);
+  }
+  
+  .docs-container h3 {
+    font-size: var(--docs-text-xl);
+  }
+  
+  .docs-container pre {
+    padding: var(--docs-space-md);
+    font-size: 0.875rem;
+  }
+  
+  .docs-callout {
+    padding: var(--docs-space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .docs-content {
+    padding: var(--docs-space-sm);
+  }
+  
+  .docs-container h1 {
+    font-size: var(--docs-text-2xl);
+  }
+  
+  .docs-container h2 {
+    font-size: var(--docs-text-xl);
+  }
+  
+  .docs-container pre {
+    padding: var(--docs-space-sm);
+    font-size: 0.8125rem;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+  .docs-container {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .docs-content {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .docs-callout {
+    background: #f9f9f9 !important;
+    border: 1px solid #ddd !important;
+    color: black !important;
+  }
+  
+  .docs-container pre {
+    background: #f5f5f5 !important;
+    border: 1px solid #ccc !important;
+    color: black !important;
+  }
+  
+  .docs-container a {
+    color: #0066cc !important;
+    text-decoration: underline !important;
+  }
+  
+  .docs-container a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* Hide interactive elements in print */
+  .docs-container button,
+  .docs-container .no-print {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Accessibility Features
+   ========================================================================== */
+
+/* Focus management */
+.docs-container *:focus-visible {
+  outline: 2px solid var(--docs-text-link);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip links */
+.docs-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--docs-text-primary);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.3s;
+}
+
+.docs-skip-link:focus {
+  top: 6px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .docs-container {
+    --docs-text-primary: #000;
+    --docs-text-secondary: #333;
+    --docs-border-light: #666;
+    --docs-border-strong: #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .docs-container * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Interactive Elements & Animations
+   ========================================================================== */
+
+/* Smooth scrolling */
+.docs-container {
+  scroll-behavior: smooth;
+}
+
+/* Hover animations */
+.docs-container a,
+.docs-container button {
+  transition: all var(--docs-transition-normal);
+}
+
+/* Code block copy button */
+.docs-code-copy {
+  position: absolute;
+  top: var(--docs-space-sm);
+  right: var(--docs-space-sm);
+  background: var(--docs-bg-secondary);
+  border: 1px solid var(--docs-border-light);
+  color: var(--docs-text-secondary);
+  padding: var(--docs-space-xs) var(--docs-space-sm);
+  border-radius: 0.25rem;
+  font-size: var(--docs-text-xs);
+  cursor: pointer;
+  transition: all var(--docs-transition-normal);
+}
+
+.docs-code-copy:hover {
+  background: var(--docs-bg-tertiary);
+  color: var(--docs-text-primary);
+  transform: translateY(-1px);
+}
+
+.docs-code-copy:active {
+  transform: translateY(0);
+}
+
+.docs-code-copy.copied {
+  background: var(--docs-success-bg);
+  color: var(--docs-success-text);
+  border-color: var(--docs-success-border);
+}
+
+/* Table of contents */
+.docs-toc {
+  background: var(--docs-bg-secondary);
+  border: 1px solid var(--docs-border-light);
+  border-radius: 0.5rem;
+  padding: var(--docs-space-lg);
+  margin: var(--docs-space-lg) 0;
+}
+
+.docs-toc h3 {
+  margin-top: 0;
+  font-size: var(--docs-text-lg);
+  color: var(--docs-text-primary);
+}
+
+.docs-toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.docs-toc li {
+  margin: var(--docs-space-xs) 0;
+}
+
+.docs-toc a {
+  color: var(--docs-text-secondary);
+  text-decoration: none;
+  transition: color var(--docs-transition-fast);
+}
+
+.docs-toc a:hover {
+  color: var(--docs-text-link);
+}
+
+/* Back to top button */
+.docs-back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--docs-bg-secondary);
+  border: 1px solid var(--docs-border-light);
+  color: var(--docs-text-secondary);
+  padding: var(--docs-space-sm);
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all var(--docs-transition-normal);
+  z-index: 100;
+}
+
+.docs-back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.docs-back-to-top:hover {
+  background: var(--docs-bg-tertiary);
+  color: var(--docs-text-primary);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .docs-back-to-top {
+    bottom: 1rem;
+    right: 1rem;
+    padding: var(--docs-space-sm);
+  }
+}
