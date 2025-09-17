@@ -123,3 +123,61 @@ Subscribers also get a **simple dashboard** to pick “Scan once” or “Monito
 ## 8. Next Click for You  
 👍 **Approve** → I open all GitHub issues and start code branches.  
 🔄 **Tweak numbers** → tell me and I update the plan.
+
+
+
+Perfect. Let’s lock the *visual grammar* so the “story” metaphor doesn’t just live in text—it’s visible the instant someone lands. The four lenses should feel like **chapters in a storybook about the link**. Here’s a refined icon + metaphor system you can hand to design:
+
+---
+
+### 🎨 **Lens-to-Icon System**
+
+1. **Safety Lens – “Is the door locked?”**
+
+   * **Icon:** A **door with a green/red shield** on it.
+   * **Metaphor:** First page of the story: *is this house safe to enter?*
+   * **UI style:** Fast, bold color flip (green/red), confidence % as a mini progress ring.
+
+2. **Identity Lens – “Who owns the house?”**
+
+   * **Icon:** A **passport / ID card** with a small house silhouette.
+   * **Metaphor:** The character reveal in the story—who’s behind the curtain.
+   * **UI style:** Foldable card animation → tap to reveal age, registrar, certs.
+
+3. **Neighbourhood Lens – “What are the neighbours doing?”**
+
+   * **Icon:** A **clustered map**: three houses, one glowing.
+   * **Metaphor:** The story widens to the setting—the surroundings, allies, and shady hangouts.
+   * **UI style:** Mini-map visualization of outbound domains (grey dots = scanned, red = flagged).
+
+4. **Radar Lens – “Is someone building a fake house next door?”**
+
+   * **Icon:** A **radar sweep circle** with echo blips.
+   * **Metaphor:** The suspense twist—copycats lurking in the shadows.
+   * **UI style:** Subtle pulsing sweep animation; alert badge count for new clones.
+
+---
+
+### 🧭 **Narrative Consistency**
+
+* Together, the icons form a **mini comic strip**:
+
+  1. The Door (Safety) →
+  2. The Owner (Identity) →
+  3. The Street (Neighbourhood) →
+  4. The Shadow (Radar).
+
+* Each lens = one **chapter card**. When you scan a story, the cards flip like a **deck of story pages**.
+
+---
+
+### 🔑 Implementation Notes
+
+* **Phase 0**: Add icons above the fold, but animate them only lightly (hover flips, pulsing confidence ring).
+* **Free vs Subscriber**: Lock icons in “greyscale padlock mode” when gated, so the metaphor still shows but power is visibly locked.
+* **Marketing visuals**: The four icons can be stitched into an **explainer graphic** titled *“From Door to Street to Shadow—Your Story in 4 Lenses”*.
+
+---
+
+Want me to sketch a **landing page hero section wireframe** with these icons and narrative flow, so your design team can see how it all fits together?
+
