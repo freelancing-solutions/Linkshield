@@ -3,12 +3,16 @@
 ## 1. Project Setup
 
 - [ ] 1.1 Create URL analysis module structure
-  - Create `src/features/url-analysis` directory with subdirectories: `components`, `hooks`, `api`, `types`, `utils`, `pages`
+  - Create `src/components/url-analysis` directory for components
+  - Create `src/hooks/url-analysis` directory for hooks
+  - Create `src/lib/api/url-analysis.ts` for API methods
+  - Create `src/types/url-analysis.ts` for TypeScript interfaces
+  - Create `src/lib/utils/url-analysis.ts` for utilities
   - Set up barrel exports in index files
   - _Requirements: All URL analysis requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Create `src/features/url-analysis/types/index.ts`
+  - Create `src/types/url-analysis.ts`
   - Define UrlCheck, UrlCheckDetail, ScanResult, BrokenLink interfaces
   - Define HistoryFilters, BulkAnalysisFormData, BulkAnalysisResult interfaces
   - Define DomainReputation, UrlCheckStats interfaces
@@ -18,7 +22,7 @@
 ## 2. API Integration
 
 - [ ] 2.1 Implement history API methods
-  - Create `src/features/url-analysis/api/url-analysis-api.ts`
+  - Create `src/lib/api/url-analysis.ts`
   - Implement getHistory(filters): Promise<UrlHistoryResponse>
   - Handle query parameter building for filters
   - _Requirements: 1.1_
@@ -42,28 +46,28 @@
 ## 3. React Query Hooks
 
 - [ ] 3.1 Create history hooks
-  - Create `src/features/url-analysis/hooks/use-url-history.ts`
+  - Create `src/hooks/url-analysis/use-url-history.ts`
   - Implement useUrlHistory hook with filters parameter
   - Enable keepPreviousData for smooth pagination
   - _Requirements: 1.1_
 
 - [ ] 3.2 Create check detail hooks
-  - Create `src/features/url-analysis/hooks/use-check-detail.ts`
+  - Create `src/hooks/url-analysis/use-check-detail.ts`
   - Implement useCheckDetail hook
   - Implement useScanResults hook
   - Implement useBrokenLinks hook with enabled: false (lazy load)
   - _Requirements: 1.2_
 
 - [ ] 3.3 Create bulk analysis hook
-  - Create `src/features/url-analysis/hooks/use-bulk-analysis.ts`
+  - Create `src/hooks/url-analysis/use-bulk-analysis.ts`
   - Implement useBulkAnalysis mutation hook
   - Handle progress updates
   - _Requirements: 1.3_
 
 - [ ] 3.4 Create reputation and stats hooks
-  - Create `src/features/url-analysis/hooks/use-reputation.ts`
+  - Create `src/hooks/url-analysis/use-reputation.ts`
   - Implement useDomainReputation hook
-  - Create `src/features/url-analysis/hooks/use-stats.ts`
+  - Create `src/hooks/url-analysis/use-stats.ts`
   - Implement useUrlCheckStats hook with 5-minute stale time
   - _Requirements: 1.4, 1.5_
 

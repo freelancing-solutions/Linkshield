@@ -3,13 +3,15 @@
 ## 1. Project Setup and Module Structure
 
 - [ ] 1.1 Create dashboard module structure
-  - Create `src/features/dashboard` directory
-  - Create subdirectories: `components`, `hooks`, `api`, `types`, `utils`, `pages`
-  - Create `src/features/dashboard/index.ts` for barrel exports
+  - Create `src/components/dashboard` directory
+  - Create `src/hooks/dashboard` directory for React Query hooks
+  - Create `src/types/dashboard.ts` for TypeScript interfaces
+  - Create `src/lib/utils/dashboard.ts` for utility functions
+  - Create `src/app/dashboard` directory for pages
   - _Requirements: All dashboard requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Create `src/features/dashboard/types/index.ts`
+  - Create `src/types/dashboard.ts`
   - Define DashboardOverview, Project, TeamMember, Alert interfaces
   - Define SocialProtectionOverview, ExtensionStatus, AlgorithmHealth interfaces
   - Define CrisisAlert, BotHealth, SubscriptionInfo interfaces
@@ -19,7 +21,7 @@
 ## 2. API Integration Layer
 
 - [ ] 2.1 Create dashboard API client
-  - Create `src/features/dashboard/api/dashboard-api.ts`
+  - Create `src/services/dashboard.service.ts`
   - Implement getOverview(): Promise<DashboardOverview>
   - Implement getProjects(params): Promise<ProjectsResponse>
   - Implement createProject(data): Promise<Project>
@@ -30,20 +32,20 @@
   - _Requirements: Dashboard overview, projects management_
 
 - [ ] 2.2 Create team management API methods
-  - Add to `src/features/dashboard/api/dashboard-api.ts`
+  - Add to `src/services/dashboard.service.ts`
   - Implement getTeamMembers(projectId): Promise<TeamMember[]>
   - Implement inviteTeamMember(projectId, data): Promise<TeamMember>
   - _Requirements: Team management_
 
 - [ ] 2.3 Create alerts API methods
-  - Add to `src/features/dashboard/api/dashboard-api.ts`
+  - Add to `src/services/dashboard.service.ts`
   - Implement getAlerts(projectId, filters): Promise<AlertsResponse>
   - Implement getAlert(projectId, alertId): Promise<Alert>
   - Implement resolveAlert(projectId, alertId): Promise<void>
   - _Requirements: Alerts management_
 
 - [ ] 2.4 Create Social Protection API methods
-  - Create `src/features/dashboard/api/social-protection-api.ts`
+  - Create `src/services/social-protection.service.ts`
   - Implement getSocialProtectionOverview(projectId?): Promise<SocialProtectionOverview>
   - Implement getExtensionStatus(): Promise<ExtensionStatus>
   - Implement getExtensionAnalytics(timeRange): Promise<ExtensionAnalytics>
@@ -63,12 +65,12 @@
 ## 3. React Query Hooks
 
 - [ ] 3.1 Create dashboard overview hooks
-  - Create `src/features/dashboard/hooks/use-dashboard.ts`
+  - Create `src/hooks/dashboard/use-dashboard.ts`
   - Implement useDashboardOverview() query hook with 5-minute stale time
   - _Requirements: Dashboard overview_
 
 - [ ] 3.2 Create projects hooks
-  - Create `src/features/dashboard/hooks/use-projects.ts`
+  - Create `src/hooks/dashboard/use-projects.ts`
   - Implement useProjects(filters) query hook with keepPreviousData
   - Implement useProject(id) query hook
   - Implement useCreateProject() mutation hook with cache invalidation
@@ -78,20 +80,20 @@
   - _Requirements: Projects management_
 
 - [ ] 3.3 Create team hooks
-  - Create `src/features/dashboard/hooks/use-team.ts`
+  - Create `src/hooks/dashboard/use-team.ts`
   - Implement useTeamMembers(projectId) query hook
   - Implement useInviteTeamMember() mutation hook
   - _Requirements: Team management_
 
 - [ ] 3.4 Create alerts hooks
-  - Create `src/features/dashboard/hooks/use-alerts.ts`
+  - Create `src/hooks/dashboard/use-alerts.ts`
   - Implement useAlerts(projectId, filters) query hook
   - Implement useAlert(projectId, alertId) query hook
   - Implement useResolveAlert() mutation hook with optimistic updates
   - _Requirements: Alerts management_
 
 - [ ] 3.5 Create Social Protection hooks
-  - Create `src/features/dashboard/hooks/use-social-protection.ts`
+  - Create `src/hooks/dashboard/use-social-protection.ts`
   - Implement useSocialProtectionOverview(projectId?) query hook
   - Implement useExtensionStatus() query hook with 1-minute refetch
   - Implement useExtensionAnalytics(timeRange) query hook
@@ -110,7 +112,7 @@
 ## 4. Dashboard Overview Page
 
 - [ ] 4.1 Create DashboardOverviewPage component
-  - Create `src/features/dashboard/pages/DashboardOverviewPage.tsx`
+  - Create `src/app/dashboard/page.tsx`
   - Use useDashboardOverview hook
   - Implement page layout with grid for KPI cards and activity list
   - Handle loading state with skeleton loaders
@@ -118,14 +120,14 @@
   - _Requirements: Dashboard overview_
 
 - [ ] 4.2 Create KPI Cards component
-  - Create `src/features/dashboard/components/KPICards.tsx`
+  - Create `src/components/dashboard/KPICards.tsx`
   - Display total projects, active alerts, recent scans cards
   - Add icons and color coding for each metric
   - Implement click navigation to relevant sections
   - _Requirements: Dashboard overview_
 
 - [ ] 4.3 Create RecentActivity component
-  - Create `src/features/dashboard/components/RecentActivity.tsx`
+  - Create `src/components/dashboard/RecentActivity.tsx`
   - Display list of recent activities with timestamps
   - Group activities by date
   - Add activity type icons
@@ -135,7 +137,7 @@
 ## 5. Projects Management
 
 - [ ] 5.1 Create ProjectsListPage component
-  - Create `src/features/dashboard/pages/ProjectsListPage.tsx`
+  - Create `src/app/dashboard/projects/page.tsx`
   - Use useProjects hook with filters
   - Implement search input with debounce (300ms)
   - Add "Create Project" button
@@ -143,7 +145,7 @@
   - _Requirements: Projects management_
 
 - [ ] 5.2 Create ProjectsTable component
-  - Create `src/features/dashboard/components/ProjectsTable.tsx`
+  - Create `src/components/dashboard/ProjectsTable.tsx`
   - Display columns: name, status, monitoring, team size, alerts, created date, actions
   - Implement sortable columns
   - Add row click to navigate to project detail
@@ -152,7 +154,7 @@
   - _Requirements: Projects management_
 
 - [ ] 5.3 Create CreateProjectModal component
-  - Create `src/features/dashboard/components/CreateProjectModal.tsx`
+  - Create `src/components/dashboard/CreateProjectModal.tsx`
   - Implement form with name, description, settings fields
   - Use react-hook-form with Zod validation
   - Use useCreateProject hook
@@ -160,7 +162,7 @@
   - _Requirements: Projects management_
 
 - [ ] 5.4 Create ProjectDetailPage component
-  - Create `src/features/dashboard/pages/ProjectDetailPage.tsx`
+  - Create `src/app/dashboard/projects/[id]/page.tsx`
   - Use useProject hook
   - Implement tabs: Overview, Team, Alerts, Settings
   - Display project info and stats
@@ -168,7 +170,7 @@
   - _Requirements: Projects management_
 
 - [ ] 5.5 Create MonitoringToggle component
-  - Create `src/features/dashboard/components/MonitoringToggle.tsx`
+  - Create `src/components/dashboard/MonitoringToggle.tsx`
   - Implement toggle switch
   - Use useToggleMonitoring hook with optimistic updates
   - Show loading state during toggle
@@ -176,14 +178,14 @@
   - _Requirements: Projects management_
 
 - [ ] 5.6 Create EditProjectModal component
-  - Create `src/features/dashboard/components/EditProjectModal.tsx`
+  - Create `src/components/dashboard/EditProjectModal.tsx`
   - Pre-fill form with current project data
   - Use useUpdateProject hook
   - Implement optimistic updates
   - _Requirements: Projects management_
 
 - [ ] 5.7 Create DeleteProjectDialog component
-  - Create `src/features/dashboard/components/DeleteProjectDialog.tsx`
+  - Create `src/components/dashboard/DeleteProjectDialog.tsx`
   - Show confirmation with project name
   - Require typing project name to confirm
   - Use useDeleteProject hook
@@ -193,7 +195,7 @@
 ## 6. Team Management
 
 - [ ] 6.1 Create TeamTab component
-  - Create `src/features/dashboard/components/TeamTab.tsx`
+  - Create `src/components/dashboard/TeamTab.tsx`
   - Use useTeamMembers hook
   - Display team members table
   - Add "Invite Member" button
@@ -201,7 +203,7 @@
   - _Requirements: Team management_
 
 - [ ] 6.2 Create TeamMembersTable component
-  - Create `src/features/dashboard/components/TeamMembersTable.tsx`
+  - Create `src/components/dashboard/TeamMembersTable.tsx`
   - Display columns: name, email, role, joined date, actions
   - Show member avatars
   - Add role badges
@@ -209,7 +211,7 @@
   - _Requirements: Team management_
 
 - [ ] 6.3 Create InviteMemberModal component
-  - Create `src/features/dashboard/components/InviteMemberModal.tsx`
+  - Create `src/components/dashboard/InviteMemberModal.tsx`
   - Implement form with email and role fields
   - Use useInviteTeamMember hook
   - Validate email format
@@ -219,7 +221,7 @@
 ## 7. Alerts Management
 
 - [ ] 7.1 Create AlertsTab component
-  - Create `src/features/dashboard/components/AlertsTab.tsx`
+  - Create `src/components/dashboard/AlertsTab.tsx`
   - Use useAlerts hook with filters
   - Implement filters: status, severity, date range
   - Display alerts list
@@ -227,7 +229,7 @@
   - _Requirements: Alerts management_
 
 - [ ] 7.2 Create AlertsList component
-  - Create `src/features/dashboard/components/AlertsList.tsx`
+  - Create `src/components/dashboard/AlertsList.tsx`
   - Display alerts with severity badges
   - Show alert type icons
   - Implement click to open detail drawer
@@ -236,7 +238,7 @@
   - _Requirements: Alerts management_
 
 - [ ] 7.3 Create AlertDetailDrawer component
-  - Create `src/features/dashboard/components/AlertDetailDrawer.tsx`
+  - Create `src/components/dashboard/AlertDetailDrawer.tsx`
   - Use useAlert hook
   - Display full alert details
   - Show alert timeline
@@ -254,7 +256,7 @@
 ## 8. Social Protection Overview
 
 - [ ] 8.1 Create SocialProtectionOverviewPanel component
-  - Create `src/features/dashboard/components/SocialProtectionOverviewPanel.tsx`
+  - Create `src/components/dashboard/SocialProtectionOverviewPanel.tsx`
   - Use useSocialProtectionOverview hook
   - Display metrics summary
   - Add project filter dropdown (optional)
@@ -262,7 +264,7 @@
   - _Requirements: Social Protection overview_
 
 - [ ] 8.2 Create ExtensionStatusCard component
-  - Create `src/features/dashboard/components/ExtensionStatusCard.tsx`
+  - Create `src/components/dashboard/ExtensionStatusCard.tsx`
   - Use useExtensionStatus hook
   - Display connection status badge (Connected/Disconnected)
   - Show last activity timestamp
@@ -272,7 +274,7 @@
   - _Requirements: Extension monitoring_
 
 - [ ] 8.3 Create ExtensionAnalyticsPanel component
-  - Create `src/features/dashboard/components/ExtensionAnalyticsPanel.tsx`
+  - Create `src/components/dashboard/ExtensionAnalyticsPanel.tsx`
   - Use useExtensionAnalytics hook
   - Implement time range selector (1h, 24h, 7d, 30d)
   - Display analytics chart with platform breakdown
@@ -281,7 +283,7 @@
   - _Requirements: Extension analytics_
 
 - [ ] 8.4 Create AlgorithmHealthPanel component
-  - Create `src/features/dashboard/components/AlgorithmHealthPanel.tsx`
+  - Create `src/components/dashboard/AlgorithmHealthPanel.tsx`
   - Use useAlgorithmHealth hook
   - Display mini cards for Visibility, Engagement, Penalties
   - Show trend arrows (up/down/stable)
@@ -298,7 +300,7 @@
   - _Requirements: Algorithm health_
 
 - [ ] 8.6 Create BatchAnalysisButton component (Plan-gated)
-  - Create `src/features/dashboard/components/BatchAnalysisButton.tsx`
+  - Create `src/components/dashboard/BatchAnalysisButton.tsx`
   - Check user's subscription plan
   - Show button only for Pro+ plans
   - Show "Upgrade to Pro" CTA for Free/Basic plans
@@ -307,7 +309,7 @@
   - _Requirements: Algorithm health batch analysis_
 
 - [ ] 8.7 Create CrisisAlertsPanel component
-  - Create `src/features/dashboard/components/CrisisAlertsPanel.tsx`
+  - Create `src/components/dashboard/CrisisAlertsPanel.tsx`
   - Use useCrisisAlerts hook
   - Display severity distribution chart
   - Show crisis alerts list
@@ -316,7 +318,7 @@
   - _Requirements: Crisis alerts_
 
 - [ ] 8.8 Create CrisisRecommendationsDrawer component
-  - Create `src/features/dashboard/components/CrisisRecommendationsDrawer.tsx`
+  - Create `src/components/dashboard/CrisisRecommendationsDrawer.tsx`
   - Use useCrisisRecommendations hook
   - Display recommendations list
   - Show priority badges
@@ -324,7 +326,7 @@
   - _Requirements: Crisis alerts_
 
 - [ ] 8.9 Create CrisisStatsChart component
-  - Create `src/features/dashboard/components/CrisisStatsChart.tsx`
+  - Create `src/components/dashboard/CrisisStatsChart.tsx`
   - Use useCrisisStats hook
   - Implement time range selector
   - Display line chart showing crisis trends
@@ -332,7 +334,7 @@
   - _Requirements: Crisis alerts_
 
 - [ ] 8.10 Create BotHealthBadge component
-  - Create `src/features/dashboard/components/BotHealthBadge.tsx`
+  - Create `src/components/dashboard/BotHealthBadge.tsx`
   - Use useBotHealth hook
   - Display health status badge (Healthy/Degraded/Down)
   - Show service names and statuses
@@ -343,7 +345,7 @@
 ## 9. Subscription Integration
 
 - [ ] 9.1 Create SubscriptionPlanCard component
-  - Create `src/features/dashboard/components/SubscriptionPlanCard.tsx`
+  - Create `src/components/dashboard/SubscriptionPlanCard.tsx`
   - Fetch subscription data from subscriptions API
   - Display current plan name and price
   - Show usage bar with percentage
@@ -355,14 +357,14 @@
 ## 10. Plan-Based Feature Gating
 
 - [ ] 10.1 Create feature gating utility
-  - Create `src/features/dashboard/utils/feature-gating.ts`
+  - Create `src/lib/utils/dashboard/feature-gating.ts`
   - Implement hasFeatureAccess(feature, plan) function
   - Define feature requirements per plan
   - Export feature flags constants
   - _Requirements: Feature gating_
 
 - [ ] 10.2 Create UpgradeCTA component
-  - Create `src/features/dashboard/components/UpgradeCTA.tsx`
+  - Create `src/components/dashboard/UpgradeCTA.tsx`
   - Display upgrade message with benefits
   - Show plan comparison
   - Add "Upgrade Now" button
@@ -379,28 +381,28 @@
 ## 11. Shared Components
 
 - [ ] 11.1 Create StatusBadge component
-  - Create `src/features/dashboard/components/StatusBadge.tsx`
+  - Create `src/components/dashboard/StatusBadge.tsx`
   - Implement color-coded badges for different statuses
   - Support variants: success, warning, error, info
   - Add icons
   - _Requirements: All dashboard features_
 
 - [ ] 11.2 Create TrendIndicator component
-  - Create `src/features/dashboard/components/TrendIndicator.tsx`
+  - Create `src/components/dashboard/TrendIndicator.tsx`
   - Display trend arrows (up/down/stable)
   - Show percentage change
   - Color code based on positive/negative trend
   - _Requirements: Dashboard overview, algorithm health_
 
 - [ ] 11.3 Create EmptyState component
-  - Create `src/features/dashboard/components/EmptyState.tsx`
+  - Create `src/components/dashboard/EmptyState.tsx`
   - Display when no data available
   - Show relevant icon and message
   - Add action button (e.g., "Create Project")
   - _Requirements: All dashboard features_
 
 - [ ] 11.4 Create LoadingSkeleton components
-  - Create `src/features/dashboard/components/LoadingSkeleton.tsx`
+  - Create `src/components/dashboard/LoadingSkeleton.tsx`
   - Implement skeletons for: cards, tables, charts, lists
   - Match actual component layouts
   - _Requirements: All dashboard features_
@@ -408,7 +410,7 @@
 ## 12. Error Handling
 
 - [ ] 12.1 Create error handling utilities
-  - Create `src/features/dashboard/utils/error-handling.ts`
+  - Create `src/lib/utils/dashboard/error-handling.ts`
   - Implement error message mapping
   - Create error toast helper
   - Handle network errors
@@ -416,7 +418,7 @@
   - _Requirements: All dashboard features_
 
 - [ ] 12.2 Implement error boundaries
-  - Create `src/features/dashboard/components/DashboardErrorBoundary.tsx`
+  - Create `src/components/dashboard/DashboardErrorBoundary.tsx`
   - Catch and display component errors
   - Provide retry functionality
   - Log errors for debugging

@@ -3,13 +3,16 @@
 ## 1. Project Setup
 
 - [ ] 1.1 Create developer dashboard module structure
-  - Create `src/features/developer-dashboard` directory
-  - Create subdirectories: `components`, `hooks`, `api`, `types`, `utils`, `pages`
-  - Create `src/features/developer-dashboard/index.ts` for barrel exports
+  - Create `src/components/developer-dashboard` directory for components
+  - Create `src/hooks/developer-dashboard` directory for hooks
+  - Create `src/lib/api/developer-dashboard.ts` for API methods
+  - Create `src/types/developer-dashboard.ts` for TypeScript interfaces
+  - Create `src/lib/utils/developer-dashboard.ts` for utilities
+  - Create barrel exports in index files
   - _Requirements: All developer monitoring requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Create `src/features/developer-dashboard/types/index.ts`
+  - Create `src/types/developer-dashboard.ts`
   - Define DashboardOverview, Project, ProjectSettings interfaces
   - Define Alert, AlertStatistics, TeamMember interfaces
   - Define Analytics, ActivityLog, HealthScore interfaces
@@ -19,7 +22,7 @@
 ## 2. API Integration
 
 - [ ] 2.1 Create dashboard API client
-  - Create `src/features/developer-dashboard/api/dashboard-api.ts`
+  - Create `src/lib/api/developer-dashboard.ts`
   - Implement getOverview(): Promise<DashboardOverview>
   - Implement listProjects(), createProject(), getProject()
   - Implement updateProject(), deleteProject()
@@ -43,69 +46,71 @@
 ## 3. React Query Hooks
 
 - [ ] 3.1 Create dashboard hooks
-  - Create `src/features/developer-dashboard/hooks/use-dashboard.ts`
+  - Create `src/hooks/developer-dashboard/use-dashboard.ts`
   - Implement useDashboardOverview() with 2-minute cache
   - Enable auto-refresh every 60 seconds
   - _Requirements: 1.1_
 
 - [ ] 3.2 Create project hooks
-  - Create `src/features/developer-dashboard/hooks/use-projects.ts`
-  - Implement useProjects() with pagination
-  - Implement useProject(), useCreateProject()
+  - Create `src/hooks/developer-dashboard/use-projects.ts`
+  - Implement useProjects(), useProject(), useCreateProject()
   - Implement useUpdateProject(), useDeleteProject()
   - Implement useToggleMonitoring()
+  - Enable optimistic updates for toggle operations
   - _Requirements: 1.2, 1.3, 1.4_
 
 - [ ] 3.3 Create alert hooks
-  - Create `src/features/developer-dashboard/hooks/use-alerts.ts`
-  - Implement useProjectAlerts() with 30-second refresh
-  - Implement useUpdateAlertStatus()
-  - Implement useAlertStatistics()
+  - Create `src/hooks/developer-dashboard/use-alerts.ts`
+  - Implement useProjectAlerts(), useAlert(), useAlertStatistics()
+  - Implement useUpdateAlertStatus(), useAcknowledgeAlert()
   - _Requirements: 1.5, 1.11_
 
 - [ ] 3.4 Create team hooks
-  - Create `src/features/developer-dashboard/hooks/use-team.ts`
+  - Create `src/hooks/developer-dashboard/use-team.ts`
   - Implement useProjectMembers(), useInviteMember()
   - _Requirements: 1.6_
 
 - [ ] 3.5 Create analytics hooks
-  - Create `src/features/developer-dashboard/hooks/use-analytics.ts`
+  - Create `src/hooks/developer-dashboard/use-analytics.ts`
   - Implement useAnalytics(), useActivityLogs()
   - _Requirements: 1.7_
 
-## 4. Dashboard Overview
+## 4. Core Pages
 
-- [ ] 4.1 Create DashboardOverview page
-  - Create `src/features/developer-dashboard/pages/DashboardOverview.tsx`
-  - Use useDashboardOverview hook
-  - Handle loading and error states
+- [ ] 4.1 Create Dashboard Overview page
+  - Create `src/app/dashboard/developer/page.tsx`
+  - Display overview cards with key metrics
+  - Show recent alerts and activity feed
+  - Include quick action buttons
   - _Requirements: 1.1_
-
-- [ ] 4.2 Create overview components
-  - Create OverviewCards with ProjectsCard, ScansCard, AlertsCard, HealthScoreCard
-  - Create RecentProjects list
-  - Create RecentAlerts list
-  - Create QuickActions panel
-  - _Requirements: 1.1, 1.15_
 
 ## 5. Projects Management
 
-- [ ] 5.1 Create ProjectsPage
-  - Create `src/features/developer-dashboard/pages/ProjectsPage.tsx`
-  - Use useProjects hook with pagination
-  - Implement search and filters
+- [ ] 5.1 Create Projects page
+  - Create `src/app/dashboard/developer/projects/page.tsx`
+  - Display projects list with search and filters
+  - Include create project button and bulk actions
+  - Show project status and monitoring toggle
   - _Requirements: 1.2_
 
-- [ ] 5.2 Create project components
+- [ ] 5.2 Create Project Details page
+  - Create `src/app/dashboard/developer/projects/[projectId]/page.tsx`
+  - Display project information and settings
+  - Include alerts, team members, and analytics tabs
+  - Show monitoring status and controls
+  - _Requirements: 1.3, 1.4, 1.5, 1.6, 1.7_
+
+## 6. Project Components
+
+- [ ] 6.1 Create project components
   - Create ProjectsList with ProjectCard
   - Create CreateProjectModal with form validation
   - Create ProjectFilters
   - _Requirements: 1.2_
 
-## 6. Project Details
+## 7. Project Details Components
 
-- [ ] 6.1 Create ProjectDetailsPage
-  - Create `src/features/developer-dashboard/pages/ProjectDetailsPage.tsx`
+- [ ] 7.1 Create ProjectDetailsPage components
   - Use useProject hook
   - Implement tab navigation
   - _Requirements: 1.3_

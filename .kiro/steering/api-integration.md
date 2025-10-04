@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains how the LinkShield client integrates with the backend API at `https://www.linkshield.site/api/v1`. All API communication follows consistent patterns using Axios for HTTP requests and React Query for state management.
+This document explains how the LinkShield client integrates with the backend API at `https://api.linkshield.site/api/v1`. All API communication follows consistent patterns using Axios for HTTP requests and React Query for state management.
 
 ## Base Configuration
 
@@ -10,12 +10,12 @@ This document explains how the LinkShield client integrates with the backend API
 
 All API requests are made to:
 ```
-https://www.linkshield.site/api/v1
+https://api.linkshield.site/api/v1
 ```
 
 This base URL is configured via environment variable:
 ```bash
-NEXT_PUBLIC_API_BASE_URL=https://www.linkshield.site/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 ```
 
 ### Axios Instance
@@ -28,7 +28,7 @@ import axios from 'axios';
 import { authStore } from '@/stores/authStore';
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://www.linkshield.site/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.linkshield.site/api/v1',
   timeout: 30000, // 30 seconds
   headers: {
     'Content-Type': 'application/json',

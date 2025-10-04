@@ -1,8 +1,10 @@
 # Implementation Plan
 
+**Note**: All tasks below are marked as incomplete and need to be implemented.
+
 ## 1. Project Setup and Core Infrastructure
 
-- [x] 1.1 Set up authentication module structure
+- [ ] 1.1 Set up authentication module structure
   - Create authentication components in `src/components/auth/` directory
   - Create authentication hooks in `src/hooks/auth/` directory
   - Create authentication services in `src/services/` directory
@@ -10,14 +12,14 @@
   - Set up barrel exports in index files
   - _Requirements: All authentication requirements_
 
-- [x] 1.2 Configure API client with interceptors
+- [ ] 1.2 Configure API client with interceptors
   - Create `src/lib/api-client.ts` with axios instance
   - Implement request interceptor to add Bearer token from auth store
   - Implement response interceptor for 401 handling and automatic logout
   - Add error response transformation utility
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11, 1.12_
 
-- [x] 1.3 Set up Zustand auth store
+- [ ] 1.3 Set up Zustand auth store
   - Create `src/stores/auth-store.ts` with AuthStore interface
   - Implement state: user, token, isAuthenticated, isLoading
   - Implement actions: setUser, setToken, clearAuth, setLoading
@@ -26,7 +28,7 @@
 
 ## 2. Type Definitions and Data Models
 
-- [x] 2.1 Create TypeScript interfaces for authentication
+- [ ] 2.1 Create TypeScript interfaces for authentication
   - Create `src/types/auth.ts`
   - Define User, SubscriptionPlan, Session interfaces
   - Define LoginResponse, RegisterFormData, LoginFormData interfaces
@@ -34,7 +36,7 @@
   - Define API error response types
   - _Requirements: All authentication requirements_
 
-- [x] 2.2 Create validation schemas with Zod
+- [ ] 2.2 Create validation schemas with Zod
   - Create `src/lib/validations/auth.ts`
   - Define registerSchema with email, password, full_name, company, accept_terms, marketing_consent
   - Define loginSchema with email, password, remember_me
@@ -45,7 +47,7 @@
 
 ## 3. API Integration Layer
 
-- [x] 3.1 Implement authentication API methods
+- [ ] 3.1 Implement authentication API methods
   - Create `src/services/auth.service.ts`
   - Implement register(data: RegisterFormData): Promise<User>
   - Implement login(data: LoginFormData): Promise<LoginResponse>
@@ -54,7 +56,7 @@
   - Implement resendVerification(email: string): Promise<void>
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [x] 3.2 Implement profile and session API methods
+- [ ] 3.2 Implement profile and session API methods
   - Add to `src/services/auth.service.ts`
   - Implement getProfile(): Promise<User>
   - Implement updateProfile(data: Partial<User>): Promise<User>
@@ -68,7 +70,7 @@
 
 ## 4. React Query Hooks
 
-- [x] 4.1 Create authentication mutation hooks
+- [ ] 4.1 Create authentication mutation hooks
   - Create `src/hooks/auth/use-auth-mutations.ts`
   - Implement useLogin hook with mutation, success/error handling, and auth store updates
   - Implement useRegister hook with mutation and success message
@@ -77,7 +79,7 @@
   - Implement useResendVerification hook with rate limit handling
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [x] 4.2 Create profile and password mutation hooks
+- [ ] 4.2 Create profile and password mutation hooks
   - Create `src/hooks/auth/use-profile-mutations.ts`
   - Implement useUpdateProfile hook with optimistic updates
   - Implement useChangePassword hook with session invalidation warning
@@ -85,14 +87,14 @@
   - Implement useResetPassword hook
   - _Requirements: 1.7, 1.8, 1.10, 1.11_
 
-- [x] 4.3 Create session management hooks
+- [ ] 4.3 Create session management hooks
   - Create `src/hooks/auth/use-sessions.ts`
   - Implement useSessions query hook with auto-refresh
   - Implement useRevokeSession mutation hook
   - Implement useTerminateAllSessions mutation hook with confirmation
   - _Requirements: 1.9_
 
-- [x] 4.4 Create profile query hook
+- [ ] 4.4 Create profile query hook
   - Create `src/hooks/auth/use-profile.ts`
   - Implement useProfile query hook with caching (5 min stale time)
   - Add enabled condition based on auth token presence
@@ -101,7 +103,7 @@
 
 ## 5. Shared Utility Components
 
-- [x] 5.1 Create PasswordStrengthIndicator component
+- [ ] 5.1 Create PasswordStrengthIndicator component
   - Create `src/components/auth/PasswordStrengthIndicator.tsx`
   - Implement password strength calculation (0-100%)
   - Display visual indicator with color coding (red/orange/yellow/green)
@@ -109,7 +111,7 @@
   - Write unit tests for strength calculation
   - _Requirements: 1.1, 1.8, 1.11_
 
-- [x] 5.2 Create RequireAuth route wrapper component
+- [ ] 5.2 Create RequireAuth route wrapper component
   - Create `src/components/auth/RequireAuth.tsx`
   - Check authentication state from auth store
   - Redirect to /login with return URL if not authenticated
@@ -117,7 +119,7 @@
   - Write tests for redirect behavior
   - _Requirements: 1.12_
 
-- [x] 5.3 Create AuthProvider context component
+- [ ] 5.3 Create AuthProvider context component
   - Create `src/components/auth/AuthProvider.tsx`
   - Provide auth context with user, token, isAuthenticated, isLoading
   - Provide login, logout, register, updateUser, clearAuth methods
@@ -127,7 +129,7 @@
 
 ## 6. Registration Feature
 
-- [x] 6.1 Create RegisterForm component
+- [ ] 6.1 Create RegisterForm component
   - Create `src/components/auth/RegisterForm.tsx`
   - Implement form with react-hook-form and Zod validation
   - Add fields: email, password, confirmPassword, full_name, company (optional)
@@ -137,7 +139,7 @@
   - Display validation errors inline
   - _Requirements: 1.1_
 
-- [x] 6.2 Create RegisterPage component
+- [ ] 6.2 Create RegisterPage component
   - Create `src/app/(auth)/register/page.tsx`
   - Render RegisterForm component
   - Use useRegister hook for form submission
@@ -149,7 +151,7 @@
 
 ## 7. Login Feature
 
-- [x] 7.1 Create LoginForm component
+- [ ] 7.1 Create LoginForm component
   - Create `src/components/auth/LoginForm.tsx`
   - Implement form with react-hook-form and Zod validation
   - Add fields: email, password
@@ -159,7 +161,7 @@
   - Add "Forgot Password?" link
   - _Requirements: 1.2_
 
-- [x] 7.2 Create LoginPage component
+- [ ] 7.2 Create LoginPage component
   - Create `src/app/(auth)/login/page.tsx`
   - Render LoginForm component
   - Use useLogin hook for form submission
@@ -173,7 +175,7 @@
 
 ## 8. Email Verification Feature
 
-- [x] 8.1 Create VerifyEmailPage component
+- [ ] 8.1 Create VerifyEmailPage component
   - Create `src/app/(auth)/verify-email/page.tsx`
   - Extract token from URL params using useSearchParams from Next.js
   - Use useVerifyEmail hook to automatically verify on mount
@@ -184,7 +186,7 @@
   - Handle 400 error for invalid/expired token
   - _Requirements: 1.3_
 
-- [x] 8.2 Create ResendVerification component
+- [ ] 8.2 Create ResendVerification component
   - Create `src/components/auth/ResendVerification.tsx`
   - Implement form with email input
   - Use useResendVerification hook
@@ -195,7 +197,7 @@
 
 ## 9. Password Reset Feature
 
-- [x] 9.1 Create ForgotPasswordPage component
+- [ ] 9.1 Create ForgotPasswordPage component
   - Create `src/app/(auth)/forgot-password/page.tsx`
   - Implement form with email input
   - Use useForgotPassword hook
@@ -204,7 +206,7 @@
   - Add link back to login
   - _Requirements: 1.10_
 
-- [x] 9.2 Create ResetPasswordPage component
+- [ ] 9.2 Create ResetPasswordPage component
   - Create `src/app/(auth)/reset-password/page.tsx`
   - Extract token from URL params
   - Implement form with new_password and confirm_password fields
@@ -218,7 +220,7 @@
 
 ## 10. Profile Management Feature
 
-- [x] 10.1 Create ProfilePage component
+- [ ] 10.1 Create ProfilePage component
   - Create `src/app/dashboard/profile/page.tsx`
   - Use useProfile hook to fetch profile data
   - Display loading skeleton while fetching
@@ -228,7 +230,7 @@
   - Add upgrade CTA if on free plan
   - _Requirements: 1.6_
 
-- [x] 10.2 Create ProfileEditForm component
+- [ ] 10.2 Create ProfileEditForm component
   - Create `src/components/auth/ProfileEditForm.tsx`
   - Implement form with editable fields: full_name, company, profile_picture_url, timezone, language, marketing_consent
   - Use useUpdateProfile hook
@@ -238,7 +240,7 @@
   - Implement optimistic UI updates
   - _Requirements: 1.7_
 
-- [x] 10.3 Create ChangePasswordModal component
+- [ ] 10.3 Create ChangePasswordModal component
   - Create `src/components/auth/ChangePasswordModal.tsx`
   - Implement form with current_password, new_password, confirm_password
   - Integrate PasswordStrengthIndicator for new password
@@ -250,7 +252,7 @@
 
 ## 11. Session Management Feature
 
-- [x] 11.1 Create SessionsTable component
+- [ ] 11.1 Create SessionsTable component
   - Create `src/components/auth/SessionsTable.tsx`
   - Display table columns: Device Info, IP Address, Last Activity, Created At, Status, Actions
   - Mark current session with badge
@@ -260,7 +262,7 @@
   - Display empty state if no sessions
   - _Requirements: 1.9_
 
-- [x] 11.2 Create SessionsPage component
+- [ ] 11.2 Create SessionsPage component
   - Create `src/app/dashboard/sessions/page.tsx`
   - Use useSessions hook to fetch sessions
   - Render SessionsTable component
@@ -289,7 +291,7 @@
 
 ## 13. Error Handling and User Feedback
 
-- [x] 13.1 Create error message mapping utility
+- [ ] 13.1 Create error message mapping utility
   - Create `src/lib/utils/error-messages.ts`
   - Map backend error codes to user-friendly messages
   - Include all error codes from requirements

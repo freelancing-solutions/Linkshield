@@ -3,12 +3,16 @@
 ## 1. Project Setup
 
 - [ ] 1.1 Create API keys module structure
-  - Create `src/features/api-keys` directory with subdirectories: `components`, `hooks`, `api`, `types`, `utils`
-  - Set up barrel exports in index files
+  - Create `src/components/api-keys/` directory for components
+  - Create `src/hooks/api-keys/` directory for React Query hooks
+  - Create `src/types/api-keys.ts` for TypeScript interfaces
+  - Create `src/services/api-keys.service.ts` for API client methods
+  - Create `src/lib/utils/api-keys.ts` for utility functions
+  - Create `src/app/dashboard/api-keys/page.tsx` for the main page
   - _Requirements: All API key requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Create `src/features/api-keys/types/index.ts`
+  - Create `src/types/api-keys.ts`
   - Define ApiKey, ApiKeyResponse, CreateApiKeyRequest interfaces
   - Define Permission type and permission options
   - _Requirements: 1.1, 1.2, 1.6_
@@ -16,14 +20,14 @@
 ## 2. API Integration
 
 - [ ] 2.1 Implement API client methods
-  - Create `src/features/api-keys/api/api-keys-api.ts`
+  - Create `src/services/api-keys.service.ts`
   - Implement getApiKeys(): Promise<ApiKey[]>
   - Implement createApiKey(data): Promise<ApiKeyResponse>
   - Implement deleteApiKey(keyId): Promise<void>
   - _Requirements: 1.1, 1.2, 1.3_
 
 - [ ] 2.2 Create React Query hooks
-  - Create `src/features/api-keys/hooks/use-api-keys.ts`
+  - Create `src/hooks/api-keys/use-api-keys.ts`
   - Implement useApiKeys query hook with 2-minute stale time
   - Implement useCreateApiKey mutation hook with cache invalidation
   - Implement useDeleteApiKey mutation hook with cache invalidation
@@ -32,7 +36,7 @@
 ## 3. Core Components
 
 - [ ] 3.1 Create ApiKeysPage component
-  - Create `src/features/api-keys/pages/ApiKeysPage.tsx`
+  - Create `src/app/dashboard/api-keys/page.tsx`
   - Implement page layout with header and list
   - Manage modal state (create, reveal, delete)
   - Use useApiKeys hook to fetch data
@@ -40,14 +44,14 @@
   - _Requirements: 1.1, 1.2, 1.3_
 
 - [ ] 3.2 Create ApiKeysList component
-  - Create `src/features/api-keys/components/ApiKeysList.tsx`
+  - Create `src/components/api-keys/ApiKeysList.tsx`
   - Display table with columns: name, key_preview, permissions, status, last_used, expires, actions
   - Implement empty state when no keys exist
   - Add sorting functionality
   - _Requirements: 1.1, 1.5_
 
 - [ ] 3.3 Create ApiKeyRow component
-  - Create `src/features/api-keys/components/ApiKeyRow.tsx`
+  - Create `src/components/api-keys/ApiKeyRow.tsx`
   - Implement expandable row for details
   - Display status badges (Active, Expired, Inactive, Expiring Soon)
   - Show delete button with confirmation
@@ -56,14 +60,14 @@
 ## 4. Create API Key Feature
 
 - [ ] 4.1 Create CreateApiKeyModal component
-  - Create `src/features/api-keys/components/CreateApiKeyModal.tsx`
+  - Create `src/components/api-keys/CreateApiKeyModal.tsx`
   - Implement modal with form fields
   - Add name, description, expires_at, permissions fields
   - Use react-hook-form with Zod validation
   - _Requirements: 1.2_
 
 - [ ] 4.2 Create PermissionSelector component
-  - Create `src/features/api-keys/components/PermissionSelector.tsx`
+  - Create `src/components/api-keys/PermissionSelector.tsx`
   - Implement multi-select checkboxes for permissions
   - Display permission descriptions
   - Validate at least one permission selected
@@ -88,7 +92,7 @@
 ## 5. Reveal API Key Feature
 
 - [ ] 5.1 Create ApiKeyRevealModal component
-  - Create `src/features/api-keys/components/ApiKeyRevealModal.tsx`
+  - Create `src/components/api-keys/ApiKeyRevealModal.tsx`
   - Display full API key in monospace font
   - Show warning: "This is the only time you will see this key"
   - Add copy to clipboard button
@@ -96,7 +100,7 @@
   - _Requirements: 1.2, 1.4_
 
 - [ ] 5.2 Implement secure clipboard functionality
-  - Create `src/features/api-keys/utils/clipboard.ts`
+  - Create `src/lib/utils/api-keys.ts`
   - Implement copyToClipboard using Clipboard API
   - Add fallback for browsers without Clipboard API
   - Show success toast on copy
@@ -113,7 +117,7 @@
 ## 6. Delete API Key Feature
 
 - [ ] 6.1 Create DeleteApiKeyDialog component
-  - Create `src/features/api-keys/components/DeleteApiKeyDialog.tsx`
+  - Create `src/components/api-keys/DeleteApiKeyDialog.tsx`
   - Display confirmation dialog with key name
   - Show warning about immediate access revocation
   - Add "I understand" confirmation checkbox
@@ -153,7 +157,7 @@
 ## 8. Error Handling
 
 - [ ] 8.1 Create error message mapping
-  - Create `src/features/api-keys/utils/error-messages.ts`
+  - Create `src/lib/utils/error-messages.ts`
   - Map API_KEY_LIMIT_REACHED to user message with upgrade CTA
   - Map INVALID_PERMISSION to validation error
   - Map API_KEY_NOT_FOUND to not found message

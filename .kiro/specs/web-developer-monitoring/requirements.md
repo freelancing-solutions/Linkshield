@@ -264,7 +264,7 @@ The Web Developer Monitoring feature provides developers with comprehensive tool
 ## Base URLs
 
 - **Client Base**: https://www.linkshield.site
-- **API Base**: https://www.linkshield.site/api/v1
+- **API Base**: https://api.linkshield.site/api/v1
 
 ## API Endpoints
 

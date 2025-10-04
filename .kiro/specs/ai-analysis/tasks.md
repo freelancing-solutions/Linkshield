@@ -61,14 +61,14 @@
 ## 4. Content Submission Feature
 
 - [ ] 4.1 Create AiAnalyzePage component
-  - Create `src/features/ai-analysis/pages/AiAnalyzePage.tsx`
+  - Create `src/app/ai-analysis/page.tsx`
   - Implement page layout with input form and status display
   - Use useSubmitAnalysis and useAnalysis hooks
   - Handle navigation to results on completion
   - _Requirements: 1.1, 1.2_
 
 - [ ] 4.2 Create ContentInputForm component
-  - Create `src/features/ai-analysis/components/ContentInputForm.tsx`
+  - Create `src/components/ai-analysis/ContentInputForm.tsx`
   - Add input type selector (URL or Text)
   - Add URL input with validation
   - Add text textarea with character count (50-10000)
@@ -77,7 +77,7 @@
   - _Requirements: 1.1_
 
 - [ ] 4.3 Create ProcessingStatus component
-  - Create `src/features/ai-analysis/components/ProcessingStatus.tsx`
+  - Create `src/components/ai-analysis/ProcessingStatus.tsx`
   - Display status: PENDING, PROCESSING, COMPLETED, FAILED
   - Show progress indicator for PROCESSING
   - Display estimated completion time
@@ -87,7 +87,7 @@
 ## 5. Analysis Results Feature
 
 - [ ] 5.1 Create AnalysisDetailPage component
-  - Create `src/features/ai-analysis/pages/AnalysisDetailPage.tsx`
+  - Create `src/app/ai-analysis/[id]/page.tsx`
   - Use useAnalysis hook with polling
   - Display loading state during processing
   - Show complete results when COMPLETED
@@ -95,7 +95,7 @@
   - _Requirements: 1.2_
 
 - [ ] 5.2 Create AnalysisSummary component
-  - Create `src/features/ai-analysis/components/AnalysisSummary.tsx`
+  - Create `src/components/ai-analysis/AnalysisSummary.tsx`
   - Display content preview
   - Show phishing score with color coding
   - Show content quality score
@@ -104,7 +104,7 @@
   - _Requirements: 1.2_
 
 - [ ] 5.3 Create ThreatIndicators component
-  - Create `src/features/ai-analysis/components/ThreatIndicators.tsx`
+  - Create `src/components/ai-analysis/ThreatIndicators.tsx`
   - Display list of threat indicators
   - Show severity badges
   - Display confidence scores
@@ -112,14 +112,14 @@
   - _Requirements: 1.2_
 
 - [ ] 5.4 Create ManipulationTactics component
-  - Create `src/features/ai-analysis/components/ManipulationTactics.tsx`
+  - Create `src/components/ai-analysis/ManipulationTactics.tsx`
   - Display identified manipulation tactics
   - Show descriptions and examples
   - Display impact assessment
   - _Requirements: 1.2_
 
 - [ ] 5.5 Create Recommendations component
-  - Create `src/features/ai-analysis/components/Recommendations.tsx`
+  - Create `src/components/ai-analysis/Recommendations.tsx`
   - Display actionable recommendations
   - Show priority badges
   - Group by priority level
@@ -128,7 +128,7 @@
 ## 6. Similar Content Feature
 
 - [ ] 6.1 Create SimilarContentPanel component
-  - Create `src/features/ai-analysis/components/SimilarContentPanel.tsx`
+  - Create `src/components/ai-analysis/SimilarContentPanel.tsx`
   - Use useSimilarContent hook
   - Display list of similar analyses
   - Show similarity scores with visual indicators
@@ -140,14 +140,14 @@
 ## 7. Analysis History Feature
 
 - [ ] 7.1 Create AnalysisHistoryPage component
-  - Create `src/features/ai-analysis/pages/AnalysisHistoryPage.tsx`
+  - Create `src/app/ai-analysis/history/page.tsx`
   - Use useAnalysisHistory hook
   - Implement filters and pagination
   - Handle loading and error states
   - _Requirements: 1.4_
 
 - [ ] 7.2 Create HistoryFilters component
-  - Create `src/features/ai-analysis/components/HistoryFilters.tsx`
+  - Create `src/components/ai-analysis/HistoryFilters.tsx`
   - Add risk level filter dropdown
   - Add status filter dropdown
   - Add date range picker
@@ -156,7 +156,7 @@
   - _Requirements: 1.4_
 
 - [ ] 7.3 Create AnalysisHistoryTable component
-  - Create `src/features/ai-analysis/components/AnalysisHistoryTable.tsx`
+  - Create `src/components/ai-analysis/AnalysisHistoryTable.tsx`
   - Display columns: content preview, risk level, phishing score, analyzed date, actions
   - Implement row click to navigate to detail
   - Add status badges
@@ -166,20 +166,20 @@
 ## 8. Domain Statistics Feature
 
 - [ ] 8.1 Create DomainStatsPage component
-  - Create `src/features/ai-analysis/pages/DomainStatsPage.tsx`
+  - Create `src/app/ai-analysis/domain-stats/page.tsx`
   - Implement domain input and results display
   - Use useDomainStats hook
   - _Requirements: 1.5_
 
 - [ ] 8.2 Create DomainInput component
-  - Create `src/features/ai-analysis/components/DomainInput.tsx`
+  - Create `src/components/ai-analysis/DomainInput.tsx`
   - Add domain input with validation
   - Add lookup button
   - Show recent lookups
   - _Requirements: 1.5_
 
 - [ ] 8.3 Create DomainStatsPanel component
-  - Create `src/features/ai-analysis/components/DomainStatsPanel.tsx`
+  - Create `src/components/ai-analysis/DomainStatsPanel.tsx`
   - Display total analyses, average scores
   - Show threat distribution chart
   - Display score trends line chart
@@ -197,7 +197,7 @@
   - _Requirements: 1.6_
 
 - [ ] 9.2 Create ServiceStatusBanner component
-  - Create `src/features/ai-analysis/components/ServiceStatusBanner.tsx`
+  - Create `src/components/ai-analysis/ServiceStatusBanner.tsx`
   - Use useServiceStatus hook
   - Display status indicator (operational, degraded, down)
   - Show warning/error messages
@@ -208,14 +208,14 @@
 ## 10. Shared Components
 
 - [ ] 10.1 Create RiskLevelBadge component
-  - Create `src/features/ai-analysis/components/RiskLevelBadge.tsx`
+  - Create `src/components/ai-analysis/RiskLevelBadge.tsx`
   - Implement color-coded badges (green, yellow, orange, red)
   - Add icons for each risk level
   - Ensure accessibility
   - _Requirements: 1.2, 1.4_
 
 - [ ] 10.2 Create ScoreDisplay component
-  - Create `src/features/ai-analysis/components/ScoreDisplay.tsx`
+  - Create `src/components/ai-analysis/ScoreDisplay.tsx`
   - Display score (0-100) with color coding
   - Add progress bar visualization
   - Show score label
@@ -224,7 +224,7 @@
 ## 11. Error Handling
 
 - [ ] 11.1 Create error message mapping
-  - Create `src/features/ai-analysis/utils/error-messages.ts`
+  - Create `src/lib/utils/ai-analysis-errors.ts`
   - Map all error codes to user-friendly messages
   - Include dynamic values (retry times, limits)
   - _Requirements: All requirements_

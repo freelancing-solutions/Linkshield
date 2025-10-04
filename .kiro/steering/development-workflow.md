@@ -62,7 +62,7 @@ Edit `.env.local` with your configuration:
 
 ```bash
 # API Configuration (client-accessible)
-NEXT_PUBLIC_API_BASE_URL=https://www.linkshield.site/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 
 # Environment (client-accessible)
 NEXT_PUBLIC_ENV=development
@@ -446,7 +446,7 @@ Configure `vercel.json`:
   "outputDirectory": ".next",
   "framework": "nextjs",
   "env": {
-    "NEXT_PUBLIC_API_BASE_URL": "https://www.linkshield.site/api/v1",
+    "NEXT_PUBLIC_API_BASE_URL": "https://api.linkshield.site/api/v1",
     "NODE_ENV": "production"
   }
 }
@@ -481,7 +481,7 @@ Configure `netlify.toml`:
   status = 200
 
 [build.environment]
-  NEXT_PUBLIC_API_BASE_URL = "https://www.linkshield.site/api/v1"
+  NEXT_PUBLIC_API_BASE_URL = "https://api.linkshield.site/api/v1"
   NODE_ENV = "production"
 ```
 

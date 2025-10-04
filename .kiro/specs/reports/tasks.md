@@ -3,39 +3,43 @@
 ## 1. Project Setup
 
 - [ ] 1.1 Create reports module structure
-  - Create `src/features/reports` directory with subdirectories
+  - Create `src/components/reports` directory with subdirectories
+  - Create `src/hooks/reports` directory for React Query hooks
+  - Create `src/types/reports.ts` for TypeScript interfaces
   - Set up barrel exports
   - _Requirements: All reports requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Define Report, Evidence, ReportTemplate, ReportStats interfaces
+  - Define Report, Evidence, ReportTemplate, ReportStats interfaces in `src/types/reports.ts`
   - Define ReportType enum and filters
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
 
 ## 2. API Integration
 
 - [ ] 2.1 Implement reports API methods
-  - Create `src/features/reports/api/reports-api.ts`
+  - Create `src/services/reports.service.ts`
   - Implement submitReport, getReports, getReport methods
   - Implement voteReport, getTemplates, getStats methods
   - _Requirements: All requirements_
 
 - [ ] 2.2 Create React Query hooks
-  - Implement useSubmitReport mutation hook
-  - Implement useReports query hook with filters
-  - Implement useReport, useVoteReport hooks
-  - Implement useReportTemplates, useReportStats hooks
+  - Implement useSubmitReport mutation hook in `src/hooks/reports/`
+  - Implement useReports query hook with filters in `src/hooks/reports/`
+  - Implement useReport, useVoteReport hooks in `src/hooks/reports/`
+  - Implement useReportTemplates, useReportStats hooks in `src/hooks/reports/`
   - _Requirements: All requirements_
 
 ## 3. Submit Report Feature
 
 - [ ] 3.1 Create SubmitReportPage component
+  - Create `src/app/reports/submit/page.tsx`
   - Create page layout with form and template selector
   - Use useSubmitReport and useReportTemplates hooks
   - Handle success and error states
   - _Requirements: 1.1, 1.5_
 
 - [ ] 3.2 Create ReportForm component
+  - Create `src/components/reports/ReportForm.tsx`
   - Add URL input with validation
   - Add report type selector
   - Add title and description fields
@@ -44,6 +48,7 @@
   - _Requirements: 1.1_
 
 - [ ] 3.3 Create TemplateSelector component
+  - Create `src/components/reports/TemplateSelector.tsx`
   - Display templates by report type
   - Allow template selection
   - Pre-fill form with template content

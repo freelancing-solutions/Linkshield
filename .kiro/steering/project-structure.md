@@ -602,7 +602,7 @@ import { UrlCheckForm, UrlHistoryTable } from '@/components/url-analysis';
 **Example .env.example**:
 ```bash
 # API Configuration (Client-side)
-NEXT_PUBLIC_API_BASE_URL=https://www.linkshield.site/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 
 # Feature Flags (Client-side)
 NEXT_PUBLIC_ENABLE_ANALYTICS=true
@@ -627,7 +627,7 @@ Variables accessible in the browser must have the `NEXT_PUBLIC_` prefix:
 
 ```bash
 # .env.local
-NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 NEXT_PUBLIC_ENV=development
 NEXT_PUBLIC_ENABLE_ANALYTICS=false
 ```

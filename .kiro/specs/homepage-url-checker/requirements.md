@@ -146,7 +146,7 @@ The Homepage URL Checker is the public-facing entry point for LinkShield, provid
 ## Base URLs
 
 - **Client Base**: https://www.linkshield.site
-- **API Base**: https://www.linkshield.site/api/v1
+- **API Base**: https://api.linkshield.site/api/v1
 
 ## API Endpoints
 

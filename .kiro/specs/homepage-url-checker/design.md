@@ -11,7 +11,7 @@ UI
   - SubscriptionPlanCard: shows current plan and usage with Upgrade CTA.
 
 Data Flow
-- Input -> validate -> POST https://api.linkshield.site/api/v1/url-check/check.
+- Input -> validate -> POST https://api.linkshield.site/api/v1/url-check/check
 - On success -> render results; on 429 -> show rate limit info (if X-RateLimit-* headers present) or generic guidance.
 - If user authenticated -> enable comprehensive/deep; otherwise show sign-up prompts.
 - ExtensionStatusCard -> GET /api/v1/social-protection/extension/status; Analytics link -> GET /api/v1/social-protection/extension/analytics?time_range.

@@ -4,7 +4,7 @@
 
 The LinkShield client is a modern React-based web application that provides a comprehensive user interface for URL security analysis, AI-powered content analysis, subscription management, and social protection features. 
 
-**Important Architectural Principle**: The LinkShield client is a **thin presentation layer** that consumes the backend API. All business logic, data validation, security enforcement, and data persistence reside in the backend at `https://www.linkshield.site/api/v1`. The client is responsible solely for:
+**Important Architectural Principle**: The LinkShield client is a **thin presentation layer** that consumes the backend API. All business logic, data validation, security enforcement, and data persistence reside in the backend at `https://api.linkshield.site/api/v1`. The client is responsible solely for:
 
 - User interface rendering and user experience
 - Client-side routing and navigation

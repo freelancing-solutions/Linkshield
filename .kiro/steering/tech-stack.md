@@ -135,19 +135,26 @@ const { register, handleSubmit } = useForm<LoginFormData>({
 
 ## UI Component Library
 
-### shadcn/ui (Radix UI + Tailwind)
+### shadcn/ui (Radix UI + Tailwind CSS) ⭐ PRIMARY UI LIBRARY
 
-- **Purpose**: Accessible, customizable component primitives built on Radix UI
-- **Why**: Copy-paste components (not npm package), full control over code, accessible by default (WCAG AA), excellent TypeScript support
+- **Purpose**: Accessible, customizable component primitives built on Radix UI - **This is our primary UI component library**
+- **Why**: Copy-paste components (not npm package), full control over code, accessible by default (WCAG AA), excellent TypeScript support, seamless Tailwind CSS integration
+- **Architecture**: Components are copied into your project (`src/components/ui/`) rather than installed as dependencies, giving you complete ownership and customization control
+- **Installation**: Components are added via CLI: `npx shadcn-ui@latest add button`
 - **Key Components**: 
-  - Button, Input, Select, Checkbox, Radio
-  - Dialog, Sheet, Popover, Dropdown Menu
-  - Form, Label, Error Message
-  - Table, Tabs, Accordion
-  - Toast, Alert, Badge
-  - Card, Separator, Avatar
-- **Accessibility**: Built on Radix UI primitives with ARIA attributes and keyboard navigation
+  - **Form Controls**: Button, Input, Select, Checkbox, Radio, Switch, Slider, Textarea
+  - **Overlays**: Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Hover Card
+  - **Forms**: Form (with React Hook Form integration), Label, Error Message
+  - **Data Display**: Table, Tabs, Accordion, Card, Badge, Avatar, Separator
+  - **Feedback**: Toast, Alert, Alert Dialog, Progress, Skeleton
+  - **Navigation**: Command, Navigation Menu, Breadcrumb
+  - **Layout**: Aspect Ratio, Scroll Area, Resizable
+- **Accessibility**: Built on Radix UI primitives with ARIA attributes, keyboard navigation, and focus management
+- **Styling**: Uses Tailwind CSS utility classes with CSS variables for theming
+- **TypeScript**: Fully typed with excellent IntelliSense support
 - **Documentation**: https://ui.shadcn.com
+
+**Important**: All UI components in this application should use shadcn/ui components. Do not create custom button, input, dialog, or other UI primitives from scratch - use the shadcn/ui versions instead.
 
 ### Tailwind CSS 3.4+
 
@@ -181,6 +188,132 @@ module.exports = {
 };
 ```
 
+## shadcn/ui Usage Guidelines
+
+### Component Installation
+
+shadcn/ui components are installed individually as needed:
+
+```bash
+# Install a single component
+npx shadcn-ui@latest add button
+
+# Install multiple components
+npx shadcn-ui@latest add button input form dialog
+
+# Components are copied to src/components/ui/
+```
+
+### Component Usage Example
+
+```typescript
+// Import shadcn/ui components from @/components/ui
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+// Use in your components
+export function LoginForm() {
+  return (
+    <form>
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="Enter your email" />
+      </div>
+      <Button type="submit">Log In</Button>
+    </form>
+  );
+}
+```
+
+### Form Integration with React Hook Form
+
+shadcn/ui provides a Form component that integrates seamlessly with React Hook Form:
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} type="email" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  );
+}
+```
+
+### Customization
+
+Since components are copied into your project, you can customize them directly:
+
+```typescript
+// src/components/ui/button.tsx
+// Modify variants, sizes, or add new ones
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input hover:bg-accent hover:text-accent-foreground",
+        // Add your custom variant
+        custom: "bg-gradient-to-r from-blue-500 to-purple-500 text-white",
+      },
+    },
+  }
+);
+```
+
+### Available Components
+
+The following shadcn/ui components are commonly used in this application:
+
+- **Forms**: Button, Input, Textarea, Select, Checkbox, Radio Group, Switch, Slider, Form
+- **Overlays**: Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Alert Dialog
+- **Data Display**: Table, Card, Badge, Avatar, Separator, Tabs, Accordion
+- **Feedback**: Toast, Alert, Progress, Skeleton
+- **Navigation**: Command, Navigation Menu, Breadcrumb
+
+### Best Practices
+
+1. **Always use shadcn/ui components** instead of creating custom UI primitives
+2. **Install components as needed** rather than all at once
+3. **Customize in place** by editing the component files in `src/components/ui/`
+4. **Follow the composition pattern** by combining shadcn/ui components
+5. **Use the Form component** for all forms with React Hook Form integration
+6. **Leverage variants** for different component styles rather than custom classes
+
 ## HTTP Client
 
 ### Axios 1.6+
@@ -188,7 +321,7 @@ module.exports = {
 - **Purpose**: Promise-based HTTP client for making API requests
 - **Why**: Request/response interceptors, automatic JSON parsing, request cancellation, better error handling than fetch
 - **Configuration**: 
-  - Base URL: `https://www.linkshield.site/api/v1`
+  - Base URL: `https://api.linkshield.site/api/v1`
   - Request interceptor for auth token injection
   - Response interceptor for error handling
   - Timeout configuration
@@ -205,7 +338,7 @@ module.exports = {
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'https://www.linkshield.site/api/v1',
+  baseURL: 'https://api.linkshield.site/api/v1',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -384,7 +517,7 @@ The application uses environment variables for configuration:
 
 ```bash
 # API Configuration (client)
-NEXT_PUBLIC_API_BASE_URL=https://www.linkshield.site/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 
 # Feature Flags (client)
 NEXT_PUBLIC_ENABLE_ANALYTICS=true

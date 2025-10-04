@@ -1,7 +1,7 @@
 # Email Verification — Requirements
 
 Scope: Verify email via token and support resending verification emails.
-Base URL: https://api.linkshield.com/api/v1/user
+Base URL: https://api.linkshield.site/api/v1/user
 
 Functional Requirements
 - Verify email: POST /api/v1/user/verify-email

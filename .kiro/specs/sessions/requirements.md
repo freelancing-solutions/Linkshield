@@ -179,7 +179,7 @@ The Session Management feature enables authenticated users to view, monitor, and
 ## Base URLs
 
 - **Client Base**: https://www.linkshield.site
-- **API Base**: https://www.linkshield.site/api/v1
+- **API Base**: https://api.linkshield.site/api/v1
 
 ## API Endpoints
 

@@ -8,7 +8,7 @@ The LinkShield client application follows a modern, layered architecture designe
 
 ### 1. API-Driven Thin Client
 
-The LinkShield client is a **thin presentation layer** that consumes the backend API at `https://www.linkshield.site/api/v1`. This is the most fundamental architectural principle that influences all design decisions.
+The LinkShield client is a **thin presentation layer** that consumes the backend API at `https://api.linkshield.site/api/v1`. This is the most fundamental architectural principle that influences all design decisions.
 
 #### Backend Responsibilities
 
@@ -305,7 +305,7 @@ export const useCreateReport = () => {
 ```typescript
 // src/services/api.ts
 export const apiClient = axios.create({
-  baseURL: 'https://www.linkshield.site/api/v1',
+  baseURL: 'https://api.linkshield.site/api/v1',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

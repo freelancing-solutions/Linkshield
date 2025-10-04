@@ -104,7 +104,7 @@
 
 - [ ] 5.3 Create ScanTypeSelector component
   - Create `src/components/homepage/ScanTypeSelector.tsx`
-  - Display radio buttons for Quick/Deep scan
+  - Display radio buttons for [All Available Scan Types]] scan
   - Show scan type descriptions and timing
   - Disable Deep scan for anonymous users
   - Show upgrade prompt for premium features
@@ -272,7 +272,7 @@
 ## 14. Loading States
 
 - [ ] 14.1 Create LoadingSpinner component
-  - Create `src/features/homepage/components/LoadingSpinner.tsx`
+  - Create `src/components/shared/LoadingSpinner.tsx`
   - Display during URL check
   - Show estimated time remaining
   - Add progress indicator

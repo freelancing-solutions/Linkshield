@@ -370,7 +370,7 @@ NEXT_PUBLIC_API_SECRET_KEY=super_secret_key_123
 NEXT_PUBLIC_DATABASE_PASSWORD=password123
 
 # ✅ Good - Only public configuration
-NEXT_PUBLIC_API_BASE_URL=https://www.linkshield.site/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.linkshield.site/api/v1
 NEXT_PUBLIC_ENABLE_ANALYTICS=true
 NEXT_PUBLIC_ENV=production
 

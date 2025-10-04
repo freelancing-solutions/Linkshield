@@ -430,7 +430,7 @@ const useSessions = () => {
 
 ```typescript
 const apiClient = axios.create({
-  baseURL: 'https://www.linkshield.site/api/v1',
+  baseURL: 'https://api.linkshield.site/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },

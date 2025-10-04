@@ -3,13 +3,16 @@
 ## 1. Project Setup
 
 - [ ] 1.1 Create profile settings module structure
-  - Create `src/features/profile-settings` directory
-  - Create subdirectories: `components`, `hooks`, `api`, `types`, `utils`, `pages`
-  - Create `src/features/profile-settings/index.ts` for barrel exports
+  - Create `src/components/profile-settings/` directory for components
+  - Create `src/hooks/profile-settings/` directory for React Query hooks
+  - Create `src/types/profile-settings.ts` for TypeScript interfaces
+  - Create `src/services/profile-settings.service.ts` for API client methods
+  - Create `src/lib/utils/profile-settings.ts` for utility functions
+  - Create `src/app/dashboard/profile/page.tsx` for the main page
   - _Requirements: All profile settings requirements_
 
 - [ ] 1.2 Create TypeScript interfaces
-  - Create `src/features/profile-settings/types/index.ts`
+  - Create `src/types/profile-settings.ts`
   - Define UserProfile, ProfileUpdateRequest, PasswordChangeRequest interfaces
   - Define NotificationPreferences, ExportOptions interfaces
   - Define SubscriptionPlan interface
@@ -19,7 +22,7 @@
 ## 2. API Integration
 
 - [ ] 2.1 Create profile API client
-  - Create `src/features/profile-settings/api/profile-api.ts`
+  - Create `src/services/profile-settings.service.ts`
   - Implement getProfile(): Promise<UserProfile>
   - Implement updateProfile(data: ProfileUpdateRequest): Promise<UserProfile>
   - Implement changePassword(data: PasswordChangeRequest): Promise<void>
@@ -37,13 +40,13 @@
 ## 3. React Query Hooks
 
 - [ ] 3.1 Create profile query hook
-  - Create `src/features/profile-settings/hooks/use-profile.ts`
+  - Create `src/hooks/profile-settings/use-profile.ts`
   - Implement useProfile() query hook with 5-minute stale time
   - Enable only when user is authenticated
   - _Requirements: 1.1_
 
 - [ ] 3.2 Create profile mutation hooks
-  - Create `src/features/profile-settings/hooks/use-profile-mutations.ts`
+  - Create `src/hooks/profile-settings/use-profile-mutations.ts`
   - Implement useUpdateProfile() mutation hook with optimistic updates
   - Implement useChangePassword() mutation hook
   - Implement useDeleteAccount() mutation hook with confirmation
@@ -51,7 +54,7 @@
   - _Requirements: 1.2, 1.5, 1.9, 1.10_
 
 - [ ] 3.3 Create avatar upload hook
-  - Create `src/features/profile-settings/hooks/use-avatar-upload.ts`
+  - Create `src/hooks/profile-settings/use-avatar-upload.ts`
   - Implement useUploadAvatar() mutation hook
   - Chain with useUpdateProfile to update profile_picture_url
   - Handle upload progress
@@ -60,7 +63,7 @@
 ## 4. Profile Settings Page Layout
 
 - [ ] 4.1 Create ProfileSettingsPage component
-  - Create `src/features/profile-settings/pages/ProfileSettingsPage.tsx`
+  - Create `src/app/dashboard/profile/page.tsx`
   - Use useProfile hook to fetch profile data
   - Implement tab navigation (General, Preferences, Security, Data)
   - Handle loading state with skeleton loaders
@@ -68,14 +71,14 @@
   - _Requirements: All profile settings requirements_
 
 - [ ] 4.2 Create ProfileHeader component
-  - Create `src/features/profile-settings/components/ProfileHeader.tsx`
+  - Create `src/components/profile-settings/ProfileHeader.tsx`
   - Display user avatar with upload button
   - Show user name and email
   - Display account badges (Verified, Active, Role)
   - _Requirements: 1.1, 1.3, 1.6_
 
 - [ ] 4.3 Create ProfileTabs component
-  - Create `src/features/profile-settings/components/ProfileTabs.tsx`
+  - Create `src/components/profile-settings/ProfileTabs.tsx`
   - Implement tab navigation
   - Render active tab content
   - Persist active tab in URL query param
@@ -84,19 +87,19 @@
 ## 5. General Tab
 
 - [ ] 5.1 Create GeneralTab component
-  - Create `src/features/profile-settings/components/GeneralTab.tsx`
+  - Create `src/components/profile-settings/GeneralTab.tsx`
   - Render ProfileInformationSection, AccountInformationSection, SubscriptionSection
   - _Requirements: 1.1, 1.2, 1.6, 1.7_
 
 - [ ] 5.2 Create ProfileInformationSection component
-  - Create `src/features/profile-settings/components/ProfileInformationSection.tsx`
+  - Create `src/components/profile-settings/ProfileInformationSection.tsx`
   - Display full_name, company, profile_picture_url
   - Add "Edit" button to open EditProfileModal
   - Show read-only view by default
   - _Requirements: 1.1, 1.2_
 
 - [ ] 5.3 Create AccountInformationSection component
-  - Create `src/features/profile-settings/components/AccountInformationSection.tsx`
+  - Create `src/components/profile-settings/AccountInformationSection.tsx`
   - Display email (read-only) with verification badge
   - Display role badge
   - Display account status (Active/Inactive)
@@ -104,7 +107,7 @@
   - _Requirements: 1.6_
 
 - [ ] 5.4 Create SubscriptionSection component
-  - Create `src/features/profile-settings/components/SubscriptionSection.tsx`
+  - Create `src/components/profile-settings/SubscriptionSection.tsx`
   - Display current plan name and price
   - Show renewal/cancellation date
   - Display usage summary
@@ -115,7 +118,7 @@
 ## 6. Edit Profile Feature
 
 - [ ] 6.1 Create EditProfileModal component
-  - Create `src/features/profile-settings/components/EditProfileModal.tsx`
+  - Create `src/components/profile-settings/EditProfileModal.tsx`
   - Implement modal with form fields
   - Pre-fill form with current profile data
   - Use react-hook-form with Zod validation
@@ -140,14 +143,14 @@
 ## 7. Avatar Upload Feature
 
 - [ ] 7.1 Create AvatarUpload component
-  - Create `src/features/profile-settings/components/AvatarUpload.tsx`
+  - Create `src/components/profile-settings/AvatarUpload.tsx`
   - Display current avatar or default placeholder
   - Add upload button overlay on hover
   - Open AvatarUploadModal on click
   - _Requirements: 1.3_
 
 - [ ] 7.2 Create AvatarUploadModal component
-  - Create `src/features/profile-settings/components/AvatarUploadModal.tsx`
+  - Create `src/components/profile-settings/AvatarUploadModal.tsx`
   - Display options: Upload Image, Enter URL, Remove Picture
   - Implement file picker for Upload Image
   - Implement URL input for Enter URL
@@ -155,7 +158,7 @@
   - _Requirements: 1.3_
 
 - [ ] 7.3 Implement image validation
-  - Create `src/features/profile-settings/utils/image-validation.ts`
+  - Create `src/lib/utils/profile-settings.ts`
   - Validate file size (max 5MB)
   - Validate file type (jpg, png, gif)
   - Validate dimensions (max 2000x2000px)
@@ -172,12 +175,12 @@
 ## 8. Preferences Tab
 
 - [ ] 8.1 Create PreferencesTab component
-  - Create `src/features/profile-settings/components/PreferencesTab.tsx`
+  - Create `src/components/profile-settings/PreferencesTab.tsx`
   - Render LocalizationSection and NotificationPreferencesSection
   - _Requirements: 1.4, 1.8_
 
 - [ ] 8.2 Create LocalizationSection component
-  - Create `src/features/profile-settings/components/LocalizationSection.tsx`
+  - Create `src/components/profile-settings/LocalizationSection.tsx`
   - Add timezone dropdown with searchable list
   - Add language dropdown with supported languages
   - Use useUpdateProfile hook for changes
@@ -185,7 +188,7 @@
   - _Requirements: 1.4_
 
 - [ ] 8.3 Create NotificationPreferencesSection component
-  - Create `src/features/profile-settings/components/NotificationPreferencesSection.tsx`
+  - Create `src/components/profile-settings/NotificationPreferencesSection.tsx`
   - Display toggles for: Security Alerts, URL Check Results, Team Invitations, Product Updates, Marketing Emails
   - Use useUpdateProfile hook for changes
   - Show warning for disabling Security Alerts
@@ -201,19 +204,19 @@
 ## 9. Security Tab
 
 - [ ] 9.1 Create SecurityTab component
-  - Create `src/features/profile-settings/components/SecurityTab.tsx`
+  - Create `src/components/profile-settings/SecurityTab.tsx`
   - Render PasswordSection and SessionsSection
   - _Requirements: 1.5_
 
 - [ ] 9.2 Create PasswordSection component
-  - Create `src/features/profile-settings/components/PasswordSection.tsx`
+  - Create `src/components/profile-settings/PasswordSection.tsx`
   - Display last password change date
   - Add "Change Password" button
   - Open ChangePasswordModal on click
   - _Requirements: 1.5_
 
 - [ ] 9.3 Create ChangePasswordModal component
-  - Create `src/features/profile-settings/components/ChangePasswordModal.tsx`
+  - Create `src/components/profile-settings/ChangePasswordModal.tsx`
   - Implement form with current_password, new_password, confirm_password fields
   - Add password visibility toggles
   - Integrate PasswordStrengthIndicator for new password
@@ -232,7 +235,7 @@
   - _Requirements: 1.5_
 
 - [ ] 9.5 Create PasswordStrengthIndicator component
-  - Create `src/features/profile-settings/components/PasswordStrengthIndicator.tsx`
+  - Create `src/components/profile-settings/PasswordStrengthIndicator.tsx`
   - Calculate password strength (0-100)
   - Display progress bar with color coding
   - Show strength label (Weak/Fair/Good/Strong)
@@ -240,7 +243,7 @@
   - _Requirements: 1.5_
 
 - [ ] 9.6 Create SessionsSection component
-  - Create `src/features/profile-settings/components/SessionsSection.tsx`
+  - Create `src/components/profile-settings/SessionsSection.tsx`
   - Display active sessions count
   - Add "Manage Sessions" button linking to sessions page
   - Show last login information
@@ -249,19 +252,19 @@
 ## 10. Data Tab
 
 - [ ] 10.1 Create DataTab component
-  - Create `src/features/profile-settings/components/DataTab.tsx`
+  - Create `src/components/profile-settings/DataTab.tsx`
   - Render ExportDataSection and DeleteAccountSection
   - _Requirements: 1.9, 1.10_
 
 - [ ] 10.2 Create ExportDataSection component
-  - Create `src/features/profile-settings/components/ExportDataSection.tsx`
+  - Create `src/components/profile-settings/ExportDataSection.tsx`
   - Display "Export Your Data" heading and description
   - Add "Export Data" button
   - Open ExportDataModal on click
   - _Requirements: 1.10_
 
 - [ ] 10.3 Create ExportDataModal component
-  - Create `src/features/profile-settings/components/ExportDataModal.tsx`
+  - Create `src/components/profile-settings/ExportDataModal.tsx`
   - Display data type checkboxes: Profile, URL Checks, AI Analyses, Reports
   - Add format selector: JSON, CSV
   - Use useExportData hook
@@ -279,14 +282,14 @@
   - _Requirements: 1.10_
 
 - [ ] 10.5 Create DeleteAccountSection component
-  - Create `src/features/profile-settings/components/DeleteAccountSection.tsx`
+  - Create `src/components/profile-settings/DeleteAccountSection.tsx`
   - Display "Delete Account" heading with warning
   - Add "Delete My Account" button (red, destructive style)
   - Open DeleteAccountDialog on click
   - _Requirements: 1.9_
 
 - [ ] 10.6 Create DeleteAccountDialog component
-  - Create `src/features/profile-settings/components/DeleteAccountDialog.tsx`
+  - Create `src/components/profile-settings/DeleteAccountDialog.tsx`
   - Display warning about permanent data deletion
   - Require typing "DELETE" to confirm
   - Check for active subscription and require cancellation first
@@ -297,7 +300,7 @@
 ## 11. Shared Components
 
 - [ ] 11.1 Create AccountBadges component
-  - Create `src/features/profile-settings/components/AccountBadges.tsx`
+  - Create `src/components/profile-settings/AccountBadges.tsx`
   - Display verification badge (Verified/Unverified)
   - Display active status badge
   - Display role badge (User/Admin)
@@ -305,7 +308,7 @@
   - _Requirements: 1.6_
 
 - [ ] 11.2 Create FormSection component
-  - Create `src/features/profile-settings/components/FormSection.tsx`
+  - Create `src/components/profile-settings/FormSection.tsx`
   - Reusable section wrapper with title and description
   - Consistent spacing and styling
   - _Requirements: All profile settings requirements_
@@ -319,7 +322,7 @@
 ## 12. Validation and Error Handling
 
 - [ ] 12.1 Create validation utilities
-  - Create `src/features/profile-settings/utils/validation.ts`
+  - Create `src/lib/utils/profile-settings.ts`
   - Implement validateFullName(name: string): boolean
   - Implement validateCompany(company: string): boolean
   - Implement validateProfilePictureUrl(url: string): boolean
@@ -327,7 +330,7 @@
   - _Requirements: 1.2, 1.5_
 
 - [ ] 12.2 Create error message mapping
-  - Create `src/features/profile-settings/utils/error-messages.ts`
+  - Create `src/lib/utils/error-messages.ts`
   - Map all error codes to user-friendly messages
   - Include dynamic values (field names, limits)
   - Export getErrorMessage(code: string, context?: any): string
@@ -343,28 +346,28 @@
 ## 13. Timezone and Language Support
 
 - [ ] 13.1 Create timezone selector
-  - Create `src/features/profile-settings/components/TimezoneSelector.tsx`
+  - Create `src/components/profile-settings/TimezoneSelector.tsx`
   - Provide searchable dropdown with all timezones
   - Group timezones by region
   - Display current timezone prominently
   - _Requirements: 1.4_
 
 - [ ] 13.2 Create language selector
-  - Create `src/features/profile-settings/components/LanguageSelector.tsx`
+  - Create `src/components/profile-settings/LanguageSelector.tsx`
   - Provide dropdown with supported languages
   - Display language names in native script
   - Show current language
   - _Requirements: 1.4_
 
 - [ ] 13.3 Implement timezone data
-  - Create `src/features/profile-settings/utils/timezones.ts`
+  - Create `src/lib/utils/timezones.ts`
   - Export list of standard timezones
   - Include timezone offsets
   - Group by region (Americas, Europe, Asia, etc.)
   - _Requirements: 1.4_
 
 - [ ] 13.4 Implement language data
-  - Create `src/features/profile-settings/utils/languages.ts`
+  - Create `src/lib/utils/languages.ts`
   - Export list of supported languages
   - Include language codes and native names
   - _Requirements: 1.4_
@@ -372,7 +375,7 @@
 ## 14. Notification Preferences
 
 - [ ] 14.1 Create NotificationToggle component
-  - Create `src/features/profile-settings/components/NotificationToggle.tsx`
+  - Create `src/components/profile-settings/NotificationToggle.tsx`
   - Implement toggle switch with label and description
   - Show warning for critical notifications
   - Use optimistic updates
@@ -475,7 +478,7 @@
   - _Requirements: 1.5_
 
 - [ ] 18.2 Implement URL sanitization
-  - Create `src/features/profile-settings/utils/sanitize.ts`
+  - Create `src/lib/utils/sanitize.ts`
   - Sanitize profile_picture_url to prevent XSS
   - Validate URL protocol (https only)
   - Strip potentially dangerous characters

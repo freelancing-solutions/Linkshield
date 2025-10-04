@@ -89,7 +89,7 @@ The API Key Management feature enables authenticated users to create, view, and 
 ## Base URLs
 
 - **Client Base**: https://www.linkshield.site
-- **API Base**: https://www.linkshield.site/api/v1
+- **API Base**: https://api.linkshield.site/api/v1
 
 ## API Endpoints
 
