@@ -11,7 +11,15 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^msw/node$': '<rootDir>/node_modules/msw/lib/node/index.js',
+    '^@mswjs/interceptors/ClientRequest$': '<rootDir>/node_modules/@mswjs/interceptors/lib/node/interceptors/ClientRequest/index.js',
+    '^@mswjs/interceptors/XMLHttpRequest$': '<rootDir>/node_modules/@mswjs/interceptors/lib/node/interceptors/XMLHttpRequest/index.js',
+    '^until-async$': '<rootDir>/src/tests/__mocks__/until-async.js',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(msw|@mswjs|until-async)/)',
+  ],
+
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',

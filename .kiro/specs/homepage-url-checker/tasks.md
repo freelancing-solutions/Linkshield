@@ -2,7 +2,7 @@
 
 ## 1. Project Setup
 
-- [ ] 1.1 Create homepage module structure
+- [x] 1.1 Create homepage module structure
   - Create homepage components in `src/components/homepage/` directory
   - Create homepage hooks in `src/hooks/homepage/` directory
   - Create homepage services in `src/services/` directory
@@ -10,7 +10,7 @@
   - Create homepage utilities in `src/lib/utils/` directory
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 1.2 Create TypeScript interfaces
+- [x] 1.2 Create TypeScript interfaces
   - Create `src/types/homepage.ts`
   - Define URLCheckRequest, URLCheckResponse, ScanType interfaces
   - Define DomainReputation, ExtensionStatus, AlgorithmHealth interfaces
@@ -20,14 +20,14 @@
 
 ## 2. API Integration
 
-- [ ] 2.1 Create URL check API methods
+- [x] 2.1 Create URL check API methods
   - Create `src/services/url-check.service.ts`
   - Implement checkURL(url, scanType): Promise<URLCheckResponse>
   - Implement getDomainReputation(domain): Promise<DomainReputation>
   - Handle anonymous vs authenticated requests
   - _Requirements: 1.1, 1.4_
 
-- [ ] 2.2 Create Social Protection API methods
+- [x] 2.2 Create Social Protection API methods
   - Create `src/services/social-protection.service.ts`
   - Implement getExtensionStatus(): Promise<ExtensionStatus>
   - Implement getExtensionAnalytics(timeRange): Promise<ExtensionAnalytics>
@@ -37,7 +37,7 @@
   - Implement detectPenalties(): Promise<PenaltyDetection>
   - _Requirements: 1.5, 1.6, 1.7_
 
-- [ ] 2.3 Create subscriptions API methods
+- [x] 2.3 Create subscriptions API methods
   - Create `src/services/subscriptions.service.ts`
   - Implement getSubscriptions(): Promise<Subscription[]>
   - Implement getSubscriptionUsage(id): Promise<UsageStats>
@@ -45,13 +45,13 @@
 
 ## 3. React Query Hooks
 
-- [ ] 3.1 Create URL check hooks
+- [x] 3.1 Create URL check hooks
   - Create `src/hooks/homepage/use-url-check.ts`
   - Implement useCheckURL() mutation hook
   - Implement useDomainReputation(domain) query hook with enabled condition
   - _Requirements: 1.1, 1.4_
 
-- [ ] 3.2 Create Social Protection hooks
+- [x] 3.2 Create Social Protection hooks
   - Create `src/hooks/homepage/use-social-protection.ts`
   - Implement useExtensionStatus() query hook
   - Implement useExtensionAnalytics(timeRange) query hook
@@ -61,7 +61,7 @@
   - Implement useDetectPenalties() mutation hook
   - _Requirements: 1.5, 1.6, 1.7_
 
-- [ ] 3.3 Create subscription hooks
+- [x] 3.3 Create subscription hooks
   - Create `src/hooks/homepage/use-subscription.ts`
   - Implement useSubscriptions() query hook
   - Implement useSubscriptionUsage(id) query hook with enabled condition
@@ -69,14 +69,14 @@
 
 ## 4. Homepage Components
 
-- [ ] 4.1 Create HomePage component
+- [x] 4.1 Create HomePage component
   - Create `src/app/page.tsx`
   - Implement main homepage layout with hero section
   - Integrate URLCheckerForm component
   - Add conditional rendering for authenticated vs anonymous users
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 4.2 Create HeroSection component
+- [x] 4.2 Create HeroSection component
   - Create `src/components/homepage/HeroSection.tsx`
   - Display main headline and value proposition
   - Include call-to-action buttons
@@ -86,7 +86,7 @@
 
 ## 5. URL Checker Components
 
-- [ ] 5.1 Create URLCheckerForm component
+- [x] 5.1 Create URLCheckerForm component
   - Create `src/components/homepage/URLCheckerForm.tsx`
   - Implement URL input with validation
   - Add ScanTypeSelector component
@@ -95,16 +95,16 @@
   - Show rate limit notice for anonymous users
   - _Requirements: 1.1, 1.2_
 
-- [ ] 5.2 Create validation utilities
+- [x] 5.2 Create validation utilities
   - Create `src/lib/validations/homepage.ts`
   - Implement URL validation with Zod schema
   - Add domain extraction utility
   - Add URL normalization utility
   - _Requirements: 1.1_
 
-- [ ] 5.3 Create ScanTypeSelector component
+- [x] 5.3 Create ScanTypeSelector component
   - Create `src/components/homepage/ScanTypeSelector.tsx`
-  - Display radio buttons for [All Available Scan Types]] scan
+  - Display radio buttons for Quick, Comprehensive, and Deep scan types
   - Show scan type descriptions and timing
   - Disable Deep scan for anonymous users
   - Show upgrade prompt for premium features
@@ -112,7 +112,7 @@
 
 ## 6. Results Display Components
 
-- [ ] 6.1 Create ScanResults component
+- [x] 6.1 Create ScanResults component
   - Create `src/components/homepage/ScanResults.tsx`
   - Display overall risk score with RiskScoreGauge
   - Show threat level with ThreatLevelBadge
@@ -121,35 +121,35 @@
   - Add ResultActions component
   - _Requirements: 1.3_
 
-- [ ] 6.2 Create RiskScoreGauge component
+- [x] 6.2 Create RiskScoreGauge component
   - Create `src/components/homepage/RiskScoreGauge.tsx`
   - Display circular progress gauge (0-100)
   - Use color coding: green (0-30), yellow (31-70), red (71-100)
   - Show animated score counting
   - _Requirements: 1.3_
 
-- [ ] 6.3 Create ThreatLevelBadge component
+- [x] 6.3 Create ThreatLevelBadge component
   - Create `src/components/homepage/ThreatLevelBadge.tsx`
   - Display threat level (Safe, Suspicious, Dangerous)
   - Use appropriate colors and icons
   - Show tooltip with explanation
   - _Requirements: 1.3_
 
-- [ ] 6.4 Create ProviderResultsAccordion component
+- [x] 6.4 Create ProviderResultsAccordion component
   - Create `src/components/homepage/ProviderResultsAccordion.tsx`
   - Display collapsible sections for each security provider
   - Show provider name, status, and details
   - Include provider logos and confidence scores
   - _Requirements: 1.3_
 
-- [ ] 6.5 Create BrokenLinksTab component
+- [x] 6.5 Create BrokenLinksTab component
   - Create `src/components/homepage/BrokenLinksTab.tsx`
   - Display list of broken links found during scan
   - Show link URL, status code, and error message
   - Include fix suggestions
   - _Requirements: 1.3_
 
-- [ ] 6.6 Create ResultActions component
+- [x] 6.6 Create ResultActions component
   - Create `src/components/homepage/ResultActions.tsx`
   - Add "View in History" button (authenticated users only)
   - Add "Download Report" button (premium users only)
@@ -158,7 +158,7 @@
 
 ## 7. Domain Reputation Components
 
-- [ ] 7.1 Create DomainReputationBadge component
+- [x] 7.1 Create DomainReputationBadge component
   - Create `src/components/homepage/DomainReputationBadge.tsx`
   - Display domain reputation score and status
   - Show historical data if available
@@ -168,7 +168,7 @@
 
 ## 8. Social Protection Components
 
-- [ ] 8.1 Create SocialProtectionPanel component
+- [x] 8.1 Create SocialProtectionPanel component
   - Create `src/components/homepage/SocialProtectionPanel.tsx`
   - Display extension status with ExtensionStatusCard
   - Show algorithm health summary
@@ -176,7 +176,7 @@
   - Only visible to authenticated users
   - _Requirements: 1.5, 1.6, 1.7_
 
-- [ ] 8.2 Create ExtensionStatusCard component
+- [x] 8.2 Create ExtensionStatusCard component
   - Create `src/components/homepage/ExtensionStatusCard.tsx`
   - Show extension installation status
   - Display protection statistics (blocked content, warnings)
@@ -184,7 +184,7 @@
   - Show last sync timestamp
   - _Requirements: 1.5_
 
-- [ ] 8.3 Create AlgorithmHealthSummary component
+- [x] 8.3 Create AlgorithmHealthSummary component
   - Create `src/components/homepage/AlgorithmHealthSummary.tsx`
   - Display overall algorithm health score
   - Show individual metric scores (visibility, engagement, penalties)
@@ -195,7 +195,7 @@
 
 ## 9. Social Account Analysis Components
 
-- [ ] 9.1 Create SocialAccountScan component
+- [x] 9.1 Create SocialAccountScan component
   - Create `src/components/homepage/SocialAccountScan.tsx`
   - Provide input for social media profile URLs
   - Include platform selection (Twitter, Instagram, Facebook, LinkedIn)
@@ -205,7 +205,7 @@
 
 ## 10. Subscription Components
 
-- [ ] 10.1 Create SubscriptionPlanCard component
+- [x] 10.1 Create SubscriptionPlanCard component
   - Create `src/components/homepage/SubscriptionPlanCard.tsx`
   - Display current subscription plan and usage
   - Show usage statistics and limits
@@ -216,7 +216,7 @@
 
 ## 11. Action Components
 
-- [ ] 11.1 Create QuickActionsPanel component
+- [x] 11.1 Create QuickActionsPanel component
   - Create `src/components/homepage/QuickActionsPanel.tsx`
   - Display quick action buttons for authenticated users
   - Include: "Scan History", "API Keys", "Settings", "Reports"
@@ -225,21 +225,21 @@
 
 ## 12. Utility Components
 
-- [ ] 12.1 Create ViewInHistoryButton component
+- [x] 12.1 Create ViewInHistoryButton component
   - Create `src/components/homepage/ViewInHistoryButton.tsx`
   - Navigate to scan history with pre-filtered results
   - Only visible to authenticated users
   - Include scan timestamp and URL
   - _Requirements: 1.3_
 
-- [ ] 12.2 Create SignUpCTA component
+- [x] 12.2 Create SignUpCTA component
   - Create `src/components/homepage/SignUpCTA.tsx`
   - Display call-to-action for anonymous users
   - Highlight premium features and benefits
   - Include sign-up and login buttons
   - _Requirements: 1.1, 1.2_
 
-- [ ] 12.3 Create RateLimitNotice component
+- [x] 12.3 Create RateLimitNotice component
   - Create `src/components/homepage/RateLimitNotice.tsx`
   - Display rate limit information for anonymous users
   - Show remaining scans and reset time
@@ -248,72 +248,64 @@
 
 ## 13. Error Handling and Loading States
 
-- [ ] 13.1 Create error handling utilities
+- [x] 13.1 Create error handling utilities
   - Create `src/lib/utils/homepage-errors.ts`
   - Map API error codes to user-friendly messages
   - Handle network errors and timeouts
   - Include retry logic for transient failures
   - _Requirements: All homepage requirements_
 
-- [ ] 13.2 Create ErrorDisplay component
+- [x] 13.2 Create ErrorDisplay component
   - Create `src/components/homepage/ErrorDisplay.tsx`
   - Display error messages with appropriate styling
   - Include retry buttons where applicable
   - Show different error states (network, validation, server)
   - _Requirements: All homepage requirements_
 
-- [ ] 13.3 Create LoadingSpinner component
-  - Create `src/components/homepage/LoadingSpinner.tsx`
+- [x] 13.3 Create LoadingSpinner component
+  - Create `src/components/shared/LoadingSpinner.tsx`
   - Display loading animation during API calls
   - Include progress indicators for long-running scans
   - Show estimated completion time
+  - Support different sizes (sm, md, lg)
   - _Requirements: All homepage requirements_
 
-## 14. Loading States
-
-- [ ] 14.1 Create LoadingSpinner component
-  - Create `src/components/shared/LoadingSpinner.tsx`
-  - Display during URL check
-  - Show estimated time remaining
-  - Add progress indicator
-  - _Requirements: 1.1, 1.2_
-
-- [ ] 14.2 Create SkeletonLoaders
+- [x] 13.4 Create SkeletonLoaders
   - Create skeleton loaders for: results, cards, charts
   - Match actual component layouts
   - Use shimmer animation
   - _Requirements: All homepage requirements_
 
-## 15. Responsive Design
+## 14. Responsive Design
 
-- [ ] 15.1 Implement mobile layout
+- [x] 14.1 Implement mobile layout
   - Stack components vertically on mobile
   - Adjust font sizes and spacing
   - Make buttons touch-friendly (min 44x44px)
   - Test on various screen sizes
   - _Requirements: All homepage requirements_
 
-- [ ] 15.2 Implement tablet layout
+- [x] 14.2 Implement tablet layout
   - Use 2-column layout for cards
   - Adjust sidebar placement
   - Optimize for landscape and portrait
   - _Requirements: All homepage requirements_
 
-- [ ] 15.3 Implement desktop layout
+- [x] 14.3 Implement desktop layout
   - Use 3-column layout with sidebars
   - Maximize use of screen space
   - Implement hover states
   - _Requirements: All homepage requirements_
 
-## 16. Testing
+## 15. Testing
 
-- [ ] 16.1 Write unit tests for validation
+- [x] 15.1 Write unit tests for validation
   - Test URL validation logic
   - Test scan type gating logic
   - Test error message mapping
   - _Requirements: 1.1, 1.2_
 
-- [ ] 16.2 Write component tests
+- [x] 15.2 Write component tests
   - Test URLCheckerForm submission
   - Test ScanResults rendering
   - Test ExtensionStatusCard states
@@ -321,14 +313,14 @@
   - Test SubscriptionPlanCard display
   - _Requirements: All homepage requirements_
 
-- [ ] 16.3 Write integration tests
+- [x] 15.3 Write integration tests
   - Test complete URL check flow
   - Test anonymous vs authenticated experience
   - Test Social Protection integration
   - Test plan-based feature gating
   - _Requirements: All homepage requirements_
 
-- [ ] 16.4 Write E2E tests
+- [x] 15.4 Write E2E tests
   - Test homepage load and URL check
   - Test scan type selection
   - Test results display
@@ -336,55 +328,55 @@
   - Test quick actions navigation
   - _Requirements: All homepage requirements_
 
-## 17. Accessibility
+## 16. Accessibility
 
-- [ ] 17.1 Implement keyboard navigation
+- [x] 16.1 Implement keyboard navigation
   - Ensure all interactive elements are keyboard accessible
   - Implement logical tab order
   - Add keyboard shortcuts (e.g., Enter to submit)
   - Test with keyboard only
   - _Requirements: All homepage requirements_
 
-- [ ] 17.2 Add ARIA labels
+- [x] 16.2 Add ARIA labels
   - Add proper labels to form inputs
   - Add ARIA labels to buttons and links
   - Implement ARIA live regions for dynamic updates
   - Add screen reader descriptions
   - _Requirements: All homepage requirements_
 
-- [ ] 17.3 Ensure color accessibility
+- [x] 16.3 Ensure color accessibility
   - Use WCAG AA compliant color contrast
   - Don't rely solely on color for threat levels
   - Add icons in addition to color coding
   - Test with color blindness simulators
   - _Requirements: All homepage requirements_
 
-## 18. Performance Optimization
+## 17. Performance Optimization
 
-- [ ] 18.1 Optimize initial load
+- [x] 17.1 Optimize initial load
   - Lazy load Social Protection components
   - Defer non-critical scripts
   - Optimize images and icons
   - Implement code splitting
   - _Requirements: All homepage requirements_
 
-- [ ] 18.2 Optimize data fetching
+- [x] 17.2 Optimize data fetching
   - Cache domain reputation lookups
   - Debounce URL input (300ms)
   - Cancel pending requests on new submission
   - Prefetch extension status for authenticated users
   - _Requirements: All homepage requirements_
 
-## 19. Documentation
+## 18. Documentation
 
-- [ ] 19.1 Add component documentation
+- [x] 18.1 Add component documentation
   - Add JSDoc comments to all components
   - Document props interfaces
   - Add usage examples
   - Document scan types and limitations
   - _Requirements: All homepage requirements_
 
-- [ ] 19.2 Create user documentation
+- [x] 18.2 Create user documentation
   - Document how to use URL checker
   - Explain scan types
   - Document Social Protection features
