@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import Link from "next/link"
 import { 
@@ -12,7 +14,9 @@ import {
   ExternalLink,
   FileText,
   Video,
-  MessageCircle
+  MessageCircle,
+  Loader2,
+  ChevronRight
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -22,29 +26,46 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 
 /**
- * Documentation Category Interface
+ * Documentation Category Interface from API
+ * 
+ * Defines the structure for documentation categories loaded from the docs folder.
+ */
+interface DocCategoryData {
+  /** Category identifier */
+  id: string
+  /** Display title */
+  title: string
+  /** Category description */
+  description: string
+  /** URL path for the category */
+  path: string
+  /** Number of articles in this category */
+  articleCount: number
+  /** Articles in this category */
+  articles: Array<{
+    slug: string
+    title: string
+    description: string
+    category: string
+    path: string
+    metadata: {
+      isNew?: boolean
+      isPopular?: boolean
+      [key: string]: any
+    }
+  }>
+  /** Category order for display */
+  order?: number
+}
+
+/**
+ * Documentation Category Interface for UI
  * 
  * Defines the structure for documentation categories displayed on the landing page.
  */
-interface DocCategory {
-  /** Unique identifier for the category */
-  id: string
-  /** Display title of the category */
-  title: string
-  /** Brief description of what this category covers */
-  description: string
+interface DocCategory extends DocCategoryData {
   /** Lucide icon component for visual representation */
   icon: React.ComponentType<{ className?: string }>
-  /** Number of articles/guides in this category */
-  articleCount: number
-  /** Array of featured articles in this category */
-  articles: Array<{
-    title: string
-    description: string
-    href: string
-    isNew?: boolean
-    isPopular?: boolean
-  }>
   /** URL slug for the category page */
   href: string
   /** Color theme for the category card */
@@ -68,176 +89,25 @@ interface QuickLink {
   /** Whether this link opens in a new tab */
   external?: boolean
 }
-
 /**
- * Documentation categories with their articles and metadata
+ * Category icon and color mapping
+ * 
+ * Maps category IDs to their visual representation.
  */
-const docCategories: DocCategory[] = [
-  {
-    id: "getting-started",
-    title: "Getting Started",
-    description: "Learn the basics of LinkShield and get up and running quickly.",
-    icon: Zap,
-    articleCount: 8,
-    color: "blue",
-    href: "/docs/getting-started",
-    articles: [
-      {
-        title: "Quick Start Guide",
-        description: "Get LinkShield running in under 5 minutes",
-        href: "/docs/getting-started/quick-start",
-        isPopular: true
-      },
-      {
-        title: "Installation & Setup",
-        description: "Complete installation guide for all platforms",
-        href: "/docs/getting-started/installation"
-      },
-      {
-        title: "Your First URL Analysis",
-        description: "Step-by-step guide to analyzing your first URL",
-        href: "/docs/getting-started/first-analysis",
-        isNew: true
-      }
-    ]
-  },
-  {
-    id: "api-reference",
-    title: "API Reference",
-    description: "Complete API documentation with examples and code samples.",
-    icon: Code,
-    articleCount: 24,
-    color: "green",
-    href: "/docs/api",
-    articles: [
-      {
-        title: "Authentication",
-        description: "API key management and authentication methods",
-        href: "/docs/api/authentication",
-        isPopular: true
-      },
-      {
-        title: "URL Analysis Endpoints",
-        description: "Analyze URLs and retrieve security reports",
-        href: "/docs/api/analysis"
-      },
-      {
-        title: "Webhook Integration",
-        description: "Real-time notifications for analysis results",
-        href: "/docs/api/webhooks",
-        isNew: true
-      }
-    ]
-  },
-  {
-    id: "security-features",
-    title: "Security Features",
-    description: "Deep dive into LinkShield's security capabilities and threat detection.",
-    icon: Shield,
-    articleCount: 15,
-    color: "red",
-    href: "/docs/security",
-    articles: [
-      {
-        title: "Threat Detection Engine",
-        description: "How LinkShield identifies malicious URLs",
-        href: "/docs/security/threat-detection",
-        isPopular: true
-      },
-      {
-        title: "Phishing Protection",
-        description: "Advanced phishing detection and prevention",
-        href: "/docs/security/phishing-protection"
-      },
-      {
-        title: "Malware Scanning",
-        description: "Real-time malware detection and analysis",
-        href: "/docs/security/malware-scanning"
-      }
-    ]
-  },
-  {
-    id: "integrations",
-    title: "Integrations",
-    description: "Connect LinkShield with your existing tools and workflows.",
-    icon: Settings,
-    articleCount: 12,
-    color: "purple",
-    href: "/docs/integrations",
-    articles: [
-      {
-        title: "Slack Integration",
-        description: "Get security alerts directly in Slack",
-        href: "/docs/integrations/slack",
-        isPopular: true
-      },
-      {
-        title: "Microsoft Teams",
-        description: "Integrate with Microsoft Teams workflows",
-        href: "/docs/integrations/teams"
-      },
-      {
-        title: "Custom Webhooks",
-        description: "Build custom integrations with webhooks",
-        href: "/docs/integrations/webhooks",
-        isNew: true
-      }
-    ]
-  },
-  {
-    id: "team-management",
-    title: "Team Management",
-    description: "Manage users, permissions, and collaborate effectively.",
-    icon: Users,
-    articleCount: 9,
-    color: "orange",
-    href: "/docs/team",
-    articles: [
-      {
-        title: "User Roles & Permissions",
-        description: "Configure access levels for team members",
-        href: "/docs/team/permissions"
-      },
-      {
-        title: "Project Collaboration",
-        description: "Share projects and collaborate on analysis",
-        href: "/docs/team/collaboration"
-      },
-      {
-        title: "Audit Logs",
-        description: "Track team activity and security events",
-        href: "/docs/team/audit-logs"
-      }
-    ]
-  },
-  {
-    id: "advanced-guides",
-    title: "Advanced Guides",
-    description: "Advanced techniques and best practices for power users.",
-    icon: BookOpen,
-    articleCount: 18,
-    color: "gray",
-    href: "/docs/advanced",
-    articles: [
-      {
-        title: "Custom Rules Engine",
-        description: "Create custom detection rules and policies",
-        href: "/docs/advanced/custom-rules"
-      },
-      {
-        title: "Bulk URL Analysis",
-        description: "Analyze thousands of URLs efficiently",
-        href: "/docs/advanced/bulk-analysis",
-        isPopular: true
-      },
-      {
-        title: "Performance Optimization",
-        description: "Optimize LinkShield for high-volume usage",
-        href: "/docs/advanced/performance"
-      }
-    ]
-  }
-]
+const CATEGORY_UI_MAPPING: Record<string, { 
+  icon: React.ComponentType<{ className?: string }>, 
+  color: DocCategory["color"] 
+}> = {
+  'getting-started': { icon: Zap, color: 'blue' },
+  'user-guides': { icon: BookOpen, color: 'green' },
+  'features': { icon: Shield, color: 'red' },
+  'developer': { icon: Code, color: 'purple' },
+  'authentication': { icon: Settings, color: 'orange' },
+  'api': { icon: Code, color: 'green' },
+  'integrations': { icon: Settings, color: 'purple' },
+  'team': { icon: Users, color: 'orange' },
+  'advanced': { icon: BookOpen, color: 'gray' }
+}
 
 /**
  * Quick access links for common tasks and resources
@@ -246,7 +116,7 @@ const quickLinks: QuickLink[] = [
   {
     title: "API Documentation",
     description: "Complete API reference",
-    href: "/docs/api",
+    href: "/docs/developer",
     icon: Code
   },
   {
@@ -304,15 +174,15 @@ const getIconColorClasses = (color: DocCategory["color"]) => {
 /**
  * Documentation Landing Page Component
  * 
- * A comprehensive documentation landing page that provides users with organized access to:
- * - Categorized documentation sections with article previews
+ * A comprehensive documentation landing page that dynamically loads content from the docs folder:
+ * - Fetches categorized documentation sections with article previews from API
  * - Search functionality for finding specific content
  * - Quick access links to common resources
  * - Featured and popular articles highlighting
  * - Responsive design for all device sizes
  * 
  * The page serves as the main entry point for all LinkShield documentation,
- * helping users quickly find the information they need.
+ * helping users quickly find the information they need by loading real markdown files.
  * 
  * @returns JSX element representing the documentation landing page
  * 
@@ -323,17 +193,122 @@ const getIconColorClasses = (color: DocCategory["color"]) => {
  * ```
  * 
  * @features
- * - Organized category cards with article previews
- * - Search functionality (placeholder for future implementation)
+ * - Dynamic category loading from docs folder structure
+ * - Search functionality with API integration
  * - Quick access sidebar with external links
  * - Badge system for new and popular content
  * - Responsive grid layout
  * - Dark mode support with themed colors
  * - Accessibility support with proper ARIA labels
  * - SEO-friendly structure with semantic HTML
+ * - Loading states and error handling
  */
 export default function DocsPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
+  const [docCategories, setDocCategories] = React.useState<DocCategory[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
+  const [searchResults, setSearchResults] = React.useState<any[]>([])
+  const [searching, setSearching] = React.useState(false)
+
+  /**
+   * Load documentation categories from API
+   */
+  React.useEffect(() => {
+    async function loadDocumentation() {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/docs')
+        const result = await response.json()
+        
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to load documentation')
+        }
+        
+        // Transform API data to UI format
+        const categories: DocCategory[] = result.data.categories.map((cat: DocCategoryData) => {
+          const uiMapping = CATEGORY_UI_MAPPING[cat.id] || { 
+            icon: FileText, 
+            color: 'gray' as const 
+          }
+          
+          return {
+            ...cat,
+            icon: uiMapping.icon,
+            color: uiMapping.color,
+            href: `/docs/${cat.id}`
+          }
+        })
+        
+        setDocCategories(categories)
+      } catch (err) {
+        console.error('Error loading documentation:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load documentation')
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadDocumentation()
+  }, [])
+
+  /**
+   * Handle search functionality
+   */
+  React.useEffect(() => {
+    async function performSearch() {
+      if (!searchQuery.trim()) {
+        setSearchResults([])
+        return
+      }
+      
+      try {
+        setSearching(true)
+        const response = await fetch(`/api/docs?search=${encodeURIComponent(searchQuery)}`)
+        const result = await response.json()
+        
+        if (result.success) {
+          setSearchResults(result.data.results || [])
+        }
+      } catch (err) {
+        console.error('Search error:', err)
+      } finally {
+        setSearching(false)
+      }
+    }
+    
+    // Debounce search
+    const timeoutId = setTimeout(performSearch, 300)
+    return () => clearTimeout(timeoutId)
+  }, [searchQuery])
+
+  if (loading) {
+    return (
+      <div className="container max-w-7xl mx-auto py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Loading documentation...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="container max-w-7xl mx-auto py-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight">Documentation</h1>
+          <div className="max-w-md mx-auto p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-red-600 dark:text-red-400">
+              Error loading documentation: {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container max-w-7xl mx-auto py-8">
@@ -361,6 +336,54 @@ export default function DocsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-3">
+          {/* Search Results */}
+          {searchQuery && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                Search Results for "{searchQuery}"
+                {searching && <Loader2 className="h-4 w-4 animate-spin" />}
+              </h2>
+              {searchResults.length > 0 ? (
+                <div className="grid gap-4">
+                  {searchResults.map((article, index) => (
+                    <Card key={index} className="p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-lg mb-2">
+                            <Link 
+                              href={`/docs/${article.category}/${article.slug}`}
+                              className="hover:text-primary transition-colors"
+                            >
+                              {article.title}
+                            </Link>
+                          </h3>
+                          {article.description && (
+                            <p className="text-muted-foreground mb-2">
+                              {article.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Badge variant="secondary" className="text-xs">
+                              {article.category}
+                            </Badge>
+                            {article.readTime && (
+                              <span>{article.readTime} min read</span>
+                            )}
+                          </div>
+                        </div>
+                        <ExternalLink className="h-4 w-4 text-muted-foreground ml-2" />
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : !searching && (
+                <div className="text-muted-foreground">
+                  No results found for "{searchQuery}". Try different keywords or browse categories below.
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Documentation Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {docCategories.map((category) => {
@@ -395,34 +418,41 @@ export default function DocsPage() {
                     <div className="space-y-3">
                       {category.articles.map((article, index) => (
                         <Link
-                          key={index}
-                          href={article.href}
-                          className="block p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors group"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-medium text-sm group-hover:text-primary transition-colors">
-                                  {article.title}
-                                </h4>
-                                {article.isNew && (
-                                  <Badge variant="default" className="text-xs bg-green-500 hover:bg-green-600">
-                                    New
-                                  </Badge>
-                                )}
-                                {article.isPopular && (
-                                  <Badge variant="outline" className="text-xs">
-                                    Popular
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {article.description}
-                              </p>
-                            </div>
-                            <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors ml-2 mt-0.5" />
-                          </div>
-                        </Link>
+                           key={index}
+                           href={`/docs/${category.id}/${article.slug}`}
+                           className="block p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors group"
+                         >
+                           <div className="flex items-start justify-between">
+                             <div className="flex-1">
+                               <div className="flex items-center gap-2 mb-1">
+                                 <h4 className="font-medium text-sm group-hover:text-primary transition-colors">
+                                   {article.title}
+                                 </h4>
+                                 {article.metadata?.isNew && (
+                                   <Badge variant="default" className="text-xs bg-green-500 hover:bg-green-600">
+                                     New
+                                   </Badge>
+                                 )}
+                                 {article.metadata?.isPopular && (
+                                   <Badge variant="outline" className="text-xs">
+                                     Popular
+                                   </Badge>
+                                 )}
+                               </div>
+                               {article.description && (
+                                 <p className="text-xs text-muted-foreground line-clamp-2">
+                                   {article.description}
+                                 </p>
+                               )}
+                               {article.readTime && (
+                                 <p className="text-xs text-muted-foreground mt-1">
+                                   {article.readTime} min read
+                                 </p>
+                               )}
+                             </div>
+                             <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
+                           </div>
+                         </Link>
                       ))}
                     </div>
                     <div className="mt-4 pt-4 border-t">

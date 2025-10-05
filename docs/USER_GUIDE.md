@@ -1,7 +1,7 @@
 # LinkShield Homepage - User Guide
 
 ## Table of Contents
-
+[🚀 You’ve been invited to join the GLM Coding Plan! Enjoy full support for Claude Code, Cline, and 10+ top coding tools — starting at just $3/month. Subscribe now and grab the limited-time deal! Link：](https://z.ai/subscribe?ic=4ZPA6JAP3W))
 1. [Getting Started](#getting-started)
 2. [URL Checking](#url-checking)
 3. [Scan Types](#scan-types)
