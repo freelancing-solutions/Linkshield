@@ -22,8 +22,7 @@ import {
   getRequiredPlan, 
   getUpgradeFeatures,
   FEATURE_CATEGORIES,
-  type Feature,
-  type SubscriptionPlan 
+  type Feature
 } from '@/lib/utils/dashboard/feature-gating';
 import type { SubscriptionPlan as PlanType, SubscriptionStatus } from '@/types/homepage';
 
@@ -119,7 +118,7 @@ function getRecommendedPlan(currentPlan: PlanType, feature?: Feature): PlanType 
  * Get feature category for a specific feature
  */
 function getFeatureCategory(feature: Feature) {
-  for (const [key, category] of Object.entries(FEATURE_CATEGORIES)) {
+  for (const [, category] of Object.entries(FEATURE_CATEGORIES)) {
     if (category.features.includes(feature)) {
       return category;
     }
@@ -304,7 +303,7 @@ const CardVariant: React.FC<UpgradeCTAProps> = ({
         {/* Benefits */}
         <div>
           <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-            What you'll get:
+            What you&apos;ll get:
           </h4>
           <ul className="space-y-2">
             {benefits.map((benefit, index) => (
@@ -320,7 +319,7 @@ const CardVariant: React.FC<UpgradeCTAProps> = ({
         {upgradeFeatures.length > 0 && (
           <div>
             <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-              New features you'll unlock:
+              New features you&apos;ll unlock:
             </h4>
             <div className="flex flex-wrap gap-2">
               {upgradeFeatures.slice(0, 6).map((feat, index) => (

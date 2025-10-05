@@ -152,7 +152,7 @@ export const RateLimitNotice: React.FC<RateLimitNoticeProps> = ({
             <div>
               <p className="font-semibold mb-1">Rate Limit Reached</p>
               <p className="text-sm">
-                You've reached the maximum number of free scans. Sign up for unlimited access.
+                You&apos;ve reached the maximum number of free scans. Sign up for unlimited access.
               </p>
             </div>
             {showUpgrade && (
@@ -175,7 +175,6 @@ export const RateLimitNotice: React.FC<RateLimitNoticeProps> = ({
    * Determine if rate limit is critical
    */
   const isCritical = rateLimitInfo.remaining === 0;
-  const isLow = rateLimitInfo.remaining <= 2 && rateLimitInfo.remaining > 0;
 
   return (
     <Alert className={`${styles.alert} ${className}`}>

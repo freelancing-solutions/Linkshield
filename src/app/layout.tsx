@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/providers/Providers';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import { ThemeProvider } from '@/components/layout/ThemeProvider';
+import { TopNav } from '@/components/layout/TopNav';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +22,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <TopNav />
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
         </Providers>
       </body>
     </html>

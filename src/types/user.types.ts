@@ -17,14 +17,78 @@ export interface User {
 
 export interface SubscriptionPlan {
   id: string;
+  name: 'free' | 'starter' | 'creator' | 'professional' | 'business' | 'enterprise';
+  display_name: string;
+  description: string;
+  monthly_price: number;
+  yearly_price: number;
+  features: PlanFeature[];
+  limits: PlanLimits;
+  target_audience: string;
+  popular?: boolean;
+  recommended?: boolean;
+}
+
+export interface PlanFeature {
   name: string;
-  tier: 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE';
-  features: string[];
-  limits: {
-    daily_checks: number;
-    monthly_checks: number;
-    api_calls_per_day: number;
-  };
+  included: boolean;
+  description?: string;
+}
+
+export interface PlanLimits {
+  url_checks_per_day: number;
+  deep_scans_per_month: number;
+  bulk_checks_per_month: number;
+  api_calls_per_day: number;
+  projects_limit: number;
+  team_members_limit: number;
+  data_retention_days: number;
+}
+
+export interface DetailedUsage {
+  current_period: UsagePeriod;
+  daily_usage: DailyUsage[];
+  monthly_usage: MonthlyUsage[];
+  approaching_limits: LimitWarning[];
+  upgrade_recommendations: UpgradeRecommendation[];
+}
+
+export interface UsagePeriod {
+  start_date: string;
+  end_date: string;
+  days_remaining: number;
+}
+
+export interface DailyUsage {
+  date: string;
+  url_checks: number;
+  api_calls: number;
+  deep_scans: number;
+  bulk_checks: number;
+}
+
+export interface MonthlyUsage {
+  month: string;
+  url_checks: number;
+  api_calls: number;
+  deep_scans: number;
+  bulk_checks: number;
+  projects_created: number;
+}
+
+export interface LimitWarning {
+  usage_type: string;
+  current_usage: number;
+  limit: number;
+  percentage_used: number;
+  warning_level: 'info' | 'warning' | 'critical';
+}
+
+export interface UpgradeRecommendation {
+  recommended_plan: string;
+  reason: string;
+  benefits: string[];
+  estimated_savings?: number;
 }
 
 export interface LoginRequest {

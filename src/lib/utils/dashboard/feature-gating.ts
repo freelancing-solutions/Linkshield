@@ -7,7 +7,13 @@
  * Requirements: 10.1 - Plan-based feature gating
  */
 
-import type { SubscriptionPlan, SubscriptionStatus } from '@/types/homepage';
+import type { SubscriptionStatus } from '@/types/homepage';
+import { PlanTier, type FeatureGate } from '@/types/subscription.types';
+
+// Map old plan names to new tier system for backward compatibility
+type LegacyPlan = 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE';
+type NewPlan = 'free' | 'starter' | 'creator' | 'professional' | 'business' | 'enterprise';
+export type SubscriptionPlan = LegacyPlan | NewPlan;
 
 // ============================================================================
 // Feature Definitions
@@ -23,6 +29,7 @@ export type Feature =
   | 'url_comprehensive_scan'
   | 'url_history_export'
   | 'url_api_access'
+  | 'bulk_checks'
   
   // Social Protection Features
   | 'social_algorithm_health'
@@ -31,6 +38,7 @@ export type Feature =
   | 'social_penalty_detection'
   | 'social_automated_monitoring'
   | 'social_custom_alerts'
+  | 'social_media_monitoring'
   
   // Dashboard Features
   | 'dashboard_advanced_analytics'
@@ -38,6 +46,7 @@ export type Feature =
   | 'dashboard_data_export'
   | 'dashboard_api_integration'
   | 'dashboard_team_collaboration'
+  | 'advanced_analytics'
   
   // Crisis Management Features
   | 'crisis_real_time_alerts'
@@ -51,22 +60,217 @@ export type Feature =
   | 'bot_health_logs'
   | 'bot_health_custom_alerts'
   
+  // Team & Collaboration Features
+  | 'team_collaboration'
+  | 'team_management'
+  | 'multi_user_access'
+  
   // General Features
   | 'priority_support'
   | 'white_label'
   | 'custom_integrations'
-  | 'advanced_security';
+  | 'advanced_security'
+  | 'custom_branding'
+  | 'dedicated_support'
+  | 'sla_guarantee';
 
 // ============================================================================
-// Plan Feature Matrix
+// Plan Tier Mapping
 // ============================================================================
 
 /**
- * Feature access matrix by subscription plan
+ * Convert plan name to tier number for comparison
+ */
+export function planToTier(plan: SubscriptionPlan): PlanTier {
+  const planMap: Record<string, PlanTier> = {
+    // Legacy plans
+    'FREE': PlanTier.FREE,
+    'BASIC': PlanTier.STARTER,
+    'PRO': PlanTier.PROFESSIONAL,
+    'ENTERPRISE': PlanTier.ENTERPRISE,
+    // New plans
+    'free': PlanTier.FREE,
+    'starter': PlanTier.STARTER,
+    'creator': PlanTier.CREATOR,
+    'professional': PlanTier.PROFESSIONAL,
+    'business': PlanTier.BUSINESS,
+    'enterprise': PlanTier.ENTERPRISE,
+  };
+  
+  return planMap[plan] ?? PlanTier.FREE;
+}
+
+/**
+ * Convert tier to plan name
+ */
+export function tierToPlan(tier: PlanTier): NewPlan {
+  const tierMap: Record<PlanTier, NewPlan> = {
+    [PlanTier.FREE]: 'free',
+    [PlanTier.STARTER]: 'starter',
+    [PlanTier.CREATOR]: 'creator',
+    [PlanTier.PROFESSIONAL]: 'professional',
+    [PlanTier.BUSINESS]: 'business',
+    [PlanTier.ENTERPRISE]: 'enterprise',
+  };
+  
+  return tierMap[tier] ?? 'free';
+}
+
+// ============================================================================
+// Feature Gate Definitions
+// ============================================================================
+
+/**
+ * Feature gate definitions for client-side enforcement
+ * Based on the six-tier subscription system
+ */
+export const FEATURE_GATES: FeatureGate[] = [
+  // Starter tier features
+  {
+    feature: 'url_deep_scan',
+    required_tier: PlanTier.STARTER,
+    usage_type: 'deep_scans_per_month',
+    description: 'Deep scanning requires Starter plan or higher'
+  },
+  {
+    feature: 'bulk_checks',
+    required_tier: PlanTier.STARTER,
+    usage_type: 'bulk_checks_per_month',
+    description: 'Bulk URL checking requires Starter plan or higher'
+  },
+  {
+    feature: 'url_batch_analysis',
+    required_tier: PlanTier.STARTER,
+    usage_type: 'bulk_checks_per_month',
+    description: 'Batch analysis requires Starter plan or higher'
+  },
+  
+  // Creator tier features
+  {
+    feature: 'advanced_analytics',
+    required_tier: PlanTier.CREATOR,
+    description: 'Advanced analytics available for Creator plan and above'
+  },
+  {
+    feature: 'social_media_monitoring',
+    required_tier: PlanTier.CREATOR,
+    description: 'Social media monitoring is a Creator plan feature'
+  },
+  {
+    feature: 'social_visibility_analysis',
+    required_tier: PlanTier.CREATOR,
+    description: 'Social visibility analysis requires Creator plan or higher'
+  },
+  {
+    feature: 'social_engagement_analysis',
+    required_tier: PlanTier.CREATOR,
+    description: 'Social engagement analysis requires Creator plan or higher'
+  },
+  {
+    feature: 'dashboard_custom_reports',
+    required_tier: PlanTier.CREATOR,
+    description: 'Custom reports available for Creator plan and above'
+  },
+  
+  // Professional tier features
+  {
+    feature: 'team_collaboration',
+    required_tier: PlanTier.PROFESSIONAL,
+    description: 'Team features require Professional plan or higher'
+  },
+  {
+    feature: 'social_penalty_detection',
+    required_tier: PlanTier.PROFESSIONAL,
+    description: 'Penalty detection requires Professional plan or higher'
+  },
+  {
+    feature: 'crisis_real_time_alerts',
+    required_tier: PlanTier.PROFESSIONAL,
+    description: 'Real-time alerts require Professional plan or higher'
+  },
+  {
+    feature: 'dashboard_data_export',
+    required_tier: PlanTier.PROFESSIONAL,
+    description: 'Data export requires Professional plan or higher'
+  },
+  {
+    feature: 'url_api_access',
+    required_tier: PlanTier.PROFESSIONAL,
+    usage_type: 'api_calls_per_day',
+    description: 'API access requires Professional plan or higher'
+  },
+  
+  // Business tier features
+  {
+    feature: 'team_management',
+    required_tier: PlanTier.BUSINESS,
+    description: 'Team management requires Business plan or higher'
+  },
+  {
+    feature: 'multi_user_access',
+    required_tier: PlanTier.BUSINESS,
+    description: 'Multi-user access requires Business plan or higher'
+  },
+  {
+    feature: 'social_automated_monitoring',
+    required_tier: PlanTier.BUSINESS,
+    description: 'Automated monitoring requires Business plan or higher'
+  },
+  {
+    feature: 'dashboard_api_integration',
+    required_tier: PlanTier.BUSINESS,
+    description: 'API integration requires Business plan or higher'
+  },
+  {
+    feature: 'crisis_automated_response',
+    required_tier: PlanTier.BUSINESS,
+    description: 'Automated crisis response requires Business plan or higher'
+  },
+  
+  // Enterprise tier features
+  {
+    feature: 'white_label',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'White label features are exclusive to Enterprise plan'
+  },
+  {
+    feature: 'custom_integrations',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'Custom integrations are exclusive to Enterprise plan'
+  },
+  {
+    feature: 'advanced_security',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'Advanced security features are exclusive to Enterprise plan'
+  },
+  {
+    feature: 'custom_branding',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'Custom branding is exclusive to Enterprise plan'
+  },
+  {
+    feature: 'dedicated_support',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'Dedicated support is exclusive to Enterprise plan'
+  },
+  {
+    feature: 'sla_guarantee',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'SLA guarantee is exclusive to Enterprise plan'
+  },
+  {
+    feature: 'crisis_custom_workflows',
+    required_tier: PlanTier.ENTERPRISE,
+    description: 'Custom workflows are exclusive to Enterprise plan'
+  }
+];
+
+/**
+ * Legacy plan feature matrix for backward compatibility
  * 
  * Each plan includes all features from lower tiers plus additional features
  */
-const PLAN_FEATURES: Record<SubscriptionPlan, Feature[]> = {
+const LEGACY_PLAN_FEATURES: Record<LegacyPlan, Feature[]> = {
   FREE: [
     // Basic URL checking only
   ],
@@ -225,7 +429,7 @@ export const FEATURE_CATEGORIES = {
  * 
  * @example
  * ```typescript
- * const canUseBatchAnalysis = hasFeatureAccess('url_batch_analysis', 'PRO', 'ACTIVE');
+ * const canUseBatchAnalysis = hasFeatureAccess('url_batch_analysis', 'professional', 'ACTIVE');
  * if (canUseBatchAnalysis) {
  *   // Show batch analysis feature
  * } else {
@@ -240,16 +444,32 @@ export function hasFeatureAccess(
 ): boolean {
   // Inactive subscriptions only get FREE features
   if (status !== 'ACTIVE' && status !== 'TRIAL') {
-    return PLAN_FEATURES.FREE.includes(feature);
+    return planToTier(plan) >= PlanTier.FREE && hasFeatureInTier(feature, PlanTier.FREE);
   }
   
-  // Trial users get PRO features
+  // Trial users get PRO features (Professional tier)
   if (status === 'TRIAL') {
-    return PLAN_FEATURES.PRO.includes(feature);
+    return hasFeatureInTier(feature, PlanTier.PROFESSIONAL);
   }
   
-  // Check if the plan includes the feature
-  return PLAN_FEATURES[plan].includes(feature);
+  // Check if the plan tier includes the feature
+  const userTier = planToTier(plan);
+  return hasFeatureInTier(feature, userTier);
+}
+
+/**
+ * Check if a feature is available in a specific tier
+ */
+function hasFeatureInTier(feature: Feature, tier: PlanTier): boolean {
+  const featureGate = FEATURE_GATES.find(gate => gate.feature === feature);
+  
+  // If no gate is defined, feature is available to all tiers
+  if (!featureGate) {
+    return true;
+  }
+  
+  // Check if user's tier meets the requirement
+  return tier >= featureGate.required_tier;
 }
 
 /**
@@ -263,17 +483,47 @@ export function getPlanFeatures(
   plan: SubscriptionPlan,
   status: SubscriptionStatus = 'ACTIVE'
 ): Feature[] {
-  // Inactive subscriptions only get FREE features
-  if (status !== 'ACTIVE' && status !== 'TRIAL') {
-    return PLAN_FEATURES.FREE;
+  // For legacy plans, use the old feature matrix
+  if (isLegacyPlan(plan)) {
+    return LEGACY_PLAN_FEATURES[plan as LegacyPlan] || [];
   }
   
-  // Trial users get PRO features
-  if (status === 'TRIAL') {
-    return PLAN_FEATURES.PRO;
+  const userTier = planToTier(plan);
+  const availableFeatures: Feature[] = [];
+  
+  // Add all features that are available to this tier or lower
+  for (const gate of FEATURE_GATES) {
+    if (userTier >= gate.required_tier) {
+      availableFeatures.push(gate.feature as Feature);
+    }
   }
   
-  return PLAN_FEATURES[plan];
+  // Add features that don't have gates (available to all)
+  const gatedFeatures = new Set(FEATURE_GATES.map(gate => gate.feature));
+  const allFeatures: Feature[] = [
+    'url_comprehensive_scan', 'url_history_export', 'social_algorithm_health',
+    'dashboard_advanced_analytics', 'bot_health_monitoring', 'bot_health_restart',
+    'bot_health_logs', 'priority_support', 'social_custom_alerts'
+  ];
+  
+  for (const feature of allFeatures) {
+    if (!gatedFeatures.has(feature)) {
+      availableFeatures.push(feature);
+    }
+  }
+  
+  return [...new Set(availableFeatures)]; // Remove duplicates
+}
+
+/**
+ * Get the minimum required plan tier for a specific feature
+ * 
+ * @param feature - The feature to check
+ * @returns The minimum plan tier required, or null if no restriction
+ */
+export function getRequiredTier(feature: Feature): PlanTier | null {
+  const featureGate = FEATURE_GATES.find(gate => gate.feature === feature);
+  return featureGate?.required_tier ?? null;
 }
 
 /**
@@ -282,16 +532,9 @@ export function getPlanFeatures(
  * @param feature - The feature to check
  * @returns The minimum plan that includes the feature, or null if not found
  */
-export function getRequiredPlan(feature: Feature): SubscriptionPlan | null {
-  const plans: SubscriptionPlan[] = ['FREE', 'BASIC', 'PRO', 'ENTERPRISE'];
-  
-  for (const plan of plans) {
-    if (PLAN_FEATURES[plan].includes(feature)) {
-      return plan;
-    }
-  }
-  
-  return null;
+export function getRequiredPlan(feature: Feature): NewPlan | null {
+  const requiredTier = getRequiredTier(feature);
+  return requiredTier !== null ? tierToPlan(requiredTier) : null;
 }
 
 /**
@@ -307,10 +550,10 @@ export function getUpgradeFeatures(
   targetPlan: SubscriptionPlan,
   currentStatus: SubscriptionStatus = 'ACTIVE'
 ): Feature[] {
-  const currentFeatures = getPlanFeatures(currentPlan, currentStatus);
+  const currentFeatures = new Set(getPlanFeatures(currentPlan, currentStatus));
   const targetFeatures = getPlanFeatures(targetPlan, 'ACTIVE');
   
-  return targetFeatures.filter(feature => !currentFeatures.includes(feature));
+  return targetFeatures.filter(feature => !currentFeatures.has(feature));
 }
 
 /**
@@ -321,14 +564,55 @@ export function getUpgradeFeatures(
  * @returns true if plan1 is higher tier than plan2
  */
 export function isPlanHigherTier(plan1: SubscriptionPlan, plan2: SubscriptionPlan): boolean {
-  const planOrder: Record<SubscriptionPlan, number> = {
-    FREE: 0,
-    BASIC: 1,
-    PRO: 2,
-    ENTERPRISE: 3,
-  };
+  return planToTier(plan1) > planToTier(plan2);
+}
+
+/**
+ * Check if a plan is a legacy plan
+ */
+function isLegacyPlan(plan: SubscriptionPlan): plan is LegacyPlan {
+  return ['FREE', 'BASIC', 'PRO', 'ENTERPRISE'].includes(plan);
+}
+
+/**
+ * Get feature gate information for a specific feature
+ * 
+ * @param feature - The feature to get gate info for
+ * @returns FeatureGate object or null if no gate exists
+ */
+export function getFeatureGate(feature: Feature): FeatureGate | null {
+  return FEATURE_GATES.find(gate => gate.feature === feature) ?? null;
+}
+
+/**
+ * Check if a user can access a feature and get gate information
+ * 
+ * @param feature - The feature to check
+ * @param plan - The user's subscription plan
+ * @param status - The user's subscription status
+ * @returns Object with access status and gate information
+ */
+export function checkFeatureAccess(
+  feature: Feature,
+  plan: SubscriptionPlan,
+  status: SubscriptionStatus = 'ACTIVE'
+): {
+  hasAccess: boolean;
+  gate: FeatureGate | null;
+  requiredTier: PlanTier | null;
+  requiredPlan: NewPlan | null;
+} {
+  const hasAccess = hasFeatureAccess(feature, plan, status);
+  const gate = getFeatureGate(feature);
+  const requiredTier = getRequiredTier(feature);
+  const requiredPlan = getRequiredPlan(feature);
   
-  return planOrder[plan1] > planOrder[plan2];
+  return {
+    hasAccess,
+    gate,
+    requiredTier,
+    requiredPlan
+  };
 }
 
 // ============================================================================
@@ -344,6 +628,7 @@ export const FEATURE_FLAGS = {
   BATCH_ANALYSIS_ENABLED: true,
   DEEP_SCAN_ENABLED: true,
   API_ACCESS_ENABLED: true,
+  BULK_CHECKS_ENABLED: true,
   
   // Social Protection
   ALGORITHM_HEALTH_ENABLED: true,
@@ -351,28 +636,37 @@ export const FEATURE_FLAGS = {
   ENGAGEMENT_ANALYSIS_ENABLED: true,
   PENALTY_DETECTION_ENABLED: true,
   AUTOMATED_MONITORING_ENABLED: true,
+  SOCIAL_MEDIA_MONITORING_ENABLED: true,
   
   // Dashboard
   ADVANCED_ANALYTICS_ENABLED: true,
   CUSTOM_REPORTS_ENABLED: true,
   DATA_EXPORT_ENABLED: true,
   API_INTEGRATION_ENABLED: true,
-  TEAM_COLLABORATION_ENABLED: false, // Not yet implemented
+  TEAM_COLLABORATION_ENABLED: true,
+  
+  // Team Features
+  TEAM_MANAGEMENT_ENABLED: true,
+  MULTI_USER_ACCESS_ENABLED: true,
   
   // Crisis Management
   REAL_TIME_ALERTS_ENABLED: true,
-  AUTOMATED_RESPONSE_ENABLED: false, // Not yet implemented
-  CUSTOM_WORKFLOWS_ENABLED: false, // Not yet implemented
+  AUTOMATED_RESPONSE_ENABLED: true,
+  CUSTOM_WORKFLOWS_ENABLED: true,
   
   // Bot Health
   BOT_HEALTH_ENABLED: true,
   BOT_RESTART_ENABLED: true,
   BOT_LOGS_ENABLED: true,
+  BOT_CUSTOM_ALERTS_ENABLED: true,
   
   // Enterprise Features
-  WHITE_LABEL_ENABLED: false, // Not yet implemented
-  CUSTOM_INTEGRATIONS_ENABLED: false, // Not yet implemented
-  ADVANCED_SECURITY_ENABLED: false, // Not yet implemented
+  WHITE_LABEL_ENABLED: true,
+  CUSTOM_INTEGRATIONS_ENABLED: true,
+  ADVANCED_SECURITY_ENABLED: true,
+  CUSTOM_BRANDING_ENABLED: true,
+  DEDICATED_SUPPORT_ENABLED: true,
+  SLA_GUARANTEE_ENABLED: true,
 } as const;
 
 /**
@@ -408,32 +702,128 @@ export function isFeatureAvailable(
     url_batch_analysis: 'BATCH_ANALYSIS_ENABLED',
     url_deep_scan: 'DEEP_SCAN_ENABLED',
     url_api_access: 'API_ACCESS_ENABLED',
+    bulk_checks: 'BULK_CHECKS_ENABLED',
     social_algorithm_health: 'ALGORITHM_HEALTH_ENABLED',
     social_visibility_analysis: 'VISIBILITY_ANALYSIS_ENABLED',
     social_engagement_analysis: 'ENGAGEMENT_ANALYSIS_ENABLED',
     social_penalty_detection: 'PENALTY_DETECTION_ENABLED',
     social_automated_monitoring: 'AUTOMATED_MONITORING_ENABLED',
+    social_media_monitoring: 'SOCIAL_MEDIA_MONITORING_ENABLED',
     dashboard_advanced_analytics: 'ADVANCED_ANALYTICS_ENABLED',
+    advanced_analytics: 'ADVANCED_ANALYTICS_ENABLED',
     dashboard_custom_reports: 'CUSTOM_REPORTS_ENABLED',
     dashboard_data_export: 'DATA_EXPORT_ENABLED',
     dashboard_api_integration: 'API_INTEGRATION_ENABLED',
     dashboard_team_collaboration: 'TEAM_COLLABORATION_ENABLED',
+    team_collaboration: 'TEAM_COLLABORATION_ENABLED',
+    team_management: 'TEAM_MANAGEMENT_ENABLED',
+    multi_user_access: 'MULTI_USER_ACCESS_ENABLED',
     crisis_real_time_alerts: 'REAL_TIME_ALERTS_ENABLED',
     crisis_automated_response: 'AUTOMATED_RESPONSE_ENABLED',
     crisis_custom_workflows: 'CUSTOM_WORKFLOWS_ENABLED',
     bot_health_monitoring: 'BOT_HEALTH_ENABLED',
     bot_health_restart: 'BOT_RESTART_ENABLED',
     bot_health_logs: 'BOT_LOGS_ENABLED',
+    bot_health_custom_alerts: 'BOT_CUSTOM_ALERTS_ENABLED',
     white_label: 'WHITE_LABEL_ENABLED',
     custom_integrations: 'CUSTOM_INTEGRATIONS_ENABLED',
     advanced_security: 'ADVANCED_SECURITY_ENABLED',
+    custom_branding: 'CUSTOM_BRANDING_ENABLED',
+    dedicated_support: 'DEDICATED_SUPPORT_ENABLED',
+    sla_guarantee: 'SLA_GUARANTEE_ENABLED',
   };
   
   const flagKey = featureFlagMap[feature];
-  if (flagKey) {
-    return isFeatureFlagEnabled(flagKey);
+  if (!flagKey) {
+    // If no flag is defined, feature is enabled by default
+    return true;
   }
   
-  // If no feature flag is defined, assume it's enabled
-  return true;
+  return isFeatureFlagEnabled(flagKey);
+}
+
+// ============================================================================
+// Utility Functions
+// ============================================================================
+
+/**
+ * Get all available plan tiers
+ */
+export function getAllPlanTiers(): PlanTier[] {
+  return [
+    PlanTier.FREE,
+    PlanTier.STARTER,
+    PlanTier.CREATOR,
+    PlanTier.PROFESSIONAL,
+    PlanTier.BUSINESS,
+    PlanTier.ENTERPRISE
+  ];
+}
+
+/**
+ * Get plan tier display name
+ */
+export function getPlanTierName(tier: PlanTier): string {
+  const tierNames: Record<PlanTier, string> = {
+    [PlanTier.FREE]: 'Free',
+    [PlanTier.STARTER]: 'Starter',
+    [PlanTier.CREATOR]: 'Creator',
+    [PlanTier.PROFESSIONAL]: 'Professional',
+    [PlanTier.BUSINESS]: 'Business',
+    [PlanTier.ENTERPRISE]: 'Enterprise'
+  };
+  
+  return tierNames[tier] ?? 'Unknown';
+}
+
+/**
+ * Get features by category for a specific plan tier
+ */
+export function getFeaturesByCategory(tier: PlanTier): Record<string, Feature[]> {
+  const availableFeatures = new Set(
+    FEATURE_GATES
+      .filter(gate => tier >= gate.required_tier)
+      .map(gate => gate.feature as Feature)
+  );
+  
+  const categorizedFeatures: Record<string, Feature[]> = {};
+  
+  for (const [categoryKey, category] of Object.entries(FEATURE_CATEGORIES)) {
+    categorizedFeatures[categoryKey] = category.features.filter(
+      feature => availableFeatures.has(feature as Feature)
+    ) as Feature[];
+  }
+  
+  return categorizedFeatures;
+}
+
+/**
+ * Check if a tier upgrade would unlock new features
+ */
+export function wouldUpgradeUnlockFeatures(
+  currentTier: PlanTier,
+  targetTier: PlanTier
+): boolean {
+  if (targetTier <= currentTier) {
+    return false;
+  }
+  
+  return FEATURE_GATES.some(
+    gate => gate.required_tier > currentTier && gate.required_tier <= targetTier
+  );
+}
+
+/**
+ * Get the next tier that would unlock new features
+ */
+export function getNextMeaningfulTier(currentTier: PlanTier): PlanTier | null {
+  const allTiers = getAllPlanTiers();
+  
+  for (const tier of allTiers) {
+    if (tier > currentTier && wouldUpgradeUnlockFeatures(currentTier, tier)) {
+      return tier;
+    }
+  }
+  
+  return null;
 }

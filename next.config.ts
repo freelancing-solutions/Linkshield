@@ -1,9 +1,11 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Enable typed routes
+  typedRoutes: true,
+
   // Enable experimental features
   experimental: {
-    typedRoutes: true,
     optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
   },

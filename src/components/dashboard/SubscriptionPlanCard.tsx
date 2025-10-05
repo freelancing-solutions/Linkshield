@@ -3,14 +3,15 @@
  * 
  * Displays current subscription plan information with usage metrics, billing details,
  * and upgrade options. Includes loading states and error handling for subscription data.
+ * Integrates with the new six-tier subscription system.
  * 
  * @author LinkShield Team
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,39 +26,79 @@ import {
   Calendar, 
   AlertTriangle,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  Settings,
+  Zap
 } from 'lucide-react';
 import { useSubscriptionInfo } from '@/hooks/homepage/use-subscription';
 import type { SubscriptionPlan, SubscriptionStatus } from '@/types/homepage';
+import type { PlanTier } from '@/types/subscription.types';
+import { TierBadge } from '@/components/shared/TierBadge';
+import { UsageProgressPanel } from '@/components/shared/UsageProgressPanel';
+import { UpgradeRecommendationCard } from '@/components/shared/UpgradeRecommendationCard';
+import { PlanTierUtils } from '@/types/subscription.types';
 
 /**
- * Plan configuration with pricing and features
+ * Plan configuration with pricing and features for six-tier system
  * 
- * Defines the visual styling and metadata for each subscription plan tier.
+ * Maps legacy plan names to new PlanTier enum and provides visual styling.
  */
 const PLAN_CONFIG = {
   FREE: {
     name: 'Free',
     price: '$0',
+    tier: 'FREE' as PlanTier,
     color: 'bg-gray-100 text-gray-800',
     icon: null,
   },
+  STARTER: {
+    name: 'Starter',
+    price: '$4.99',
+    tier: 'STARTER' as PlanTier,
+    color: 'bg-green-100 text-green-800',
+    icon: null,
+  },
+  CREATOR: {
+    name: 'Creator',
+    price: '$14.99',
+    tier: 'CREATOR' as PlanTier,
+    color: 'bg-blue-100 text-blue-800',
+    icon: <Zap className="h-3 w-3" />,
+  },
+  PROFESSIONAL: {
+    name: 'Professional',
+    price: '$29.99',
+    tier: 'PROFESSIONAL' as PlanTier,
+    color: 'bg-purple-100 text-purple-800',
+    icon: <Crown className="h-3 w-3" />,
+  },
+  BUSINESS: {
+    name: 'Business',
+    price: '$59.99',
+    tier: 'BUSINESS' as PlanTier,
+    color: 'bg-orange-100 text-orange-800',
+    icon: <Crown className="h-3 w-3" />,
+  },
+  ENTERPRISE: {
+    name: 'Enterprise',
+    price: 'Custom',
+    tier: 'ENTERPRISE' as PlanTier,
+    color: 'bg-amber-100 text-amber-800',
+    icon: <Crown className="h-3 w-3" />,
+  },
+  // Legacy plan mappings for backward compatibility
   BASIC: {
     name: 'Basic',
     price: '$9.99',
+    tier: 'STARTER' as PlanTier,
     color: 'bg-blue-100 text-blue-800',
     icon: null,
   },
   PRO: {
     name: 'Pro',
     price: '$29.99',
+    tier: 'PROFESSIONAL' as PlanTier,
     color: 'bg-purple-100 text-purple-800',
-    icon: <Crown className="h-3 w-3" />,
-  },
-  ENTERPRISE: {
-    name: 'Enterprise',
-    price: 'Custom',
-    color: 'bg-amber-100 text-amber-800',
     icon: <Crown className="h-3 w-3" />,
   },
 } as const;
