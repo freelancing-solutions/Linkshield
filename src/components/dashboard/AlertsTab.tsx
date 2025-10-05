@@ -83,11 +83,11 @@ export function AlertsTab({ projectId }: AlertsTabProps) {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center">
-        <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" />
+      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center" role="alert">
+        <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" aria-hidden="true" />
         <h3 className="text-lg font-semibold mb-2">Failed to load alerts</h3>
         <p className="text-sm text-muted-foreground mb-4">{error.message}</p>
-        <Button onClick={() => window.location.reload()} variant="outline">
+        <Button onClick={() => window.location.reload()} variant="outline" aria-label="Retry loading alerts">
           Try Again
         </Button>
       </div>
@@ -97,12 +97,12 @@ export function AlertsTab({ projectId }: AlertsTabProps) {
   const activeAlertsCount = data?.items.filter((a) => a.status === 'active').length || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" role="region" aria-labelledby="alerts-heading">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Alerts</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 id="alerts-heading" className="text-lg font-semibold">Alerts</h3>
+          <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
             {activeAlertsCount > 0
               ? `${activeAlertsCount} active alert${activeAlertsCount !== 1 ? 's' : ''}`
               : 'No active alerts'}
@@ -114,28 +114,29 @@ export function AlertsTab({ projectId }: AlertsTabProps) {
             variant="outline"
             className="gap-2"
             disabled={resolveAllAlerts.isPending}
+            aria-label={resolveAllAlerts.isPending ? "Resolving all alerts..." : `Resolve all ${activeAlertsCount} active alerts`}
           >
-            <CheckCircle2 className="h-4 w-4" />
+            <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             {resolveAllAlerts.isPending ? 'Resolving...' : 'Resolve All'}
           </Button>
         )}
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4">
+      <div className="flex gap-4" role="group" aria-label="Alert filters">
         <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as AlertStatus | 'all')}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px]" aria-label="Filter alerts by status">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="acknowledged">Acknowledged</SelectItem>
-            <SelectItem value="resolved">Resolved</SelectItem>
-            <SelectItem value="dismissed">Dismissed</SelectItem>
+          <SelectContent role="listbox">
+            <SelectItem value="all" role="option">All Statuses</SelectItem>
+            <SelectItem value="active" role="option">Active</SelectItem>
+            <SelectItem value="acknowledged" role="option">Acknowledged</SelectItem>
+            <SelectItem value="resolved" role="option">Resolved</SelectItem>
+            <SelectItem value="dismissed" role="option">Dismissed</SelectItem>
           </SelectContent>
         </Select>
 
@@ -143,16 +144,16 @@ export function AlertsTab({ projectId }: AlertsTabProps) {
           value={severityFilter}
           onValueChange={(value) => setSeverityFilter(value as AlertSeverity | 'all')}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px]" aria-label="Filter alerts by severity">
             <SelectValue placeholder="Filter by severity" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Severities</SelectItem>
-            <SelectItem value="critical">Critical</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
-            <SelectItem value="info">Info</SelectItem>
+          <SelectContent role="listbox">
+            <SelectItem value="all" role="option">All Severities</SelectItem>
+            <SelectItem value="critical" role="option">Critical</SelectItem>
+            <SelectItem value="high" role="option">High</SelectItem>
+            <SelectItem value="medium" role="option">Medium</SelectItem>
+            <SelectItem value="low" role="option">Low</SelectItem>
+            <SelectItem value="info" role="option">Info</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -114,13 +114,37 @@ export const BotHealthBadge: React.FC<BotHealthBadgeProps> = ({
   };
 
   /**
-   * Format uptime percentage with color coding
+   * Format uptime percentage with color coding and accessibility indicators
    */
   const formatUptime = (percentage: number) => {
-    const color = percentage >= 99 ? 'text-green-600' : 
-                  percentage >= 95 ? 'text-yellow-600' : 'text-red-600';
+    const getUptimeStatus = (percentage: number) => {
+      if (percentage >= 99) {
+        return {
+          color: 'text-green-600',
+          icon: CheckCircle,
+          label: 'Excellent uptime'
+        };
+      } else if (percentage >= 95) {
+        return {
+          color: 'text-yellow-600',
+          icon: AlertTriangle,
+          label: 'Good uptime'
+        };
+      } else {
+        return {
+          color: 'text-red-600',
+          icon: XCircle,
+          label: 'Poor uptime'
+        };
+      }
+    };
+
+    const status = getUptimeStatus(percentage);
+    const UptimeIcon = status.icon;
+
     return (
-      <span className={color}>
+      <span className={`flex items-center gap-1 ${status.color}`} title={status.label}>
+        <UptimeIcon className="h-3 w-3" aria-hidden="true" />
         {percentage.toFixed(1)}%
       </span>
     );

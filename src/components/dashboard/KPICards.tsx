@@ -25,25 +25,39 @@ export function KPICards({ data }: KPICardsProps) {
         <Link
           key={metric.id}
           href={metric.link}
-          className="block transition-transform hover:scale-105"
+          className="block transition-transform hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
+          aria-label={`View ${metric.label}: ${metric.value}${metric.subtitle ? `. ${metric.subtitle}` : ''}`}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            // Handle Enter and Space key navigation
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.currentTarget.click();
+            }
+          }}
         >
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card className="cursor-pointer hover:shadow-lg focus-within:shadow-lg transition-shadow h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {metric.label}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${metric.iconBg}`}>
+              <div 
+                className={`p-2 rounded-lg ${metric.iconBg}`}
+                aria-hidden="true"
+              >
                 <metric.icon className={`h-4 w-4 ${metric.iconColor}`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{metric.value}</div>
+              <div className="text-2xl font-bold" aria-label={`${metric.value} ${metric.label}`}>
+                {metric.value}
+              </div>
               {metric.trend && (
-                <div className="flex items-center gap-1 mt-1">
+                <div className="flex items-center gap-1 mt-1" role="img" aria-label={`Trend: ${metric.trend.direction} ${metric.trend.value} ${metric.trend.label}`}>
                   {metric.trend.direction === 'up' ? (
-                    <TrendingUp className="h-4 w-4 text-green-600" />
+                    <TrendingUp className="h-4 w-4 text-green-600" aria-hidden="true" />
                   ) : (
-                    <TrendingDown className="h-4 w-4 text-red-600" />
+                    <TrendingDown className="h-4 w-4 text-red-600" aria-hidden="true" />
                   )}
                   <span
                     className={`text-xs ${

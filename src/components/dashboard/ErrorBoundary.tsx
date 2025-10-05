@@ -201,27 +201,32 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
   ) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-        <Card className="w-full max-w-2xl">
+        <Card className="w-full max-w-2xl" role="alert" aria-labelledby="error-title">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-red-600" aria-hidden="true" />
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">{title}</CardTitle>
+            <CardTitle id="error-title" className="text-2xl font-bold text-gray-900">{title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-center text-gray-600">{message}</p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button onClick={this.handleRetry} className="flex items-center gap-2">
-                <RefreshCw className="h-4 w-4" />
+              <Button 
+                onClick={this.handleRetry} 
+                className="flex items-center gap-2"
+                aria-label="Retry the failed operation"
+              >
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 Try Again
               </Button>
               <Button 
                 variant="outline" 
                 onClick={this.handleReload}
                 className="flex items-center gap-2"
+                aria-label="Reload the entire page"
               >
-                <Home className="h-4 w-4" />
+                <Home className="h-4 w-4" aria-hidden="true" />
                 Reload Page
               </Button>
             </div>
@@ -233,14 +238,17 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
                 size="sm"
                 onClick={this.toggleDetails}
                 className="flex items-center gap-2 mx-auto"
+                aria-expanded={showDetails}
+                aria-controls="error-details"
+                aria-label={`${showDetails ? 'Hide' : 'Show'} technical error details`}
               >
-                <Bug className="h-4 w-4" />
+                <Bug className="h-4 w-4" aria-hidden="true" />
                 {showDetails ? 'Hide' : 'Show'} Technical Details
-                {showDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                {showDetails ? <ChevronUp className="h-4 w-4" aria-hidden="true" /> : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
               </Button>
               
               {showDetails && (
-                <div className="mt-4 p-4 bg-gray-100 rounded-lg text-sm">
+                <div id="error-details" className="mt-4 p-4 bg-gray-100 rounded-lg text-sm" role="region" aria-label="Technical error details">
                   <div className="space-y-2">
                     <div>
                       <strong>Error ID:</strong> {this.state.errorId}
@@ -280,12 +288,24 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
     showDetails: boolean
   ) {
     return (
-      <Card className="border-red-200 bg-red-50">
+      <Card 
+        className="border-red-200 bg-red-50"
+        role="alert"
+        aria-labelledby="section-error-title"
+      >
         <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0" />
+            <AlertTriangle 
+              className="h-5 w-5 text-red-600 flex-shrink-0" 
+              aria-hidden="true"
+            />
             <div className="flex-1">
-              <CardTitle className="text-lg text-red-900">{title}</CardTitle>
+              <CardTitle 
+                id="section-error-title"
+                className="text-lg text-red-900"
+              >
+                {title}
+              </CardTitle>
               <p className="text-sm text-red-700 mt-1">{message}</p>
             </div>
           </div>
@@ -296,8 +316,9 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
               size="sm" 
               onClick={this.handleRetry}
               className="flex items-center gap-2"
+              aria-label="Retry loading this section"
             >
-              <RefreshCw className="h-3 w-3" />
+              <RefreshCw className="h-3 w-3" aria-hidden="true" />
               Retry
             </Button>
             <Button
@@ -305,14 +326,22 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
               variant="ghost"
               onClick={this.toggleDetails}
               className="flex items-center gap-2"
+              aria-expanded={showDetails}
+              aria-controls="section-error-details"
+              aria-label={`${showDetails ? 'Hide' : 'Show'} technical error details`}
             >
-              <Bug className="h-3 w-3" />
+              <Bug className="h-3 w-3" aria-hidden="true" />
               {showDetails ? 'Hide' : 'Show'} Details
             </Button>
           </div>
           
           {showDetails && (
-            <div className="mt-4 p-3 bg-white rounded border text-xs">
+            <div 
+              id="section-error-details"
+              className="mt-4 p-3 bg-white rounded border text-xs"
+              role="region"
+              aria-label="Technical error details"
+            >
               <div className="space-y-1">
                 <div><strong>Error ID:</strong> {this.state.errorId}</div>
                 <div><strong>Component:</strong> {this.props.component || 'Unknown'}</div>
@@ -336,8 +365,8 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
     showDetails: boolean
   ) {
     return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
+      <Alert variant="destructive" role="alert">
+        <AlertTriangle className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>{title}</AlertTitle>
         <AlertDescription className="mt-2">
           <p className="mb-3">{message}</p>
@@ -347,8 +376,9 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
               variant="outline"
               onClick={this.handleRetry}
               className="h-8 text-xs"
+              aria-label="Retry loading this component"
             >
-              <RefreshCw className="h-3 w-3 mr-1" />
+              <RefreshCw className="h-3 w-3 mr-1" aria-hidden="true" />
               Retry
             </Button>
             <Button
@@ -356,13 +386,21 @@ export class DashboardErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
               variant="ghost"
               onClick={this.toggleDetails}
               className="h-8 text-xs"
+              aria-expanded={showDetails}
+              aria-controls="component-error-details"
+              aria-label={`${showDetails ? 'Hide' : 'Show'} technical error details`}
             >
               {showDetails ? 'Hide' : 'Details'}
             </Button>
           </div>
           
           {showDetails && (
-            <div className="mt-3 p-2 bg-red-100 rounded text-xs">
+            <div 
+              id="component-error-details"
+              className="mt-3 p-2 bg-red-100 rounded text-xs"
+              role="region"
+              aria-label="Technical error details"
+            >
               <div><strong>ID:</strong> {this.state.errorId}</div>
               <div><strong>Error:</strong> {error.message}</div>
             </div>

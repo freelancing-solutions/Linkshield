@@ -50,15 +50,15 @@ export function AlertsList({ alerts, onAlertClick }: AlertsListProps) {
   const getTypeIcon = (type: AlertType) => {
     switch (type) {
       case 'security':
-        return <Shield className="h-4 w-4" />;
+        return <Shield className="h-4 w-4" aria-hidden="true" />;
       case 'performance':
-        return <Activity className="h-4 w-4" />;
+        return <Activity className="h-4 w-4" aria-hidden="true" />;
       case 'availability':
-        return <Clock className="h-4 w-4" />;
+        return <Clock className="h-4 w-4" aria-hidden="true" />;
       case 'compliance':
-        return <FileCheck className="h-4 w-4" />;
+        return <FileCheck className="h-4 w-4" aria-hidden="true" />;
       default:
-        return <Info className="h-4 w-4" />;
+        return <Info className="h-4 w-4" aria-hidden="true" />;
     }
   };
 
@@ -110,9 +110,9 @@ export function AlertsList({ alerts, onAlertClick }: AlertsListProps) {
   // Empty state
   if (alerts.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-12 text-center">
+      <div className="rounded-lg border border-dashed p-12 text-center" role="status" aria-live="polite">
         <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-          <CheckCircle2 className="h-6 w-6 text-muted-foreground" />
+          <CheckCircle2 className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-semibold mb-2">No alerts</h3>
         <p className="text-sm text-muted-foreground">
@@ -123,47 +123,65 @@ export function AlertsList({ alerts, onAlertClick }: AlertsListProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" role="region" aria-label="Alerts list">
       {severityOrder.map((severity) => {
         const severityAlerts = groupedAlerts[severity];
         if (!severityAlerts || severityAlerts.length === 0) return null;
 
         return (
-          <div key={severity}>
+          <div key={severity} role="group" aria-labelledby={`severity-${severity}`}>
             <div className="flex items-center gap-2 mb-3">
-              <Badge variant={getSeverityBadgeVariant(severity)} className="capitalize">
+              <Badge 
+                variant={getSeverityBadgeVariant(severity)} 
+                className="capitalize"
+                id={`severity-${severity}`}
+              >
                 {severity}
               </Badge>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground" role="status">
                 {severityAlerts.length} alert{severityAlerts.length !== 1 ? 's' : ''}
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2" role="list">
               {severityAlerts.map((alert) => (
                 <div
                   key={alert.id}
                   onClick={() => onAlertClick(alert)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onAlertClick(alert);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="listitem button"
+                  aria-label={`${alert.severity} ${alert.type} alert: ${alert.title}`}
                   className={`
                     rounded-lg border p-4 cursor-pointer transition-colors
-                    hover:bg-accent/50
+                    hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                     ${getSeverityColor(alert.severity)}
                   `}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 flex-1">
-                      <div className="mt-0.5">{getTypeIcon(alert.type)}</div>
+                      <div className="mt-0.5" aria-hidden="true">{getTypeIcon(alert.type)}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold text-sm">{alert.title}</h4>
                           <Badge
                             variant="outline"
                             className="text-xs capitalize"
+                            aria-label={`Alert type: ${alert.type}`}
                           >
                             {alert.type}
                           </Badge>
                           {alert.status !== 'active' && (
-                            <Badge variant="secondary" className="text-xs capitalize">
+                            <Badge 
+                              variant="secondary" 
+                              className="text-xs capitalize"
+                              aria-label={`Alert status: ${alert.status}`}
+                            >
                               {alert.status}
                             </Badge>
                           )}
@@ -184,8 +202,9 @@ export function AlertsList({ alerts, onAlertClick }: AlertsListProps) {
                         className="gap-2 shrink-0"
                         onClick={(e) => handleQuickResolve(e, alert)}
                         disabled={resolveAlert.isPending}
+                        aria-label={`Resolve alert: ${alert.title}`}
                       >
-                        <CheckCircle2 className="h-3 w-3" />
+                        <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                         Resolve
                       </Button>
                     )}

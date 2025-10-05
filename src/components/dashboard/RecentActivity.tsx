@@ -49,13 +49,13 @@ export function RecentActivity({ activities = [], maxItems = 10 }: RecentActivit
           <CardDescription>Your recent actions and updates</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Activity className="h-12 w-12 text-muted-foreground mb-4" />
+          <div className="flex flex-col items-center justify-center py-12 text-center" role="status" aria-live="polite">
+            <Activity className="h-12 w-12 text-muted-foreground mb-4" aria-hidden="true" />
             <p className="text-sm text-muted-foreground mb-4">
               No recent activity to display
             </p>
             <Button asChild variant="outline">
-              <Link href="/dashboard/projects">Get Started</Link>
+              <Link href="/dashboard/projects" aria-label="Get started with creating projects">Get Started</Link>
             </Button>
           </div>
         </CardContent>
@@ -72,21 +72,28 @@ export function RecentActivity({ activities = [], maxItems = 10 }: RecentActivit
         </div>
         {activities.length > maxItems && (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/dashboard/activity" className="flex items-center gap-1">
+            <Link href="/dashboard/activity" className="flex items-center gap-1" aria-label="View all recent activities">
               View All
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </Button>
         )}
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className="space-y-6" role="region" aria-label="Recent activities">
           {Object.entries(groupedActivities).map(([date, dateActivities]) => (
-            <div key={date}>
-              <h4 className="text-sm font-medium text-muted-foreground mb-3">{date}</h4>
-              <div className="space-y-3">
+            <div key={date} role="group" aria-labelledby={`date-${date.replace(/\s+/g, '-').toLowerCase()}`}>
+              <h4 
+                className="text-sm font-medium text-muted-foreground mb-3"
+                id={`date-${date.replace(/\s+/g, '-').toLowerCase()}`}
+              >
+                {date}
+              </h4>
+              <div className="space-y-3" role="list">
                 {dateActivities.map((activity) => (
-                  <ActivityItem key={activity.id} activity={activity} />
+                  <div key={activity.id} role="listitem">
+                    <ActivityItem activity={activity} />
+                  </div>
                 ))}
               </div>
             </div>
@@ -105,9 +112,9 @@ function ActivityItem({ activity }: { activity: Activity }) {
   const iconColor = getActivityIconColor(activity.type);
 
   const content = (
-    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-      <div className={`p-2 rounded-lg ${iconColor.bg}`}>
-        <Icon className={`h-4 w-4 ${iconColor.text}`} />
+    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors focus-within:bg-muted/50">
+      <div className={`p-2 rounded-lg ${iconColor.bg}`} aria-hidden="true">
+        <Icon className={`h-4 w-4 ${iconColor.text}`} aria-hidden="true" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium leading-none mb-1">{activity.title}</p>
@@ -121,13 +128,21 @@ function ActivityItem({ activity }: { activity: Activity }) {
 
   if (activity.link) {
     return (
-      <Link href={activity.link} className="block">
+      <Link 
+        href={activity.link} 
+        className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+        aria-label={`${activity.title} - ${activity.description}`}
+      >
         {content}
       </Link>
     );
   }
 
-  return content;
+  return (
+    <div aria-label={`${activity.title} - ${activity.description}`}>
+      {content}
+    </div>
+  );
 }
 
 /**

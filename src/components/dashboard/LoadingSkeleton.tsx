@@ -23,7 +23,11 @@ import { Skeleton } from '@/components/shared/SkeletonLoaders';
  */
 export const KPICardsSkeleton: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div 
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      role="status"
+      aria-label="Loading KPI cards"
+    >
       {[1, 2, 3, 4].map((i) => (
         <Card key={i}>
           <CardContent className="pt-6">
@@ -58,7 +62,11 @@ export const AlertsListSkeleton: React.FC<AlertsListSkeletonProps> = ({
   items = 5 
 }) => {
   return (
-    <div className="space-y-3">
+    <div 
+      className="space-y-3"
+      role="status"
+      aria-label="Loading alerts list"
+    >
       {Array.from({ length: items }).map((_, i) => (
         <Card key={i} className="p-4">
           <div className="flex items-start gap-4">
@@ -88,7 +96,7 @@ export const AlertsListSkeleton: React.FC<AlertsListSkeletonProps> = ({
  */
 export const CrisisAlertsPanelSkeleton: React.FC = () => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading crisis alerts panel">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="space-y-2">
@@ -130,7 +138,7 @@ export const CrisisAlertsPanelSkeleton: React.FC = () => {
  */
 export const ExtensionStatusCardSkeleton: React.FC = () => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading extension status">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="space-y-2">
@@ -171,7 +179,7 @@ export const SessionsTableSkeleton: React.FC<SessionsTableSkeletonProps> = ({
   rows = 10 
 }) => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading sessions table">
       <CardHeader>
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-32" />
@@ -217,7 +225,7 @@ export const SessionsTableSkeleton: React.FC<SessionsTableSkeletonProps> = ({
  */
 export const QuickActionsPanelSkeleton: React.FC = () => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading quick actions panel">
       <CardHeader>
         <Skeleton className="h-6 w-32" />
         <Skeleton className="h-4 w-48" />
@@ -251,7 +259,7 @@ export const ProjectsTableSkeleton: React.FC<ProjectsTableSkeletonProps> = ({
   rows = 5 
 }) => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading projects table">
       <CardHeader>
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-24" />
@@ -300,7 +308,7 @@ export const TeamMembersTableSkeleton: React.FC<TeamMembersTableSkeletonProps> =
   rows = 5 
 }) => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading team members table">
       <CardHeader>
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-32" />
@@ -346,7 +354,7 @@ export const TeamMembersTableSkeleton: React.FC<TeamMembersTableSkeletonProps> =
  */
 export const AlgorithmHealthPanelSkeleton: React.FC = () => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading algorithm health panel">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="space-y-2">
@@ -399,7 +407,7 @@ export const AlgorithmHealthPanelSkeleton: React.FC = () => {
  */
 export const SocialProtectionOverviewSkeleton: React.FC = () => {
   return (
-    <Card>
+    <Card role="status" aria-label="Loading social protection overview">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="space-y-2">

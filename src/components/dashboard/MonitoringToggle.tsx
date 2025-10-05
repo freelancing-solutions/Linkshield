@@ -109,7 +109,7 @@ export function MonitoringToggle({
     <>
       <div className="flex items-center gap-2">
         {toggleMonitoring.isPending ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" aria-hidden="true" />
         ) : !hasMonitoringAccess ? (
           <TooltipProvider>
             <Tooltip>
@@ -120,8 +120,10 @@ export function MonitoringToggle({
                     onCheckedChange={handleToggle}
                     disabled={true}
                     className={size === 'sm' ? 'scale-90' : ''}
+                    aria-label="Monitoring toggle - upgrade required"
+                    aria-describedby={showLabel ? undefined : "monitoring-status"}
                   />
-                  <Lock className="h-3 w-3 text-muted-foreground" />
+                  <Lock className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -135,13 +137,18 @@ export function MonitoringToggle({
             onCheckedChange={handleToggle}
             disabled={toggleMonitoring.isPending}
             className={size === 'sm' ? 'scale-90' : ''}
+            aria-label={`${enabled ? 'Disable' : 'Enable'} monitoring for ${projectName}`}
+            aria-describedby={showLabel ? undefined : "monitoring-status"}
           />
         )}
         {showLabel && (
           <Label
+            id="monitoring-status"
             className={`cursor-pointer ${
               size === 'sm' ? 'text-sm' : ''
             } ${toggleMonitoring.isPending || !hasMonitoringAccess ? 'opacity-50' : ''}`}
+            role="status"
+            aria-live="polite"
           >
             {!hasMonitoringAccess 
               ? 'Monitoring Disabled (Upgrade Required)' 

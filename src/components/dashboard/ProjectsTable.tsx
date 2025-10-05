@@ -73,6 +73,14 @@ export function ProjectsTable({
     router.push(`/dashboard/projects/${projectId}`);
   };
 
+  const handleRowKeyDown = (e: React.KeyboardEvent, projectId: string) => {
+    // Handle Enter and Space key navigation for table rows
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRowClick(projectId);
+    }
+  };
+
   const handleToggleMonitoring = async (
     e: React.MouseEvent,
     projectId: string,
@@ -111,8 +119,8 @@ export function ProjectsTable({
   // Error state
   if (error) {
     return (
-      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center">
-        <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" />
+      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center" role="alert">
+        <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" aria-hidden="true" />
         <h3 className="text-lg font-semibold mb-2">Failed to load projects</h3>
         <p className="text-sm text-muted-foreground mb-4">{error.message}</p>
         <Button onClick={() => window.location.reload()} variant="outline">
@@ -125,9 +133,9 @@ export function ProjectsTable({
   // Empty state
   if (!data || data.items.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-12 text-center">
+      <div className="rounded-lg border border-dashed p-12 text-center" role="status">
         <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-          <Users className="h-6 w-6 text-muted-foreground" />
+          <Users className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
         <p className="text-sm text-muted-foreground mb-4">
@@ -140,7 +148,7 @@ export function ProjectsTable({
   return (
     <div className="space-y-4">
       <div className="rounded-lg border">
-        <Table>
+        <Table role="table" aria-label="Projects table">
           <TableHeader>
             <TableRow>
               <TableHead>
@@ -149,9 +157,10 @@ export function ProjectsTable({
                   size="sm"
                   className="h-8 gap-1"
                   onClick={() => handleSort('name')}
+                  aria-label={`Sort by name ${sortBy === 'name' ? (sortOrder === 'asc' ? 'descending' : 'ascending') : 'ascending'}`}
                 >
                   Name
-                  <ArrowUpDown className="h-3 w-3" />
+                  <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                 </Button>
               </TableHead>
               <TableHead>Status</TableHead>
@@ -164,20 +173,27 @@ export function ProjectsTable({
                   size="sm"
                   className="h-8 gap-1"
                   onClick={() => handleSort('created_at')}
+                  aria-label={`Sort by created date ${sortBy === 'created_at' ? (sortOrder === 'asc' ? 'descending' : 'ascending') : 'ascending'}`}
                 >
                   Created
-                  <ArrowUpDown className="h-3 w-3" />
+                  <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[50px]"></TableHead>
+              <TableHead className="w-[50px]">
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.items.map((project) => (
               <TableRow
                 key={project.id}
-                className="cursor-pointer hover:bg-muted/50"
+                className="cursor-pointer hover:bg-muted/50 focus-within:bg-muted/50"
                 onClick={() => handleRowClick(project.id)}
+                onKeyDown={(e) => handleRowKeyDown(e, project.id)}
+                tabIndex={0}
+                role="button"
+                aria-label={`View project ${project.name}${project.domain ? ` at ${project.domain}` : ''}`}
               >
                 <TableCell className="font-medium">
                   <div>
@@ -198,6 +214,8 @@ export function ProjectsTable({
                         ? 'secondary'
                         : 'destructive'
                     }
+                    role="status"
+                    aria-label={`Project status: ${project.status}`}
                   >
                     {project.status}
                   </Badge>
@@ -214,22 +232,23 @@ export function ProjectsTable({
                     }
                     onClick={(e) => e.stopPropagation()}
                     disabled={toggleMonitoring.isPending}
+                    aria-label={`${project.monitoring_enabled ? 'Disable' : 'Enable'} monitoring for ${project.name}`}
                   />
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center gap-1" aria-label={`Team size: ${project.team_size || 0} members`}>
+                    <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <span>{project.team_size || 0}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   {project.active_alerts > 0 ? (
-                    <Badge variant="destructive" className="gap-1">
-                      <AlertTriangle className="h-3 w-3" />
+                    <Badge variant="destructive" className="gap-1" role="status" aria-label={`${project.active_alerts} active alerts`}>
+                      <AlertTriangle className="h-3 w-3" aria-hidden="true" />
                       {project.active_alerts}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground" aria-label="No active alerts">—</span>
                   )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
@@ -238,24 +257,31 @@ export function ProjectsTable({
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        aria-label={`Open actions menu for ${project.name}`}
+                      >
                         <MoreVertical className="h-4 w-4" />
                         <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" role="menu">
                       <DropdownMenuItem
                         onClick={(e) => handleEdit(e, project.id)}
                         className="gap-2"
+                        role="menuitem"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-4 w-4" aria-hidden="true" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={(e) => handleDelete(e, project.id)}
                         className="gap-2 text-destructive focus:text-destructive"
+                        role="menuitem"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -269,17 +295,18 @@ export function ProjectsTable({
 
       {/* Pagination */}
       {data.total_pages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+        <nav className="flex items-center justify-between" aria-label="Projects pagination">
+          <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
             Showing {(page - 1) * data.per_page + 1} to{' '}
             {Math.min(page * data.per_page, data.total)} of {data.total} projects
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2" role="group" aria-label="Pagination controls">
             <Button
               variant="outline"
               size="sm"
               onClick={() => onPageChange(page - 1)}
               disabled={page === 1}
+              aria-label="Go to previous page"
             >
               Previous
             </Button>
@@ -288,11 +315,12 @@ export function ProjectsTable({
               size="sm"
               onClick={() => onPageChange(page + 1)}
               disabled={page === data.total_pages}
+              aria-label="Go to next page"
             >
               Next
             </Button>
           </div>
-        </div>
+        </nav>
       )}
     </div>
   );

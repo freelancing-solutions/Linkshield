@@ -25,6 +25,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useCreateProject } from '@/hooks/dashboard';
 import { toast } from 'sonner';
 
@@ -99,34 +106,43 @@ export function CreateProjectModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px]" aria-describedby="create-project-description">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="create-project-title">Create New Project</DialogTitle>
+          <DialogDescription id="create-project-description">
             Add a new project to monitor and protect your digital assets.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)} 
+            className="space-y-6"
+            role="form"
+            aria-labelledby="create-project-title"
+            aria-describedby="create-project-description"
+          >
             {/* Project Name */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name *</FormLabel>
+                  <FormLabel htmlFor="project-name">Project Name *</FormLabel>
                   <FormControl>
                     <Input
+                      id="project-name"
                       placeholder="My Website"
                       {...field}
                       disabled={createProject.isPending}
+                      aria-describedby={form.formState.errors.name ? "project-name-error" : undefined}
+                      aria-invalid={!!form.formState.errors.name}
                     />
                   </FormControl>
                   <FormDescription>
                     A descriptive name for your project
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage id="project-name-error" role="alert" />
                 </FormItem>
               )}
             />
@@ -137,20 +153,23 @@ export function CreateProjectModal({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel htmlFor="project-description">Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Describe your project..."
+                      id="project-description"
+                      placeholder="Brief description of your project"
                       className="resize-none"
                       rows={3}
                       {...field}
                       disabled={createProject.isPending}
+                      aria-describedby={form.formState.errors.description ? "project-description-error" : undefined}
+                      aria-invalid={!!form.formState.errors.description}
                     />
                   </FormControl>
                   <FormDescription>
                     Optional description of what this project monitors
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage id="project-description-error" role="alert" />
                 </FormItem>
               )}
             />
@@ -161,19 +180,22 @@ export function CreateProjectModal({
               name="domain"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Domain/Website URL</FormLabel>
+                  <FormLabel htmlFor="project-domain">Domain/Website URL</FormLabel>
                   <FormControl>
                     <Input
+                      id="project-domain"
                       type="url"
                       placeholder="https://example.com"
                       {...field}
                       disabled={createProject.isPending}
+                      aria-describedby={form.formState.errors.domain ? "project-domain-error" : undefined}
+                      aria-invalid={!!form.formState.errors.domain}
                     />
                   </FormControl>
                   <FormDescription>
                     The primary domain or website to monitor
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage id="project-domain-error" role="alert" />
                 </FormItem>
               )}
             />
@@ -185,7 +207,10 @@ export function CreateProjectModal({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
+                    <FormLabel 
+                      className="text-base"
+                      htmlFor="enable-monitoring"
+                    >
                       Enable Monitoring
                     </FormLabel>
                     <FormDescription>
@@ -194,9 +219,12 @@ export function CreateProjectModal({
                   </div>
                   <FormControl>
                     <Switch
+                      id="enable-monitoring"
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       disabled={createProject.isPending}
+                      aria-describedby="monitoring-description"
+                      aria-label="Enable monitoring for this project"
                     />
                   </FormControl>
                 </FormItem>
@@ -209,22 +237,28 @@ export function CreateProjectModal({
               name="scan_frequency"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Scan Frequency</FormLabel>
-                  <FormControl>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      {...field}
-                      disabled={createProject.isPending}
-                    >
-                      <option value="hourly">Hourly</option>
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                    </select>
-                  </FormControl>
+                  <FormLabel htmlFor="scan-frequency">Scan Frequency</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger 
+                        id="scan-frequency"
+                        aria-describedby={form.formState.errors.scan_frequency ? "scan-frequency-error" : undefined}
+                        aria-invalid={!!form.formState.errors.scan_frequency}
+                      >
+                        <SelectValue placeholder="Select scan frequency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent role="listbox">
+                      <SelectItem value="hourly" role="option">Hourly</SelectItem>
+                      <SelectItem value="daily" role="option">Daily</SelectItem>
+                      <SelectItem value="weekly" role="option">Weekly</SelectItem>
+                      <SelectItem value="monthly" role="option">Monthly</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormDescription>
                     How often to automatically scan this project
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage id="scan-frequency-error" role="alert" />
                 </FormItem>
               )}
             />
@@ -235,10 +269,15 @@ export function CreateProjectModal({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={createProject.isPending}
+                aria-label="Cancel project creation"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={createProject.isPending}>
+              <Button 
+                type="submit" 
+                disabled={createProject.isPending}
+                aria-label={createProject.isPending ? "Creating project..." : "Create project"}
+              >
                 {createProject.isPending ? 'Creating...' : 'Create Project'}
               </Button>
             </DialogFooter>
