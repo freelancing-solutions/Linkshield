@@ -1,3 +1,26 @@
+/**
+ * AlertsList Component
+ * 
+ * A comprehensive list component for displaying and managing alerts in the dashboard.
+ * Provides alert visualization with severity-based grouping, type icons, and quick actions.
+ * 
+ * Features:
+ * - Severity-based visual grouping and styling
+ * - Type-specific icons for different alert categories
+ * - Quick resolve functionality with optimistic updates
+ * - Click-to-view detailed alert information
+ * - Responsive design with proper spacing
+ * - Accessibility compliant with proper ARIA labels
+ * 
+ * @example
+ * ```tsx
+ * <AlertsList
+ *   alerts={alertsData}
+ *   onAlertClick={handleAlertClick}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { Badge } from '@/components/ui/badge';
@@ -16,8 +39,17 @@ import { formatDate } from '@/lib/utils/formatters';
 import { toast } from 'sonner';
 import type { Alert, AlertSeverity, AlertType } from '@/types/dashboard';
 
+/**
+ * Props for the AlertsList component
+ * 
+ * @interface AlertsListProps
+ * @property {Alert[]} alerts - Array of alert objects to display
+ * @property {function} onAlertClick - Callback function when an alert is clicked
+ */
 interface AlertsListProps {
+  /** Array of alert objects to display */
   alerts: Alert[];
+  /** Callback function when an alert is clicked to view details */
   onAlertClick: (alert: Alert) => void;
 }
 
@@ -25,7 +57,18 @@ interface AlertsListProps {
  * Alerts List Component
  * 
  * Displays alerts grouped by severity with type icons and quick resolve buttons.
- * Clicking an alert opens the detail drawer.
+ * Clicking an alert opens the detail drawer for more information.
+ * 
+ * @param {AlertsListProps} props - The component props
+ * @returns {JSX.Element} The rendered alerts list
+ * 
+ * @example
+ * ```tsx
+ * <AlertsList
+ *   alerts={alertsData}
+ *   onAlertClick={handleAlertClick}
+ * />
+ * ```
  */
 export function AlertsList({ alerts, onAlertClick }: AlertsListProps) {
   const resolveAlert = useResolveAlert();

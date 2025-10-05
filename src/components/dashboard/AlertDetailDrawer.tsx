@@ -1,3 +1,31 @@
+/**
+ * AlertDetailDrawer Component
+ * 
+ * A comprehensive drawer component for displaying detailed alert information and
+ * providing resolution functionality. Shows alert metadata, timeline, and allows
+ * users to resolve alerts with resolution notes.
+ * 
+ * Features:
+ * - Detailed alert information display
+ * - Alert resolution with form validation
+ * - Loading states for data fetching
+ * - Type-specific icons and styling
+ * - Timeline and metadata display
+ * - Responsive drawer layout
+ * - Form validation with Zod schema
+ * - Toast notifications for user feedback
+ * 
+ * @example
+ * ```tsx
+ * <AlertDetailDrawer
+ *   alertId="alert-123"
+ *   projectId="project-456"
+ *   open={isDrawerOpen}
+ *   onOpenChange={setIsDrawerOpen}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -48,10 +76,23 @@ const resolveAlertSchema = z.object({
 
 type ResolveAlertFormData = z.infer<typeof resolveAlertSchema>;
 
+/**
+ * Props for the AlertDetailDrawer component
+ * 
+ * @interface AlertDetailDrawerProps
+ * @property {string} projectId - The ID of the project containing the alert
+ * @property {Alert | null} alert - The alert object to display details for
+ * @property {boolean} open - Whether the drawer is open
+ * @property {function} onOpenChange - Callback function when drawer open state changes
+ */
 interface AlertDetailDrawerProps {
+  /** The ID of the project containing the alert */
   projectId: string;
+  /** The alert object to display details for */
   alert: Alert | null;
+  /** Whether the drawer is open */
   open: boolean;
+  /** Callback function when drawer open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
@@ -60,6 +101,19 @@ interface AlertDetailDrawerProps {
  * 
  * Displays full alert details in a slide-in drawer with resolution functionality.
  * Shows alert timeline, type, severity, and allows adding resolution notes.
+ * 
+ * @param {AlertDetailDrawerProps} props - The component props
+ * @returns {JSX.Element} The rendered alert detail drawer
+ * 
+ * @example
+ * ```tsx
+ * <AlertDetailDrawer
+ *   projectId="project-123"
+ *   alert={selectedAlert}
+ *   open={isDrawerOpen}
+ *   onOpenChange={setIsDrawerOpen}
+ * />
+ * ```
  */
 export function AlertDetailDrawer({
   projectId,

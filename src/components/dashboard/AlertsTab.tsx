@@ -1,3 +1,31 @@
+/**
+ * AlertsTab Component
+ * 
+ * A comprehensive alerts management interface for project-specific security alerts.
+ * Provides filtering, sorting, bulk operations, and detailed alert viewing capabilities.
+ * Integrates with the alerts API to display real-time security threat information
+ * and allows users to manage alert resolution workflows.
+ * 
+ * Features:
+ * - Real-time alerts display with automatic updates
+ * - Multi-level filtering by status, severity, and date range
+ * - Bulk alert resolution with confirmation dialogs
+ * - Individual alert detail drawer with resolution options
+ * - Loading states with skeleton placeholders
+ * - Error handling with user-friendly messages
+ * - Toast notifications for user feedback
+ * - Responsive design with proper spacing
+ * - Integration with dashboard hooks and API
+ * - Accessibility support with proper ARIA labels
+ * - Empty state handling for no alerts scenarios
+ * - Real-time alert count updates
+ * 
+ * @example
+ * ```tsx
+ * <AlertsTab projectId="project-123" />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -17,15 +45,39 @@ import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Alert, AlertSeverity, AlertStatus } from '@/types/dashboard';
 
+/**
+ * Props for the AlertsTab component
+ * 
+ * @interface AlertsTabProps
+ * @property {string} projectId - The unique identifier of the project to display alerts for
+ */
 interface AlertsTabProps {
+  /** The unique identifier of the project to display alerts for */
   projectId: string;
 }
 
 /**
  * Alerts Tab Component
  * 
- * Displays project-specific alerts with filters for status, severity, and date range.
- * Includes bulk resolve functionality and alert detail drawer.
+ * A comprehensive alerts management interface that displays and manages security alerts
+ * for a specific project. Provides filtering, bulk operations, and detailed alert viewing.
+ * 
+ * @param {AlertsTabProps} props - The component props
+ * @returns {JSX.Element} The rendered alerts tab interface
+ * 
+ * @example
+ * ```tsx
+ * // Display alerts for a specific project
+ * <AlertsTab projectId="project-123" />
+ * ```
+ * 
+ * @features
+ * - Real-time alerts display with filtering
+ * - Bulk alert resolution functionality
+ * - Individual alert detail drawer
+ * - Status and severity filtering
+ * - Loading and error states
+ * - Toast notifications for feedback
  */
 export function AlertsTab({ projectId }: AlertsTabProps) {
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);

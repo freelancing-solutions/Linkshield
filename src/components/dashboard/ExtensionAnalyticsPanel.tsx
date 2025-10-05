@@ -1,3 +1,26 @@
+/**
+ * ExtensionAnalyticsPanel Component
+ * 
+ * A comprehensive analytics panel for displaying browser extension usage statistics
+ * and performance metrics. Provides interactive charts, time range selection, and
+ * data export functionality for monitoring extension activity.
+ * 
+ * Features:
+ * - Interactive bar charts for analytics visualization
+ * - Time range selection (1h, 24h, 7d, 30d)
+ * - Data export functionality (JSON format)
+ * - Loading states with skeleton placeholders
+ * - Responsive chart layout
+ * - Real-time data updates
+ * - Extension usage metrics display
+ * - Performance trend analysis
+ * 
+ * @example
+ * ```tsx
+ * <ExtensionAnalyticsPanel />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -24,6 +47,21 @@ const TIME_RANGE_LABELS: Record<TimeRange, string> = {
   '30d': 'Last 30 Days',
 };
 
+/**
+ * Extension Analytics Panel Component
+ * 
+ * Displays comprehensive analytics for browser extension usage with interactive
+ * charts and time range selection. Provides data export functionality and
+ * real-time metrics visualization.
+ * 
+ * @returns {JSX.Element} The rendered extension analytics panel
+ * 
+ * @example
+ * ```tsx
+ * // Display extension analytics in dashboard
+ * <ExtensionAnalyticsPanel />
+ * ```
+ */
 export function ExtensionAnalyticsPanel() {
   const [timeRange, setTimeRange] = useState<TimeRange>('24h');
   const { data: analytics, isLoading } = useExtensionAnalytics(timeRange);

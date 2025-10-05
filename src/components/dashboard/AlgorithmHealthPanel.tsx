@@ -1,3 +1,28 @@
+/**
+ * AlgorithmHealthPanel Component
+ * 
+ * A comprehensive panel for monitoring and analyzing social media algorithm health
+ * including visibility scores, engagement metrics, and penalty detection. Provides
+ * detailed analytics with interactive controls and feature gating for premium users.
+ * 
+ * Features:
+ * - Algorithm health monitoring with visual indicators
+ * - Visibility analysis with detailed metrics
+ * - Engagement analysis and trend tracking
+ * - Penalty detection and alerts
+ * - Feature gating for premium functionality
+ * - Interactive analysis triggers
+ * - Real-time data updates
+ * - Accessibility support with ARIA labels
+ * - Loading states and error handling
+ * - Modal dialogs for detailed results
+ * 
+ * @example
+ * ```tsx
+ * <AlgorithmHealthPanel />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -78,17 +103,28 @@ const METRIC_TYPE_CONFIG = {
 };
 
 /**
- * AlgorithmHealthPanel Component
+ * Algorithm Health Panel Component
  * 
- * Displays algorithm health metrics with mini cards for Visibility, Engagement, and Penalties.
- * Includes trend indicators, run analysis buttons, and health badge.
+ * Displays comprehensive algorithm health metrics with interactive analysis capabilities.
+ * Shows visibility scores, engagement metrics, and penalty detection with trend indicators
+ * and detailed analysis options. Includes feature gating for premium functionality.
  * 
- * Features:
- * - Mini cards for each health metric
- * - Trend arrows (up/down/stable)
- * - "Run Analysis" buttons for each metric
- * - Overall health badge
- * - Link to full analysis view
+ * @returns {JSX.Element} The rendered algorithm health panel
+ * 
+ * @example
+ * ```tsx
+ * // Display algorithm health panel in dashboard
+ * <AlgorithmHealthPanel />
+ * ```
+ * 
+ * @features
+ * - Real-time health monitoring with visual status indicators
+ * - Interactive analysis buttons for visibility and engagement
+ * - Penalty detection with alert notifications
+ * - Feature gating for premium users
+ * - Trend analysis with directional indicators
+ * - Modal dialogs for detailed analysis results
+ * - Accessibility support with proper ARIA labels
  */
 export function AlgorithmHealthPanel() {
   const { data: health, isLoading, error } = useAlgorithmHealth();

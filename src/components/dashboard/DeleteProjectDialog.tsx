@@ -1,3 +1,33 @@
+/**
+ * DeleteProjectDialog Component
+ * 
+ * A confirmation dialog component for safely deleting projects with user verification.
+ * Implements a two-step confirmation process requiring users to type the project name
+ * to prevent accidental deletions. Provides clear warnings and handles the deletion
+ * process with proper error handling and user feedback.
+ * 
+ * Features:
+ * - Two-step confirmation process with project name verification
+ * - Clear warning messages about data loss and irreversibility
+ * - Real-time validation of confirmation text input
+ * - Integration with project deletion hooks and API
+ * - Toast notifications for success and error feedback
+ * - Automatic navigation to projects list after deletion
+ * - Accessible dialog with proper ARIA labels and focus management
+ * - Loading states during deletion process
+ * - Error handling with user-friendly messages
+ * - Responsive design with proper spacing and typography
+ * 
+ * @example
+ * ```tsx
+ * <DeleteProjectDialog
+ *   project={selectedProject}
+ *   open={isDeleteDialogOpen}
+ *   onOpenChange={setIsDeleteDialogOpen}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -19,18 +49,50 @@ import { toast } from 'sonner';
 import type { Project } from '@/types/dashboard';
 import { AlertTriangle } from 'lucide-react';
 
+/**
+ * Props for the DeleteProjectDialog component
+ * 
+ * @interface DeleteProjectDialogProps
+ * @property {Project} project - The project to be deleted, containing name and other details
+ * @property {boolean} open - Whether the dialog is currently open/visible
+ * @property {(open: boolean) => void} onOpenChange - Callback function to handle dialog open state changes
+ */
 interface DeleteProjectDialogProps {
+  /** The project to be deleted */
   project: Project;
+  /** Whether the dialog is currently open */
   open: boolean;
+  /** Callback to handle dialog open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
 /**
  * Delete Project Dialog Component
  * 
- * Confirmation dialog for deleting a project.
- * Requires typing the project name to confirm deletion.
- * Navigates to projects list on successful deletion.
+ * A confirmation dialog that requires users to type the project name to confirm deletion.
+ * Provides safety measures to prevent accidental project deletions and handles the
+ * deletion process with proper error handling and user feedback.
+ * 
+ * @param {DeleteProjectDialogProps} props - The component props
+ * @returns {JSX.Element} The rendered delete project confirmation dialog
+ * 
+ * @example
+ * ```tsx
+ * // Show delete confirmation dialog
+ * <DeleteProjectDialog
+ *   project={selectedProject}
+ *   open={showDeleteDialog}
+ *   onOpenChange={setShowDeleteDialog}
+ * />
+ * ```
+ * 
+ * @features
+ * - Project name confirmation requirement
+ * - Real-time validation of confirmation input
+ * - Toast notifications for feedback
+ * - Navigation after successful deletion
+ * - Loading states during deletion
+ * - Accessible dialog implementation
  */
 export function DeleteProjectDialog({
   project,

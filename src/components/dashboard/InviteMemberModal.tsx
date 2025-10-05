@@ -1,3 +1,34 @@
+/**
+ * InviteMemberModal Component
+ * 
+ * A modal dialog component for inviting new team members to a project with role-based
+ * access control. Provides a form interface for entering email addresses and selecting
+ * appropriate roles, with validation and error handling for the invitation process.
+ * 
+ * Features:
+ * - Email validation with real-time feedback
+ * - Role-based access control with visual role indicators
+ * - Form validation using Zod schema and React Hook Form
+ * - Integration with team invitation API hooks
+ * - Toast notifications for success and error feedback
+ * - Loading states during invitation process
+ * - Accessible modal dialog with proper focus management
+ * - Role descriptions with icons for better UX
+ * - Form reset after successful invitation
+ * - Error handling with user-friendly messages
+ * - Responsive design with proper spacing
+ * - Keyboard navigation support
+ * 
+ * @example
+ * ```tsx
+ * <InviteMemberModal
+ *   projectId="project-123"
+ *   open={isInviteModalOpen}
+ *   onOpenChange={setIsInviteModalOpen}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -44,19 +75,59 @@ const inviteMemberSchema = z.object({
   }),
 });
 
+/**
+ * Form data type for inviting team members
+ * 
+ * @typedef {Object} InviteMemberFormData
+ * @property {string} email - The email address of the user to invite
+ * @property {'admin' | 'member' | 'viewer'} role - The role to assign to the invited user
+ */
 type InviteMemberFormData = z.infer<typeof inviteMemberSchema>;
 
+/**
+ * Props for the InviteMemberModal component
+ * 
+ * @interface InviteMemberModalProps
+ * @property {string} projectId - The unique identifier of the project to invite members to
+ * @property {boolean} open - Whether the modal is currently open/visible
+ * @property {(open: boolean) => void} onOpenChange - Callback function to handle modal open state changes
+ */
 interface InviteMemberModalProps {
+  /** The unique identifier of the project to invite members to */
   projectId: string;
+  /** Whether the modal is currently open */
   open: boolean;
+  /** Callback to handle modal open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
 /**
  * Invite Member Modal Component
  * 
- * Modal dialog for inviting new team members to a project.
- * Validates email format and allows selecting member role.
+ * A modal dialog for inviting new team members to a project with role selection.
+ * Provides email validation, role assignment, and handles the invitation process
+ * with proper error handling and user feedback.
+ * 
+ * @param {InviteMemberModalProps} props - The component props
+ * @returns {JSX.Element} The rendered invite member modal dialog
+ * 
+ * @example
+ * ```tsx
+ * // Show invite member modal
+ * <InviteMemberModal
+ *   projectId="project-123"
+ *   open={showInviteModal}
+ *   onOpenChange={setShowInviteModal}
+ * />
+ * ```
+ * 
+ * @features
+ * - Email validation with real-time feedback
+ * - Role-based access control selection
+ * - Form validation using Zod schema
+ * - Toast notifications for feedback
+ * - Loading states during invitation
+ * - Accessible modal implementation
  */
 export function InviteMemberModal({
   projectId,

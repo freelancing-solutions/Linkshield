@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Subscription Plan Card Component for Dashboard
+ * 
+ * Displays current subscription plan information with usage metrics, billing details,
+ * and upgrade options. Includes loading states and error handling for subscription data.
+ * 
+ * @author LinkShield Team
+ * @version 1.0.0
+ */
+
 'use client';
 
 import React from 'react';
@@ -22,6 +32,8 @@ import type { SubscriptionPlan, SubscriptionStatus } from '@/types/homepage';
 
 /**
  * Plan configuration with pricing and features
+ * 
+ * Defines the visual styling and metadata for each subscription plan tier.
  */
 const PLAN_CONFIG = {
   FREE: {
@@ -74,6 +86,16 @@ const STATUS_CONFIG = {
 
 /**
  * Format date for display
+ * 
+ * Converts an ISO date string to a human-readable format.
+ * 
+ * @param dateString - ISO date string to format
+ * @returns Formatted date string in "MMM DD, YYYY" format
+ * 
+ * @example
+ * ```typescript
+ * formatDate('2024-01-15T00:00:00Z') // Returns "Jan 15, 2024"
+ * ```
  */
 const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -85,6 +107,19 @@ const formatDate = (dateString: string): string => {
 
 /**
  * Get usage color based on percentage
+ * 
+ * Returns appropriate color class based on usage percentage thresholds.
+ * Uses traffic light system: green (safe), yellow/amber (warning), red (critical).
+ * 
+ * @param percentage - Usage percentage (0-100)
+ * @returns Tailwind CSS background color class
+ * 
+ * @example
+ * ```typescript
+ * getUsageColor(50)  // Returns "bg-green-500"
+ * getUsageColor(85)  // Returns "bg-amber-500"
+ * getUsageColor(95)  // Returns "bg-red-500"
+ * ```
  */
 const getUsageColor = (percentage: number): string => {
   if (percentage >= 90) return 'bg-red-500';
@@ -94,7 +129,13 @@ const getUsageColor = (percentage: number): string => {
 };
 
 /**
- * Usage bar component for individual metrics
+ * Props for the UsageBar component
+ * 
+ * @interface UsageBarProps
+ * @property {string} label - Display label for the usage metric
+ * @property {number} used - Current usage amount
+ * @property {number} limit - Maximum allowed usage
+ * @property {number} percentage - Usage percentage (0-100)
  */
 interface UsageBarProps {
   label: string;
@@ -103,6 +144,29 @@ interface UsageBarProps {
   percentage: number;
 }
 
+/**
+ * Usage bar component for individual metrics
+ * 
+ * Displays a progress bar with usage statistics for subscription limits.
+ * Includes visual indicators for usage levels and formatted numbers.
+ * 
+ * @param props - Component props
+ * @param props.label - Display name for the metric (e.g., "URL Checks")
+ * @param props.used - Current usage count
+ * @param props.limit - Maximum allowed usage
+ * @param props.percentage - Usage percentage for progress bar
+ * @returns JSX element representing the usage bar
+ * 
+ * @example
+ * ```tsx
+ * <UsageBar
+ *   label="API Calls"
+ *   used={750}
+ *   limit={1000}
+ *   percentage={75}
+ * />
+ * ```
+ */
 const UsageBar: React.FC<UsageBarProps> = ({ label, used, limit, percentage }) => (
   <div className="space-y-2">
     <div className="flex justify-between text-sm">
@@ -128,6 +192,17 @@ const UsageBar: React.FC<UsageBarProps> = ({ label, used, limit, percentage }) =
 
 /**
  * Loading state component
+ * 
+ * Displays skeleton placeholders while subscription data is being fetched.
+ * Matches the layout structure of the main component for smooth transitions.
+ * 
+ * @returns JSX element with loading skeletons
+ * 
+ * @example
+ * ```tsx
+ * // Used internally when subscription data is loading
+ * {isLoading && <LoadingState />}
+ * ```
  */
 const LoadingState: React.FC = () => (
   <Card>
@@ -156,12 +231,30 @@ const LoadingState: React.FC = () => (
 );
 
 /**
- * Error state component
+ * Props for the ErrorState component
+ * 
+ * @interface ErrorStateProps
+ * @property {() => void} onRetry - Callback function to retry loading data
  */
 interface ErrorStateProps {
   onRetry: () => void;
 }
 
+/**
+ * Error state component
+ * 
+ * Displays error message and retry button when subscription data fails to load.
+ * Provides user-friendly error handling with actionable recovery option.
+ * 
+ * @param props - Component props
+ * @param props.onRetry - Function to call when user clicks retry button
+ * @returns JSX element with error message and retry button
+ * 
+ * @example
+ * ```tsx
+ * <ErrorState onRetry={() => window.location.reload()} />
+ * ```
+ */
 const ErrorState: React.FC<ErrorStateProps> = ({ onRetry }) => (
   <Card>
     <CardContent className="pt-6">
@@ -186,11 +279,26 @@ const ErrorState: React.FC<ErrorStateProps> = ({ onRetry }) => (
 /**
  * SubscriptionPlanCard Component
  * 
- * Displays current subscription plan information including:
- * - Plan name, price, and status
- * - Usage statistics with progress bars
- * - Renewal/cancellation information
- * - Upgrade button and warnings
+ * Main component that displays comprehensive subscription information including:
+ * - Current plan details (name, price, status)
+ * - Real-time usage statistics with visual progress bars
+ * - Billing period and renewal information
+ * - Usage warnings and alerts
+ * - Action buttons for plan management and upgrades
+ * 
+ * Features:
+ * - Automatic loading and error states
+ * - Color-coded usage indicators
+ * - Responsive design with accessibility support
+ * - Integration with subscription management hooks
+ * 
+ * @returns JSX element representing the subscription plan card
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage in dashboard
+ * <SubscriptionPlanCard />
+ * ```
  * 
  * Requirements: 9.1 - Subscription integration
  */

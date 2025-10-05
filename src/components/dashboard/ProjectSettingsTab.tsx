@@ -1,16 +1,66 @@
+/**
+ * ProjectSettingsTab Component
+ * 
+ * A comprehensive project settings interface that displays and manages project
+ * configuration options including monitoring settings, scan frequency, and project
+ * information. Provides a clean, organized layout for project administrators to
+ * configure security monitoring and view project details.
+ * 
+ * Features:
+ * - Monitoring toggle with real-time updates
+ * - Scan frequency display and configuration
+ * - Project information display with formatted details
+ * - Clean, organized layout with proper spacing
+ * - Integration with monitoring toggle component
+ * - Responsive design with proper card layouts
+ * - Accessibility support with proper semantic markup
+ * - Read-only project information display
+ * - Visual separation between setting sections
+ * - Consistent typography and spacing
+ * 
+ * @example
+ * ```tsx
+ * <ProjectSettingsTab project={selectedProject} />
+ * ```
+ */
+
 'use client';
 
 import { MonitoringToggle } from './MonitoringToggle';
 import type { Project } from '@/types/dashboard';
 
+/**
+ * Props for the ProjectSettingsTab component
+ * 
+ * @interface ProjectSettingsTabProps
+ * @property {Project} project - The project object containing settings and information
+ */
 interface ProjectSettingsTabProps {
+  /** The project object containing settings and information to display */
   project: Project;
 }
 
 /**
  * Project Settings Tab Component
  * 
- * Displays project configuration and settings
+ * Displays and manages project configuration settings including monitoring options
+ * and project information. Provides an organized interface for project administrators.
+ * 
+ * @param {ProjectSettingsTabProps} props - The component props
+ * @returns {JSX.Element} The rendered project settings tab interface
+ * 
+ * @example
+ * ```tsx
+ * // Display project settings
+ * <ProjectSettingsTab project={selectedProject} />
+ * ```
+ * 
+ * @features
+ * - Monitoring settings with toggle control
+ * - Scan frequency configuration display
+ * - Project information overview
+ * - Organized card-based layout
+ * - Integration with monitoring components
  */
 export function ProjectSettingsTab({ project }: ProjectSettingsTabProps) {
   return (

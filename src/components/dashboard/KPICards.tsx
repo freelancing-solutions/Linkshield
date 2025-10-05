@@ -1,3 +1,13 @@
+/**
+ * @fileoverview KPI Cards Component for Dashboard
+ * 
+ * Displays key performance indicators (KPIs) based on user role with interactive cards
+ * that show metrics, trends, and navigation links to relevant dashboard sections.
+ * 
+ * @author LinkShield Team
+ * @version 1.0.0
+ */
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,15 +15,39 @@ import { FolderKanban, AlertTriangle, Activity, TrendingUp, TrendingDown } from 
 import Link from 'next/link';
 import type { DashboardOverview } from '@/types/dashboard';
 
+/**
+ * Props for the KPICards component
+ */
 interface KPICardsProps {
+  /** Dashboard overview data containing user role and metrics */
   data: DashboardOverview;
 }
 
 /**
  * KPI Cards Component
  * 
- * Displays key performance indicators for the dashboard overview.
- * Shows total projects, active alerts, and recent scans with trend indicators.
+ * Displays role-based key performance indicators in an interactive card grid.
+ * Each card shows a metric value, trend indicator, and links to relevant sections.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * import { KPICards } from '@/components/dashboard/KPICards';
+ * 
+ * function Dashboard() {
+ *   const { data } = useDashboardOverview();
+ *   
+ *   return (
+ *     <div>
+ *       <KPICards data={data} />
+ *     </div>
+ *   );
+ * }
+ * ```
+ * 
+ * @param props - Component props
+ * @param props.data - Dashboard overview data with user role and metrics
+ * @returns JSX element containing the KPI cards grid
  */
 export function KPICards({ data }: KPICardsProps) {
   // Get metrics based on user's primary role
@@ -81,7 +115,50 @@ export function KPICards({ data }: KPICardsProps) {
 }
 
 /**
- * Get metrics based on user's primary role
+ * Get metrics configuration based on user's primary role
+ * 
+ * Transforms dashboard overview data into role-specific KPI metrics with
+ * appropriate icons, colors, and navigation links. Each role has different
+ * metrics that are most relevant to their workflow.
+ * 
+ * @param data - Dashboard overview data containing user role and metrics
+ * @param data.user_role - The user's primary role (web_developer, social_media, etc.)
+ * @param data.web_developer - Web developer specific metrics (if role matches)
+ * @param data.social_media - Social media manager specific metrics (if role matches)
+ * @param data.brand_manager - Brand manager specific metrics (if role matches)
+ * @param data.news_media - News/media specific metrics (if role matches)
+ * @param data.executive - Executive specific metrics (if role matches)
+ * 
+ * @returns Array of metric objects with display properties
+ * @returns {Object[]} metrics - Array of metric configurations
+ * @returns {string} metrics[].id - Unique identifier for the metric
+ * @returns {string} metrics[].label - Display label for the metric
+ * @returns {string|number} metrics[].value - Formatted metric value
+ * @returns {React.ComponentType} metrics[].icon - Lucide icon component
+ * @returns {string} metrics[].iconBg - Background color class for icon
+ * @returns {string} metrics[].iconColor - Text color class for icon
+ * @returns {string} metrics[].link - Navigation link for the metric
+ * @returns {string} [metrics[].subtitle] - Optional subtitle text
+ * @returns {Object} [metrics[].trend] - Optional trend indicator
+ * @returns {'up'|'down'} [metrics[].trend.direction] - Trend direction
+ * @returns {string} [metrics[].trend.value] - Formatted trend value
+ * @returns {string} [metrics[].trend.label] - Trend label text
+ * 
+ * @example
+ * ```tsx
+ * const dashboardData = {
+ *   user_role: 'web_developer',
+ *   web_developer: {
+ *     total_projects: 5,
+ *     active_alerts: 2,
+ *     total_scans: 1250,
+ *     api_usage: { percentage: 75, current_usage: 750, limit: 1000 }
+ *   }
+ * };
+ * 
+ * const metrics = getMetricsForRole(dashboardData);
+ * // Returns array of 4 metrics for web developer role
+ * ```
  */
 function getMetricsForRole(data: DashboardOverview) {
   const role = data.user_role;

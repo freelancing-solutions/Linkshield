@@ -1,3 +1,30 @@
+/**
+ * CreateProjectModal Component
+ * 
+ * A modal dialog for creating new projects with comprehensive form validation
+ * and configuration options. Provides a user-friendly interface for setting up
+ * new monitoring projects with various settings and preferences.
+ * 
+ * Features:
+ * - Form validation with Zod schema
+ * - Project name and description input
+ * - Domain/URL configuration
+ * - Monitoring settings toggle
+ * - Priority level selection
+ * - Real-time form validation
+ * - Loading states during creation
+ * - Toast notifications for feedback
+ * - Automatic navigation after creation
+ * 
+ * @example
+ * ```tsx
+ * <CreateProjectModal
+ *   open={isModalOpen}
+ *   onOpenChange={setIsModalOpen}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -55,16 +82,37 @@ const createProjectSchema = z.object({
 
 type CreateProjectFormData = z.infer<typeof createProjectSchema>;
 
+/**
+ * Props for the CreateProjectModal component
+ * 
+ * @interface CreateProjectModalProps
+ * @property {boolean} open - Whether the modal is open
+ * @property {function} onOpenChange - Callback function when modal open state changes
+ */
 interface CreateProjectModalProps {
+  /** Whether the modal is open */
   open: boolean;
+  /** Callback function when modal open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
 /**
  * Create Project Modal Component
  * 
- * Modal dialog for creating a new project with form validation.
- * Navigates to project detail page on successful creation.
+ * A modal dialog for creating new projects with form validation and configuration options.
+ * Handles project creation with comprehensive settings including monitoring preferences,
+ * scan frequency, and domain configuration.
+ * 
+ * @param {CreateProjectModalProps} props - The component props
+ * @returns {JSX.Element} The rendered create project modal
+ * 
+ * @example
+ * ```tsx
+ * <CreateProjectModal
+ *   open={showCreateModal}
+ *   onOpenChange={setShowCreateModal}
+ * />
+ * ```
  */
 export function CreateProjectModal({
   open,

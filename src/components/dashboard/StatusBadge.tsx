@@ -1,3 +1,25 @@
+/**
+ * StatusBadge Component
+ * 
+ * A reusable status badge component for displaying various states across the dashboard.
+ * Provides consistent visual representation of status information with appropriate colors,
+ * icons, and styling for different status types.
+ * 
+ * Features:
+ * - Multiple status variants (success, warning, error, info, neutral)
+ * - Automatic icon selection based on status type
+ * - Dark mode support
+ * - Consistent styling with design system
+ * - Accessible with proper ARIA attributes
+ * 
+ * @example
+ * ```tsx
+ * <StatusBadge status="success" text="Active" />
+ * <StatusBadge status="error" text="Failed" showIcon={false} />
+ * <StatusBadge status="warning" text="Degraded" className="ml-2" />
+ * ```
+ */
+
 'use client';
 
 import * as React from 'react';

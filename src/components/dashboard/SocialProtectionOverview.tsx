@@ -1,3 +1,27 @@
+/**
+ * SocialProtectionOverview Component
+ * 
+ * A comprehensive dashboard component for monitoring and managing social protection
+ * features including browser extension status, bot health, algorithm analysis,
+ * and crisis alert monitoring. Provides real-time status updates and management
+ * controls for all social protection systems.
+ * 
+ * Features:
+ * - Extension status monitoring and settings management
+ * - Bot health tracking and restart functionality
+ * - Algorithm health analysis and metrics
+ * - Crisis alerts monitoring and response
+ * - Real-time sync capabilities
+ * - Settings toggle controls
+ * - Performance analytics display
+ * - Error handling and user feedback
+ * 
+ * @example
+ * ```tsx
+ * <SocialProtectionOverview projectId="project-123" />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -10,18 +34,31 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Shield, Activity, AlertTriangle, TrendingUp, Settings, RefreshCw, Play, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Props for the SocialProtectionOverview component
+ * 
+ * @interface SocialProtectionOverviewProps
+ * @property {string} [projectId] - Optional project ID to filter data for specific project
+ */
 interface SocialProtectionOverviewProps {
+  /** Optional project ID to filter data for specific project */
   projectId?: string;
 }
 
 /**
  * Social Protection Overview Component
  * 
- * Comprehensive overview of social protection features including:
- * - Extension status and settings
- * - Bot health and management
- * - Algorithm health analysis
- * - Crisis alerts monitoring
+ * Comprehensive overview of social protection features including extension status,
+ * bot health management, algorithm analysis, and crisis monitoring. Provides
+ * real-time updates and management controls for all protection systems.
+ * 
+ * @param {SocialProtectionOverviewProps} props - The component props
+ * @returns {JSX.Element} The rendered social protection overview
+ * 
+ * @example
+ * ```tsx
+ * <SocialProtectionOverview projectId="project-123" />
+ * ```
  */
 export function SocialProtectionOverview({ projectId }: SocialProtectionOverviewProps) {
   const [isSyncing, setIsSyncing] = useState(false);

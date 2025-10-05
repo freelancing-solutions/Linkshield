@@ -1,3 +1,29 @@
+/**
+ * ExtensionStatusCard Component
+ * 
+ * A status card component that displays the current connection status and activity
+ * information for the LinkShield browser extension. Provides visual indicators for
+ * connection status, last activity timestamps, and available features based on
+ * the user's subscription plan.
+ * 
+ * Features:
+ * - Real-time extension connection status monitoring
+ * - Last activity timestamp display with relative formatting
+ * - Feature availability indicators based on subscription plan
+ * - Loading states with skeleton placeholders
+ * - Error handling with user-friendly messages
+ * - Visual status indicators with icons and badges
+ * - Download/installation links for disconnected extensions
+ * - Responsive card layout with proper spacing
+ * - Integration with social protection hooks
+ * - Accessibility support with proper ARIA labels
+ * 
+ * @example
+ * ```tsx
+ * <ExtensionStatusCard />
+ * ```
+ */
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +35,29 @@ import { CheckCircle2, XCircle, ExternalLink, Download } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 
+/**
+ * Extension Status Card Component
+ * 
+ * Displays the current status of the LinkShield browser extension including
+ * connection status, last activity, and available features. Handles loading
+ * states and provides appropriate actions for different connection states.
+ * 
+ * @returns {JSX.Element} The rendered extension status card
+ * 
+ * @example
+ * ```tsx
+ * // Display extension status in dashboard
+ * <ExtensionStatusCard />
+ * ```
+ * 
+ * @features
+ * - Connection status monitoring with visual indicators
+ * - Last activity tracking with relative timestamps
+ * - Feature availability display based on subscription
+ * - Loading states with skeleton UI
+ * - Error handling with fallback content
+ * - Download links for extension installation
+ */
 export function ExtensionStatusCard() {
   const { data: status, isLoading, error } = useExtensionStatus();
 

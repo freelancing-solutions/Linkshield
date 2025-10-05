@@ -1,3 +1,27 @@
+/**
+ * TeamTab Component
+ * 
+ * A comprehensive team management interface that displays team members and provides
+ * functionality for inviting new members. Handles loading states, error conditions,
+ * and provides a clean interface for team administration.
+ * 
+ * Features:
+ * - Team member listing with roles and permissions
+ * - Member invitation functionality with modal dialog
+ * - Loading states with skeleton placeholders
+ * - Error handling with retry functionality
+ * - Responsive design with proper spacing
+ * - Integration with team management hooks
+ * - Real-time team member updates
+ * - Permission-based action visibility
+ * - Accessibility support with proper ARIA labels
+ * 
+ * @example
+ * ```tsx
+ * <TeamTab projectId="project-123" />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -8,15 +32,29 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UserPlus, AlertTriangle } from 'lucide-react';
 
+/**
+ * Props for the TeamTab component
+ */
 interface TeamTabProps {
+  /** The ID of the project to display team members for */
   projectId: string;
 }
 
 /**
  * Team Tab Component
  * 
- * Displays team members table with invite functionality.
- * Shows member roles, permissions, and allows inviting new members.
+ * Displays team members table with invite functionality and handles all team
+ * management operations including loading states and error conditions.
+ * 
+ * @param props - The component props
+ * @param props.projectId - The project ID to load team members for
+ * @returns {JSX.Element} The rendered team tab component
+ * 
+ * @example
+ * ```tsx
+ * // Display team management interface for a project
+ * <TeamTab projectId="project-123" />
+ * ```
  */
 export function TeamTab({ projectId }: TeamTabProps) {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);

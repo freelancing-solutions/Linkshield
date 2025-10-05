@@ -1,3 +1,35 @@
+/**
+ * EditProjectModal Component
+ * 
+ * A modal dialog component for editing existing project details and configuration.
+ * Provides a comprehensive form interface for updating project information including
+ * name, description, domain, monitoring settings, and scan frequency. Includes
+ * validation, error handling, and optimistic updates for a smooth user experience.
+ * 
+ * Features:
+ * - Comprehensive project editing form with validation
+ * - Real-time form validation using Zod schema
+ * - Pre-populated form fields with current project data
+ * - Monitoring toggle with immediate feedback
+ * - Scan frequency selection with clear options
+ * - Domain URL validation with proper error messages
+ * - Loading states during update operations
+ * - Toast notifications for success and error feedback
+ * - Form reset and cleanup on modal close
+ * - Accessible modal dialog with proper focus management
+ * - Responsive design with proper spacing
+ * - Integration with project update hooks and API
+ * 
+ * @example
+ * ```tsx
+ * <EditProjectModal
+ *   project={selectedProject}
+ *   open={isEditModalOpen}
+ *   onOpenChange={setIsEditModalOpen}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useEffect } from 'react';
@@ -47,19 +79,63 @@ const editProjectSchema = z.object({
   scan_frequency: z.enum(['hourly', 'daily', 'weekly']),
 });
 
+/**
+ * Form data type for editing projects
+ * 
+ * @typedef {Object} EditProjectFormData
+ * @property {string} name - The project name (3-100 characters)
+ * @property {string} [description] - Optional project description (max 500 characters)
+ * @property {string} [domain] - Optional project domain URL
+ * @property {boolean} monitoring_enabled - Whether monitoring is enabled for the project
+ * @property {'hourly' | 'daily' | 'weekly'} scan_frequency - How frequently to scan the project
+ */
 type EditProjectFormData = z.infer<typeof editProjectSchema>;
 
+/**
+ * Props for the EditProjectModal component
+ * 
+ * @interface EditProjectModalProps
+ * @property {Project} project - The project object to edit, containing current values
+ * @property {boolean} open - Whether the modal is currently open/visible
+ * @property {(open: boolean) => void} onOpenChange - Callback function to handle modal open state changes
+ */
 interface EditProjectModalProps {
+  /** The project object to edit, containing current values */
   project: Project;
+  /** Whether the modal is currently open */
   open: boolean;
+  /** Callback to handle modal open state changes */
   onOpenChange: (open: boolean) => void;
 }
 
 /**
  * Edit Project Modal Component
  * 
- * Modal dialog for editing an existing project with form validation.
- * Pre-fills form with current project data and uses optimistic updates.
+ * A modal dialog for editing existing project details with comprehensive form validation.
+ * Pre-fills form fields with current project data and provides real-time validation
+ * feedback. Handles project updates with proper error handling and user feedback.
+ * 
+ * @param {EditProjectModalProps} props - The component props
+ * @returns {JSX.Element} The rendered edit project modal dialog
+ * 
+ * @example
+ * ```tsx
+ * // Show edit project modal
+ * <EditProjectModal
+ *   project={selectedProject}
+ *   open={showEditModal}
+ *   onOpenChange={setShowEditModal}
+ * />
+ * ```
+ * 
+ * @features
+ * - Pre-populated form with current project data
+ * - Real-time validation with Zod schema
+ * - Monitoring and scan frequency configuration
+ * - Domain URL validation
+ * - Toast notifications for feedback
+ * - Loading states during updates
+ * - Accessible modal implementation
  */
 export function EditProjectModal({
   project,

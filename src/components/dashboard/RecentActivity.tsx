@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Recent Activity Component for Dashboard
+ * 
+ * Displays a chronological list of user activities with timestamps, icons, and navigation links.
+ * Groups activities by date and provides an empty state when no activities are available.
+ * 
+ * @author LinkShield Team
+ * @version 1.0.0
+ */
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,25 +24,72 @@ import {
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 
+/**
+ * Activity item interface
+ * 
+ * Represents a single user activity with metadata for display and navigation.
+ */
 interface Activity {
+  /** Unique identifier for the activity */
   id: string;
+  /** Type of activity that determines icon and styling */
   type: 'scan' | 'alert' | 'project' | 'team' | 'settings' | 'report';
+  /** Main title/description of the activity */
   title: string;
+  /** Detailed description of what happened */
   description: string;
+  /** ISO timestamp string of when the activity occurred */
   timestamp: string;
+  /** Optional navigation link for the activity */
   link?: string;
 }
 
+/**
+ * Props for the RecentActivity component
+ */
 interface RecentActivityProps {
+  /** Array of activity items to display */
   activities?: Activity[];
+  /** Maximum number of activities to show (default: 10) */
   maxItems?: number;
 }
 
 /**
  * Recent Activity Component
  * 
- * Displays a list of recent user activities with timestamps and icons.
- * Groups activities by date and provides links to relevant sections.
+ * Displays a chronological list of user activities grouped by date with
+ * appropriate icons, timestamps, and navigation links. Includes an empty
+ * state when no activities are available.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * import { RecentActivity } from '@/components/dashboard/RecentActivity';
+ * 
+ * function Dashboard() {
+ *   const activities = [
+ *     {
+ *       id: '1',
+ *       type: 'scan',
+ *       title: 'URL Scan Completed',
+ *       description: 'Scanned example.com for threats',
+ *       timestamp: '2024-01-15T10:30:00Z',
+ *       link: '/dashboard/scans/1'
+ *     }
+ *   ];
+ *   
+ *   return (
+ *     <div>
+ *       <RecentActivity activities={activities} maxItems={5} />
+ *     </div>
+ *   );
+ * }
+ * ```
+ * 
+ * @param props - Component props
+ * @param props.activities - Array of activity items to display
+ * @param props.maxItems - Maximum number of activities to show
+ * @returns JSX element containing the recent activity card
  */
 export function RecentActivity({ activities = [], maxItems = 10 }: RecentActivityProps) {
   // Limit activities to maxItems
@@ -105,7 +162,14 @@ export function RecentActivity({ activities = [], maxItems = 10 }: RecentActivit
 }
 
 /**
- * Individual Activity Item
+ * Individual Activity Item Component
+ * 
+ * Renders a single activity item with icon, title, description, and timestamp.
+ * Wraps in a Link component if the activity has a navigation link.
+ * 
+ * @param props - Component props
+ * @param props.activity - Activity data to display
+ * @returns JSX element for the activity item
  */
 function ActivityItem({ activity }: { activity: Activity }) {
   const Icon = getActivityIcon(activity.type);
@@ -146,7 +210,13 @@ function ActivityItem({ activity }: { activity: Activity }) {
 }
 
 /**
- * Get icon for activity type
+ * Get icon component for activity type
+ * 
+ * Maps activity types to their corresponding Lucide React icon components.
+ * Provides visual distinction between different types of activities.
+ * 
+ * @param type - The activity type
+ * @returns Lucide icon component for the activity type
  */
 function getActivityIcon(type: Activity['type']) {
   switch (type) {
@@ -169,6 +239,14 @@ function getActivityIcon(type: Activity['type']) {
 
 /**
  * Get icon colors for activity type
+ * 
+ * Returns background and text color classes for activity type icons.
+ * Uses consistent color coding across the dashboard for activity types.
+ * 
+ * @param type - The activity type
+ * @returns Object with background and text color classes
+ * @returns {string} bg - Tailwind background color class
+ * @returns {string} text - Tailwind text color class
  */
 function getActivityIconColor(type: Activity['type']) {
   switch (type) {
@@ -190,7 +268,24 @@ function getActivityIconColor(type: Activity['type']) {
 }
 
 /**
- * Group activities by date
+ * Group activities by date for chronological display
+ * 
+ * Groups activities into date-based sections (Today, Yesterday, specific dates).
+ * Provides a chronological organization of activities for better user experience.
+ * 
+ * @param activities - Array of activities to group
+ * @returns Object with date labels as keys and activity arrays as values
+ * 
+ * @example
+ * ```tsx
+ * const activities = [
+ *   { id: '1', timestamp: '2024-01-15T10:00:00Z', ... },
+ *   { id: '2', timestamp: '2024-01-14T15:00:00Z', ... }
+ * ];
+ * 
+ * const grouped = groupActivitiesByDate(activities);
+ * // Returns: { 'Today': [...], 'Yesterday': [...] }
+ * ```
  */
 function groupActivitiesByDate(activities: Activity[]): Record<string, Activity[]> {
   const groups: Record<string, Activity[]> = {};
@@ -225,7 +320,24 @@ function groupActivitiesByDate(activities: Activity[]): Record<string, Activity[
 }
 
 /**
- * Check if two dates are the same day
+ * Check if two dates are the same calendar day
+ * 
+ * Utility function to compare dates by year, month, and day only,
+ * ignoring time components. Used for grouping activities by date.
+ * 
+ * @param date1 - First date to compare
+ * @param date2 - Second date to compare
+ * @returns True if both dates are on the same calendar day
+ * 
+ * @example
+ * ```tsx
+ * const today = new Date('2024-01-15T10:00:00Z');
+ * const laterToday = new Date('2024-01-15T18:00:00Z');
+ * const yesterday = new Date('2024-01-14T10:00:00Z');
+ * 
+ * isSameDay(today, laterToday); // true
+ * isSameDay(today, yesterday); // false
+ * ```
  */
 function isSameDay(date1: Date, date2: Date): boolean {
   return (

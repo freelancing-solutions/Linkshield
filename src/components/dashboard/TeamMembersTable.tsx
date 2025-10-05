@@ -1,3 +1,31 @@
+/**
+ * TeamMembersTable Component
+ * 
+ * A comprehensive table component for displaying and managing team members within
+ * a project. Provides role-based access control, member management actions, and
+ * visual indicators for member status and permissions.
+ * 
+ * Features:
+ * - Team member listing with avatars and role badges
+ * - Role-based permission indicators (Owner, Admin, Member, Viewer)
+ * - Member removal functionality with confirmation dialogs
+ * - Responsive table layout with proper accessibility
+ * - Date formatting for member join dates
+ * - Action dropdown menus for member management
+ * - Toast notifications for user feedback
+ * - Permission-based action visibility
+ * - Avatar fallbacks with initials
+ * - Loading states and error handling
+ * 
+ * @example
+ * ```tsx
+ * <TeamMembersTable 
+ *   projectId="project-123"
+ *   members={teamMembers}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';

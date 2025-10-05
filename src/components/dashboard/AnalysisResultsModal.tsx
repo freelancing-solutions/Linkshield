@@ -1,3 +1,34 @@
+/**
+ * AnalysisResultsModal Component
+ * 
+ * A comprehensive modal dialog for displaying detailed analysis results from
+ * social media algorithm monitoring. Supports multiple analysis types including
+ * visibility analysis, engagement metrics, and penalty detection with rich
+ * visual indicators and detailed breakdowns.
+ * 
+ * Features:
+ * - Multi-type analysis result display (visibility, engagement, penalties)
+ * - Rich visual indicators with icons and color coding
+ * - Detailed metric breakdowns with trend indicators
+ * - Scrollable content area for large datasets
+ * - Responsive design with proper spacing
+ * - Type-safe result handling with TypeScript
+ * - Accessibility support with proper ARIA labels
+ * - Modal state management with open/close controls
+ * - Card-based layout for organized information display
+ * - Badge components for status and category indicators
+ * 
+ * @example
+ * ```tsx
+ * <AnalysisResultsModal
+ *   open={isModalOpen}
+ *   onOpenChange={setIsModalOpen}
+ *   result={analysisResult}
+ *   type="visibility"
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';

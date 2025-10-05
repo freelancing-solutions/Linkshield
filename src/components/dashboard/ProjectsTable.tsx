@@ -1,3 +1,31 @@
+/**
+ * ProjectsTable Component
+ * 
+ * A comprehensive table component for displaying and managing projects in the dashboard.
+ * Provides sorting, filtering, inline monitoring toggle, and action management for projects.
+ * 
+ * Features:
+ * - Sortable columns with visual indicators
+ * - Inline monitoring toggle with optimistic updates
+ * - Action dropdown for edit/delete operations
+ * - Loading states with skeleton placeholders
+ * - Error handling with retry functionality
+ * - Pagination support
+ * - Responsive design
+ * - Accessibility compliant
+ * 
+ * @example
+ * ```tsx
+ * <ProjectsTable
+ *   data={projectsData}
+ *   isLoading={false}
+ *   error={null}
+ *   page={1}
+ *   onPageChange={setPage}
+ * />
+ * ```
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -32,11 +60,26 @@ import { formatDate } from '@/lib/utils/formatters';
 import { useToggleMonitoring, useDeleteProject } from '@/hooks/dashboard';
 import type { Project, ProjectsResponse } from '@/types/dashboard';
 
+/**
+ * Props for the ProjectsTable component
+ * 
+ * @interface ProjectsTableProps
+ * @property {ProjectsResponse} [data] - The projects data response from the API
+ * @property {boolean} isLoading - Whether the data is currently loading
+ * @property {Error | null} error - Any error that occurred during data fetching
+ * @property {number} page - Current page number for pagination
+ * @property {function} onPageChange - Callback function when page changes
+ */
 interface ProjectsTableProps {
+  /** The projects data response from the API */
   data?: ProjectsResponse;
+  /** Whether the data is currently loading */
   isLoading: boolean;
+  /** Any error that occurred during data fetching */
   error: Error | null;
+  /** Current page number for pagination */
   page: number;
+  /** Callback function when page changes */
   onPageChange: (page: number) => void;
 }
 
@@ -45,6 +88,20 @@ interface ProjectsTableProps {
  * 
  * Displays a table of projects with sortable columns, inline monitoring toggle,
  * and action dropdown for edit/delete operations.
+ * 
+ * @param {ProjectsTableProps} props - The component props
+ * @returns {JSX.Element} The rendered projects table
+ * 
+ * @example
+ * ```tsx
+ * <ProjectsTable
+ *   data={projectsData}
+ *   isLoading={false}
+ *   error={null}
+ *   page={1}
+ *   onPageChange={handlePageChange}
+ * />
+ * ```
  */
 export function ProjectsTable({
   data,
