@@ -34,16 +34,13 @@ interface ActivePlatformsCardProps {
  */
 const getPlatformIcon = (platform: PlatformType): string => {
   const icons = {
-    [PlatformType.FACEBOOK]: '📘',
-    [PlatformType.INSTAGRAM]: '📷',
-    [PlatformType.TWITTER]: '🐦',
-    [PlatformType.LINKEDIN]: '💼',
-    [PlatformType.TIKTOK]: '🎵',
-    [PlatformType.YOUTUBE]: '📺',
-    [PlatformType.SNAPCHAT]: '👻',
-    [PlatformType.PINTEREST]: '📌',
-    [PlatformType.REDDIT]: '🤖',
-    [PlatformType.DISCORD]: '🎮',
+    facebook: '📘',
+    instagram: '📷',
+    twitter: '🐦',
+    linkedin: '💼',
+    tiktok: '🎵',
+    telegram: '📱',
+    discord: '🎮',
   };
   return icons[platform] || '🌐';
 };

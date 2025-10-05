@@ -36,16 +36,13 @@ interface AlgorithmHealthCardProps {
  */
 const getPlatformIcon = (platform: PlatformType): string => {
   const icons = {
-    [PlatformType.FACEBOOK]: '📘',
-    [PlatformType.INSTAGRAM]: '📷',
-    [PlatformType.TWITTER]: '🐦',
-    [PlatformType.LINKEDIN]: '💼',
-    [PlatformType.TIKTOK]: '🎵',
-    [PlatformType.YOUTUBE]: '📺',
-    [PlatformType.SNAPCHAT]: '👻',
-    [PlatformType.PINTEREST]: '📌',
-    [PlatformType.REDDIT]: '🤖',
-    [PlatformType.DISCORD]: '🎮',
+    facebook: '📘',
+    instagram: '📷',
+    twitter: '🐦',
+    linkedin: '💼',
+    tiktok: '🎵',
+    telegram: '📱',
+    discord: '🎮',
   };
   return icons[platform] || '🌐';
 };
@@ -200,7 +197,7 @@ export function AlgorithmHealthCard({
             
             {healthData.slice(0, 4).map((health) => {
               const platformStatus = getHealthStatus(health.overallScore);
-              const trend = health.previousScore 
+              const trend = health.previousScore !== undefined
                 ? calculateTrend(health.overallScore, health.previousScore)
                 : 'stable';
               const change = health.previousScore 

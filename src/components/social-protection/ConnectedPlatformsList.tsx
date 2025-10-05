@@ -57,16 +57,13 @@ interface ConnectedPlatformsListProps {
  */
 const getPlatformInfo = (platform: PlatformType): { icon: string; name: string; color: string } => {
   const platformInfo = {
-    [PlatformType.FACEBOOK]: { icon: '📘', name: 'Facebook', color: 'bg-blue-100 text-blue-800' },
-    [PlatformType.INSTAGRAM]: { icon: '📷', name: 'Instagram', color: 'bg-pink-100 text-pink-800' },
-    [PlatformType.TWITTER]: { icon: '🐦', name: 'Twitter', color: 'bg-sky-100 text-sky-800' },
-    [PlatformType.LINKEDIN]: { icon: '💼', name: 'LinkedIn', color: 'bg-blue-100 text-blue-800' },
-    [PlatformType.TIKTOK]: { icon: '🎵', name: 'TikTok', color: 'bg-purple-100 text-purple-800' },
-    [PlatformType.YOUTUBE]: { icon: '📺', name: 'YouTube', color: 'bg-red-100 text-red-800' },
-    [PlatformType.SNAPCHAT]: { icon: '👻', name: 'Snapchat', color: 'bg-yellow-100 text-yellow-800' },
-    [PlatformType.PINTEREST]: { icon: '📌', name: 'Pinterest', color: 'bg-red-100 text-red-800' },
-    [PlatformType.REDDIT]: { icon: '🤖', name: 'Reddit', color: 'bg-orange-100 text-orange-800' },
-    [PlatformType.DISCORD]: { icon: '🎮', name: 'Discord', color: 'bg-indigo-100 text-indigo-800' },
+    facebook: { icon: '📘', name: 'Facebook', color: 'bg-blue-100 text-blue-800' },
+    instagram: { icon: '📷', name: 'Instagram', color: 'bg-pink-100 text-pink-800' },
+    twitter: { icon: '🐦', name: 'Twitter', color: 'bg-sky-100 text-sky-800' },
+    linkedin: { icon: '💼', name: 'LinkedIn', color: 'bg-blue-100 text-blue-800' },
+    tiktok: { icon: '🎵', name: 'TikTok', color: 'bg-purple-100 text-purple-800' },
+    telegram: { icon: '📱', name: 'Telegram', color: 'bg-blue-100 text-blue-800' },
+    discord: { icon: '🎮', name: 'Discord', color: 'bg-indigo-100 text-indigo-800' },
   };
   return platformInfo[platform] || { icon: '🌐', name: 'Unknown', color: 'bg-gray-100 text-gray-800' };
 };

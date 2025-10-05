@@ -116,7 +116,7 @@ export default function SocialProtectionPage() {
       {/* Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <ActivePlatformsCard 
-          platforms={data.connectedPlatforms}
+          platforms={data.connected_platforms}
           onConnectPlatform={() => {
             // TODO: Open connect platform modal
             console.log('Connect platform clicked');
@@ -124,40 +124,40 @@ export default function SocialProtectionPage() {
         />
 
         <RiskScoreCard 
-          overallScore={data.overallRiskScore}
-          previousScore={data.previousRiskScore}
-          lastUpdated={data.lastUpdated}
+          overallScore={data.risk_score}
+          previousScore={undefined} // Not available in DashboardOverview type
+          lastUpdated={data.last_scan}
         />
 
         <RecentAlertsCard 
-          alerts={data.recentAlerts}
-          onViewAlert={(alertId) => {
+          alerts={[]} // Using empty array as recent_alerts is a number in DashboardOverview
+          onViewAlert={(alertId: string) => {
             // TODO: Navigate to alert details
             console.log('View alert:', alertId);
           }}
-          onResolveAlert={(alertId) => {
+          onResolveAlert={(alertId: any) => {
             // TODO: Resolve alert
             console.log('Resolve alert:', alertId);
           }}
         />
 
         <AlgorithmHealthCard 
-          healthData={data.algorithmHealthData}
-          lastUpdated={data.lastUpdated}
+          healthData={{ status: data.algorithm_health, score: data.risk_score }}
+          lastUpdated={data.last_scan}
         />
       </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ConnectedPlatformsList 
-          platforms={data.connectedPlatforms}
-          onManagePlatform={(platformId) => {
-            // TODO: Open platform management modal
-            console.log('Manage platform:', platformId);
+          platforms={data.connected_platforms}
+          onDisconnect={(platform: any) => {
+            // TODO: Implement disconnect platform
+            console.log('Disconnect platform:', platform);
           }}
-          onDisconnectPlatform={(platformId) => {
-            // TODO: Disconnect platform
-            console.log('Disconnect platform:', platformId);
+          onRefresh={(platform: any) => {
+            // TODO: Implement refresh platform
+            console.log('Refresh platform:', platform);
           }}
         />
 
@@ -170,7 +170,7 @@ export default function SocialProtectionPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {data.recent_alerts.length === 0 ? (
+            {data.recent_alerts === 0 ? (
               <div className="text-center py-8">
                 <Shield className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">All clear!</h3>
@@ -179,33 +179,23 @@ export default function SocialProtectionPage() {
                 </p>
               </div>
             ) : (
-              data.recent_alerts.slice(0, 3).map((alert) => (
-                <div key={alert.id} className="flex items-start space-x-3 p-3 border rounded-lg">
-                  <AlertTriangle className={`h-5 w-5 mt-0.5 ${
-                    alert.severity === 'critical' ? 'text-red-500' :
-                    alert.severity === 'high' ? 'text-orange-500' :
-                    alert.severity === 'medium' ? 'text-yellow-500' :
-                    'text-blue-500'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">{alert.title}</p>
-                    <p className="text-sm text-muted-foreground truncate">
-                      {alert.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {new Date(alert.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                  <Badge 
-                    variant="outline" 
-                    className={getRiskColor(alert.severity)}
-                  >
-                    {alert.severity}
-                  </Badge>
+              <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                <AlertTriangle className="h-5 w-5 mt-0.5 text-orange-500" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm">Recent Alerts</p>
+                  <p className="text-sm text-muted-foreground">
+                    {data.recent_alerts} alert{data.recent_alerts !== 1 ? 's' : ''} require attention
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {data.last_scan ? new Date(data.last_scan).toLocaleString() : 'Never scanned'}
+                  </p>
                 </div>
-              ))
+                <Badge variant="outline" className="text-orange-600 border-orange-200">
+                  {data.recent_alerts}
+                </Badge>
+              </div>
             )}
-            {data.recent_alerts.length > 0 && (
+            {data.recent_alerts > 0 && (
               <Button variant="outline" className="w-full" asChild>
                 <Link href="/social-protection/alerts">
                   View All Alerts
@@ -227,25 +217,21 @@ export default function SocialProtectionPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center space-x-3">
-              <div className={`w-3 h-3 rounded-full ${
-                data.extension_status.installed ? 'bg-green-500' : 'bg-red-500'
-              }`} />
+              <div className="w-3 h-3 rounded-full bg-gray-400" />
               <div>
                 <p className="font-medium">Installation</p>
                 <p className="text-sm text-muted-foreground">
-                  {data.extension_status.installed ? 'Installed' : 'Not installed'}
+                  Status unavailable
                 </p>
               </div>
             </div>
             
             <div className="flex items-center space-x-3">
-              <div className={`w-3 h-3 rounded-full ${
-                data.extension_status.connected ? 'bg-green-500' : 'bg-red-500'
-              }`} />
+              <div className="w-3 h-3 rounded-full bg-gray-400" />
               <div>
                 <p className="font-medium">Connection</p>
                 <p className="text-sm text-muted-foreground">
-                  {data.extension_status.connected ? 'Connected' : 'Disconnected'}
+                  Status unavailable
                 </p>
               </div>
             </div>
@@ -255,30 +241,28 @@ export default function SocialProtectionPage() {
               <div>
                 <p className="font-medium">Scans Today</p>
                 <p className="text-sm text-muted-foreground">
-                  {data.extension_analytics.scans_today} scans
+                  Data unavailable
                 </p>
               </div>
             </div>
           </div>
           
-          {!data.extension_status.installed && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-start space-x-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div className="flex-1">
-                  <h4 className="font-medium text-blue-900">Install Browser Extension</h4>
-                  <p className="text-sm text-blue-700 mt-1">
-                    Install our browser extension for real-time protection while browsing social media.
-                  </p>
-                  <Button size="sm" className="mt-3" asChild>
-                    <Link href="/social-protection/extension">
-                      Download Extension
-                    </Link>
-                  </Button>
-                </div>
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="font-medium text-blue-900">Install Browser Extension</h4>
+                <p className="text-sm text-blue-700 mt-1">
+                  Install our browser extension for real-time protection while browsing social media.
+                </p>
+                <Button size="sm" className="mt-3" asChild>
+                  <Link href="/social-protection/extension">
+                    Download Extension
+                  </Link>
+                </Button>
               </div>
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
     </div>
