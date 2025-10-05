@@ -2,9 +2,10 @@
  * Social Protection Service
  * 
  * Handles all Social Protection API calls including extension status,
- * algorithm health monitoring, and social media analysis.
+ * algorithm health monitoring, social media analysis, platform scanning,
+ * content analysis, crisis alerts, and settings management.
  * 
- * Note: All endpoints require authentication.
+ * Note: All endpoints require authentication unless specified as public.
  */
 
 import { apiClient } from './api';
@@ -29,6 +30,17 @@ import type {
   BatchAnalysisRequest,
   BatchAnalysisResult,
 } from '@/types/dashboard';
+import type {
+  DashboardOverview,
+  PlatformScan,
+  ScanCredentials,
+  ContentAnalysis,
+  ContentAnalysisRequest,
+  SocialProtectionSettings,
+  Recommendation,
+  ApiResponse,
+  PaginatedResponse,
+} from '@/types/social-protection';
 
 export const socialProtectionService = {
   /**
@@ -308,4 +320,244 @@ export const socialProtectionService = {
   restartBot: async (serviceName: string): Promise<void> => {
     return apiClient.post(`/bots/${serviceName}/restart`);
   },
+
+  // ============================================================================
+  // New Social Protection Endpoints (Kiro Spec Implementation)
+  // ============================================================================
+
+  /**
+   * Get social protection dashboard overview
+   * Returns active platforms, risk scores, alerts, and algorithm health
+   */
+  getDashboard: async (): Promise<DashboardOverview> => {
+    const response = await apiClient.get<ApiResponse<DashboardOverview>>(
+      '/social-protection/user/dashboard'
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Initiate a platform scan with provided credentials
+   * Returns scan object with tracking ID for status polling
+   */
+  initiateScan: async (credentials: ScanCredentials): Promise<PlatformScan> => {
+    const response = await apiClient.post<ApiResponse<PlatformScan>>(
+      '/social-protection/user/scan',
+      credentials
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Get scan status and progress by scan ID
+   * Used for polling scan progress until completion
+   */
+  getScanStatus: async (scanId: string): Promise<PlatformScan> => {
+    const response = await apiClient.get<ApiResponse<PlatformScan>>(
+      `/social-protection/user/scan/${scanId}`
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Get all scans for the current user
+   * Supports pagination and filtering
+   */
+  getScans: async (params?: {
+    page?: number;
+    limit?: number;
+    platform?: string;
+    status?: string;
+  }): Promise<PaginatedResponse<PlatformScan>> => {
+    const response = await apiClient.get<PaginatedResponse<PlatformScan>>(
+      '/social-protection/user/scans',
+      { params }
+    );
+    return response.data;
+  },
+
+  /**
+   * Delete/disconnect a platform connection
+   */
+  disconnectPlatform: async (platform: string): Promise<void> => {
+    await apiClient.delete(`/social-protection/user/platforms/${platform}`);
+  },
+
+  /**
+   * Analyze social media content for risks and threats
+   * Supports both authenticated and anonymous analysis
+   */
+  analyzeContent: async (content: ContentAnalysisRequest): Promise<ContentAnalysis> => {
+    const response = await apiClient.post<ApiResponse<ContentAnalysis>>(
+      '/social-protection/user/analyze',
+      content
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Get content analysis history
+   */
+  getAnalysisHistory: async (params?: {
+    page?: number;
+    limit?: number;
+    platform?: string;
+    risk_level?: string;
+  }): Promise<PaginatedResponse<ContentAnalysis>> => {
+    const response = await apiClient.get<PaginatedResponse<ContentAnalysis>>(
+      '/social-protection/user/analysis-history',
+      { params }
+    );
+    return response.data;
+  },
+
+  /**
+   * Get algorithm health for a specific platform
+   */
+  getPlatformHealth: async (platform: string): Promise<AlgorithmHealth> => {
+    const response = await apiClient.get<ApiResponse<AlgorithmHealth>>(
+      `/social-protection/user/algorithm-health/${platform}`
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Get algorithm health trends over time
+   */
+  getHealthTrends: async (params?: {
+    platform?: string;
+    timeframe?: '7d' | '30d' | '90d';
+  }): Promise<AlgorithmHealth[]> => {
+    const response = await apiClient.get<ApiResponse<AlgorithmHealth[]>>(
+      '/social-protection/user/algorithm-health/trends',
+      { params }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Update alert status (acknowledge, resolve, etc.)
+   */
+  updateAlertStatus: async (
+    alertId: string, 
+    status: 'acknowledged' | 'resolved'
+  ): Promise<CrisisAlert> => {
+    const response = await apiClient.put<ApiResponse<CrisisAlert>>(
+      `/social-protection/crisis/alerts/${alertId}`,
+      { status }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Bulk update multiple alerts
+   */
+  bulkUpdateAlerts: async (
+    alertIds: string[],
+    status: 'acknowledged' | 'resolved'
+  ): Promise<void> => {
+    await apiClient.put('/social-protection/crisis/alerts/bulk', {
+      alert_ids: alertIds,
+      status,
+    });
+  },
+
+  /**
+   * Get all social protection settings
+   */
+  getSettings: async (): Promise<SocialProtectionSettings> => {
+    const response = await apiClient.get<ApiResponse<SocialProtectionSettings>>(
+      '/social-protection/user/settings'
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Update social protection settings
+   */
+  updateSettings: async (
+    settings: Partial<SocialProtectionSettings>
+  ): Promise<SocialProtectionSettings> => {
+    const response = await apiClient.put<ApiResponse<SocialProtectionSettings>>(
+      '/social-protection/user/settings',
+      settings
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Reset settings to default values
+   */
+  resetSettings: async (): Promise<SocialProtectionSettings> => {
+    const response = await apiClient.post<ApiResponse<SocialProtectionSettings>>(
+      '/social-protection/user/settings/reset'
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Analyze content anonymously (for homepage scanner)
+   * Does not require authentication
+   */
+  analyzeContentAnonymous: async (url: string): Promise<ContentAnalysis> => {
+    const response = await apiClient.post<ApiResponse<ContentAnalysis>>(
+      '/social-protection/public/analyze',
+      { url, anonymous: true }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Get extension download links for different browsers
+   */
+  getExtensionDownloads: async (): Promise<{
+    chrome: string;
+    firefox: string;
+    edge: string;
+    safari: string;
+  }> => {
+    const response = await apiClient.get<ApiResponse<{
+      chrome: string;
+      firefox: string;
+      edge: string;
+      safari: string;
+    }>>('/social-protection/public/extension-downloads');
+    return response.data.data;
+  },
+
+  /**
+   * Test platform credentials without saving
+   */
+  testCredentials: async (credentials: ScanCredentials): Promise<{
+    valid: boolean;
+    error?: string;
+  }> => {
+    const response = await apiClient.post<ApiResponse<{
+      valid: boolean;
+      error?: string;
+    }>>('/social-protection/user/test-credentials', credentials);
+    return response.data.data;
+  },
+
+  /**
+   * Get supported platforms and their credential requirements
+   */
+  getSupportedPlatforms: async (): Promise<{
+    platform: string;
+    name: string;
+    icon: string;
+    credential_fields: Array<{
+      name: string;
+      label: string;
+      type: string;
+      required: boolean;
+      description?: string;
+    }>;
+  }[]> => {
+    const response = await apiClient.get<ApiResponse<any>>(
+      '/social-protection/public/supported-platforms'
+    );
+    return response.data.data;
+  },
+
 };
