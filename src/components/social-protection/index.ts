@@ -45,3 +45,28 @@ export { HomepageSocialScanner } from './HomepageSocialScanner';
 export { ScannerInput } from './ScannerInput';
 export { ScanProgress } from './ScanProgress';
 export { ScanResults } from './ScanResults';
+
+// Documentation Components
+export { default as DocumentationHub } from './DocumentationHub';
+export { default as DocumentationNav } from './DocumentationNav';
+
+// Settings Components
+export { SocialProtectionSettings } from './SocialProtectionSettings';
+export { MonitoringSettings } from './MonitoringSettings';
+export { AlertSettings } from './AlertSettings';
+export { PrivacySettings } from './PrivacySettings';
+export { PlatformSettings } from './PlatformSettings';
+
+// Shared Components
+export { PlatformIcon, getPlatformIcon, getPlatformColor, getPlatformName } from './PlatformIcon';
+export { 
+  LoadingStates,
+  CardLoadingState,
+  ListLoadingState,
+  DashboardLoadingState,
+  TableLoadingState,
+  ChartLoadingState,
+  FormLoadingState,
+  ModalLoadingState,
+  SpinnerLoadingState
+} from './LoadingStates';
